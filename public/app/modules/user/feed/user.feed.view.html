@@ -1,0 +1,32 @@
+<div class="row">
+    <div class="col-lg-12 tools">
+        <div class="btn-group left">
+            <label class="btn btn-default" ng-model="eventType" uib-btn-radio="" uncheckable ng-click="getPageEvents(1, 10, eventType)">All</label>
+            <label class="btn btn-default" ng-model="eventType" uib-btn-radio="'actual'" uib-uncheckable="uncheckable" ng-click="getPageEvents(1, 10, eventType)">Actual</label>
+            <label class="btn btn-default" ng-model="eventType" uib-btn-radio="'friends'" uib-uncheckable="uncheckable" ng-click="getPageEvents(1, 10, eventType)">Friends</label>
+            <label class="btn btn-default" ng-model="eventType" uib-btn-radio="'past'" uib-uncheckable="uncheckable" ng-click="getPageEvents(1, 10, eventType)">Past</label>
+            <label class="btn btn-default" ng-model="eventType" uib-btn-radio="'social'" uib-uncheckable="uncheckable" ng-click="getPageEvents(1, 10, eventType)">Social</label>
+        </div>
+        <div class="btn-group right">
+            <label class="btn btn-default glyphicon glyphicon-th" ng-model="size" ng-click="size = 4" uib-btn-radio="4"
+            uncheckable></label>
+            <label class="btn btn-default glyphicon glyphicon-th-list" ng-model="size" ng-click="size = 12"
+            uib-btn-radio="12" uncheckable></label>
+        </div>
+    </div>
+</div>
+<div class="row" ng-init="getPageEvents(1, 10)">
+    <div class="col-md-4 col-xs-12 event-item" ng-repeat="event in events.items">
+        <center>
+        <a href="#/event/{{event.id}}">
+            <div class="event {{event.type}}">
+                <img src="/event/image/{{event.id}}" alt="">
+                <div class="event-container small text-center">
+                    <span class="title">{{event.name}}</span>
+                    <span class="time">{{event.time}}</span>
+                </div>
+            </div>
+        </a>
+        </center>
+    </div>
+</div>

@@ -4,6 +4,7 @@ error_reporting(E_ALL);
 
 use Phalcon\Mvc\Application;
 use Phalcon\Config\Adapter\Ini as ConfigIni;
+use Phalcon\Mvc\Router;
 
 try {
     define('APP_PATH', realpath('..') . '/');
@@ -12,10 +13,6 @@ try {
      * Read the configuration
      */
     $config = new ConfigIni(APP_PATH . 'app/config/config.ini');
-    if (is_readable(APP_PATH . 'app/config/config.ini.dev')) {
-        $override = new ConfigIni(APP_PATH . 'app/config/config.ini.dev');
-        $config->merge($override);
-    }
 
     /**
      * Auto-loader configuration
@@ -27,10 +24,12 @@ try {
      */
     require APP_PATH . 'app/config/services.php';
 
-    $application = new Application($di);
+    $app = new Application($di);
 
-    echo $application->handle()->getContent();
-} catch (Exception $e){
+    echo $app->handle()->getContent();
+
+} catch (Exception $e) {
     echo $e->getMessage() . '<br>';
     echo '<pre>' . $e->getTraceAsString() . '</pre>';
 }
+

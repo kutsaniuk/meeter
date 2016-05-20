@@ -1,0 +1,41 @@
+<div class="col-lg-12" ng-init="getUserById(userId)">
+    <div class="panel panel-default" style="background-image: url('/user/background/{{user.id}}')">
+        <div class="panel-body profile profile-background">
+            <div class="col-lg-4">
+                <img src="/user/avatar/{{user.id}}" alt="" style="width: 100%">
+            </div>
+            <div class="col-lg-4">
+                <div>
+                    <span class="username">{{user.username}}</span>
+                    <button class="btn btn-default" ng-click="editUserProfile(userId)">Edit</button>
+                </div>
+                <div class="name">{{user.name}}</div>
+            </div>
+            <div class="col-lg-4"></div>
+        </div>
+    </div>
+
+    <div class="panel panel-default" ng-init="getUserEventsById(userId)">
+        <div class="panel-heading">Events</div>
+        <div class="panel-body">
+            <uib-alert ng-show="getEventsFailed" type="warning">You don't have events.
+                <a href="" ng-click="eventAddShow = true">Add event</a>
+            </uib-alert>
+            <div class="row">
+                <div class="col-md-4 col-xs-12 event-item" ng-repeat="event in events">
+                    <center>
+                        <a href="#">
+                            <div class="event {{event.type}}">
+                                <img src="/event/image/{{event.id}}" alt="">
+                                <div class="event-container small text-center">
+                                    <span class="title">{{event.name}}</span>
+                                    <span class="time">{{event.time}}</span>
+                                </div>
+                            </div>
+                        </a>
+                    </center>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

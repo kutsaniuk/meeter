@@ -1,0 +1,134 @@
+.event-item
+  padding: 30px
+  margin: auto
+
+.event
+  width: 100%
+  height: 250px
+  position: relative
+  float: left
+  cursor: pointer
+  box-shadow: 0 0 3px silver
+  overflow: hidden
+  &:before
+    content: ""
+    display: block
+    position: absolute
+    top: 0
+    bottom: 0
+    left: 0
+    right: 0
+    background: rgba(0, 255, 255, 0.2)
+    transition: .15s ease-in-out
+  &:hover:before
+    background: none
+  img 
+  	max-height: 150%
+  .event-container
+    position: absolute
+    width: 100%
+    height: auto
+    &:hover
+      background: rgba(34, 34, 34, 0.5)
+      transition: .15s ease-in-out
+  .time
+  	display: block
+  	font-size: 20px
+  	color: rgba(255, 255, 255, 0.5)
+  .title
+  	color: #fff
+  .big
+    top: 38%
+    left: 0
+    font-size: 40px
+  .small
+    top: 42%
+    left: 0
+    font-size: 25px
+
+.friends:before
+  background: rgba(0, 249, 255, 0.2)     
+.past:before
+  background: rgba(255, 255, 255, 0.3)
+.actual:before
+  background: rgba(225, 0, 0, 0.2)
+.social:before
+  background: rgba(234, 255, 0, 0.2)
+
+.event-add-container
+  position: fixed
+  top: 0
+  width: 100%
+  height: 100%
+  //background: rgba(34, 34, 34, 0.8)
+  //background: rgba(234, 255, 0, 0.8)
+  background: rgba(255, 255, 255, 0.8)
+
+  z-index: 5000
+  input, textarea 
+    background: transparent
+    border: none
+    color: #333
+    outline: none
+    width: 100%
+  input 
+    font-size: 50px
+  textarea
+    font-size: 20px
+  .event-form-group
+    position: absolute
+    left: 0
+    right: 0
+    top: 50px
+    bottom: 0
+    margin: 0 auto
+    width: 500px
+    height: 250px
+  .event-add-close
+    position: absolute
+    left: 0
+    top: 0
+    margin: 15px
+    height: 100%
+    width: 20%
+
+// .location
+//   position: absolute
+//   right: 0
+//   background-image: url('/dist/img/location.svg')
+//   &:hover
+//     background-image: url('/dist/img/location.hover.svg')
+
+// .photos
+//   box-shadow: 0 0 1px #333
+//   position: absolute
+//   left: 0
+//   background-image: url('/dist/img/photos.jpg')
+//   background-size: 50px
+
+// .info
+//   background-image: url('/dist/img/info.svg')
+//   background-size: 10px 
+//   box-shadow: none
+//   &:hover
+//     background-image: url('/dist/img/info.hover.svg')
+
+// .time
+//   color: silver
+//   font-size: 40px
+//   padding-left: 30px
+// /*.photos:hover
+//   /*box-shadow: 0 0 10px #222;
+
+// .title
+//   color: rgba(255, 255, 255, 1)
+//   font-size: 80px
+//   margin: 15px
+//   padding-left: 15px
+//   font-weight: 200
+//   /*text-shadow: 0 0 2px #333;
+
+// .desc
+//   background-color: rgba(255, 255, 255, 0.95) !important
+//   padding: 30px
+//   padding-top: 10px

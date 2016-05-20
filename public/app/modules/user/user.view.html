@@ -1,0 +1,56 @@
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container-fluid container-navbar tools">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#/feed">meeter</a>
+        </div>
+        <div id="bs-example-navbar-collapse-1">
+            <div class="btn-group right">
+                <img class="right navbar-avatar" src="/user/avatar/{{userId}}" data-toggle="dropdown"
+                     aria-haspopup="true" aria-expanded="false">
+                <ul class="dropdown-menu dropdown-menu-right">
+                    <li><a href="#/user/{{userId}}">Profile</a></li>
+                    <li><a href="#">Settings</a></li>
+                    <li><a href="#">Followers</a></li>
+                    <li role="separator" class="divider"></li>
+                    <li><a href="/" ng-click="logout()">Log out</a></li>
+                </ul>
+            </div>
+            <form class="navbar-form navbar-right " role="search" ng-controller="UserFeedCtrl">
+                <div class="form-group">
+                    <input type="text" class="form-control" ng-model="eventName" placeholder="Search" ng-change="getEventsByName(1, 100, eventName)" typeahead-template-url="app/shared/navbar/search/navbar.search.typeahead.template.html" uib-typeahead="event as event.name for event in events.items" typeahead-show-hint="true" typeahead-min-length="0">
+                </div>
+            </form>
+        </div>
+    </div>
+</nav>
+<center>
+    <button class="btn btn-default glyphicon glyphicon-plus add-event" ng-click="eventAddShow = true"></button>
+</center>
+<div class="container-fluid container-meeter">
+    <ui-view></ui-view>
+    <hr>
+
+    <footer>
+        <div class="row">
+            <div class="col-lg-12">
+                <p>Copyright &copy; Your Website 2014</p>
+            </div>
+        </div>
+    </footer>
+
+</div>
+
+<div class="event-add-container show-hide" ng-show="eventAddShow" ng-init="eventAddShow = false" ng-enter="eventAddShow = false">
+    <div class="event-form-group">
+        <input type="text" placeholder="Name event" autofocus><br>
+        <textarea placeholder="Description"></textarea>
+    </div>
+    <span class="glyphicon glyphicon-remove event-add-close" ng-click="eventAddShow = false"></span>
+</div>

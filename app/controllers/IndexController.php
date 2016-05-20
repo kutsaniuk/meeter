@@ -1,18 +1,13 @@
 <?php
+//namespace meeter\app\controllers;
 
-class IndexController extends ControllerBase
+use Phalcon\Mvc\Controller;
+
+class IndexController extends Controller
 {
-    public function initialize()
+    public function indexAction($id)
     {
-        $this->tag->setTitle('Welcome');
-        parent::initialize();
+        echo "Welcome!";
     }
 
-    public function indexAction()
-    {
-        if (!$this->request->isPost()) {
-            $this->flash->notice('This is a sample application of the Phalcon Framework.
-                Please don\'t provide us any personal information. Thanks');
-        }
-    }
 }

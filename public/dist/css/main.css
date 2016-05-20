@@ -1,0 +1,117 @@
+body {
+  font-family: Open Sans; }
+
+.no-padding {
+  padding: 0; }
+
+.right {
+  float: right; }
+
+.event {
+  position: absolute;
+  box-shadow: 0 0 3px silver;
+  width: 400px;
+  height: 400px;
+  left: 0;
+  right: 0;
+  margin: auto;
+  z-index: 1000; }
+
+.comments {
+  box-shadow: 0 0 3px silver;
+  position: absolute;
+  width: 400px;
+  height: 130px;
+  left: 0;
+  right: 0;
+  margin: auto;
+  margin-top: 400px; }
+
+.comment {
+  margin: 15px; }
+
+.comment-add {
+  border: none;
+  outline: none;
+  width: 100%;
+  padding: 10px;
+  padding-left: 15px;
+  padding-right: 15px; }
+
+hr {
+  margin-top: 0;
+  margin-bottom: 0; }
+
+a {
+  color: #c83737;
+  cursor: pointer;
+  transition: ease-in-out .15s; }
+  a:hover {
+    text-decoration: none;
+    color: #444; }
+
+.event img {
+  width: 100%; }
+
+.event .bg {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: rgba(34, 34, 34, 0.5);
+  height: 100%;
+  width: 100%; }
+  .event .bg .bottom {
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+    height: 80px; }
+  .event .bg .top {
+    position: absolute;
+    width: 100%;
+    top: 0; }
+  .event .bg span {
+    width: 50px;
+    margin: 15px;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    width: 50px;
+    height: 50px;
+    margin: 15px;
+    z-index: 2000;
+    cursor: pointer; }
+
+.location {
+  position: absolute;
+  right: 0;
+  background-image: url("/img/location.svg"); }
+  .location:hover {
+    background-image: url("/img/location.hover.svg"); }
+
+.photos {
+  box-shadow: 0 0 1px #333;
+  position: absolute;
+  left: 0;
+  background-image: url("/img/photos.jpg");
+  background-size: 50px; }
+
+.info {
+  background-image: url("/img/info.svg");
+  background-size: 10px;
+  box-shadow: none; }
+  .info:hover {
+    background-image: url("/img/info.hover.svg"); }
+
+/*.photos:hover */
+/*box-shadow: 0 0 10px #222; */
+.title {
+  color: white;
+  font-size: 80px;
+  margin: 15px;
+  padding-left: 15px;
+  font-weight: 200;
+  /*text-shadow: 0 0 2px #333; */ }
+
+.desc {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  padding: 30px;
+  padding-top: 10px; }

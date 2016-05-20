@@ -1,0 +1,22 @@
+<div class="col-lg-12" ng-init="getEventById(eventId)">
+    <div class="panel panel-default" style="overflow: hidden">
+        <div class="panel-body" style="padding: 0;">
+            <div class="col-lg-7" style="background-image: url('/event/image/{{event.id}}'); height: 500px"></div>
+            <div class="col-lg-5">
+                <a href="#/user/{{user.id}}">
+                    <img src="/user/avatar/{{user.id}}" alt="" style="width: 50px">
+                    {{user.username}}
+                </a>
+                <hr>
+                <div style="height: 315px; overflow-y: scroll">
+                    <div ng-repeat="item in comments.items">
+                        <a href="#/user/{{item.user_id}}"><b>{{item.username}}</b></a>
+                        {{item.comment}}
+                    </div>
+                </div>
+                <hr>
+                <input type="text" class="form-control" ng-model="comment" ng-enter="createComment()">
+            </div>
+        </div>
+    </div>
+</div>
