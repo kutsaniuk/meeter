@@ -31,6 +31,18 @@
                 return $http.post(urlBase + '/comment', comment);
             };
 
+            this.getLikes = function (id) {
+                return $http.get(urlBase + '/likes/' + id);
+            };
+
+            this.like = function (like) {
+                return $http.post(urlBase + '/like', like);
+            };
+
+            this.dislike = function (id) {
+                return $http.delete(urlBase + '/dislike/' + id);
+            };
+
             this.search = function (page, limit, name) {
                 return $http.get(urlBase + '/search', {
                     params : {

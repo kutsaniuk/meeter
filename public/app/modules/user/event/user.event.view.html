@@ -1,21 +1,34 @@
 <div class="col-lg-12" ng-init="getEventById(eventId)">
     <div class="panel panel-default" style="overflow: hidden">
         <div class="panel-body" style="padding: 0;">
-            <div class="col-lg-7" style="background-image: url('/event/image/{{event.id}}'); height: 500px"></div>
-            <div class="col-lg-5">
-                <a href="#/user/{{user.id}}">
-                    <img src="/user/avatar/{{user.id}}" alt="" style="width: 50px">
-                    {{user.username}}
-                </a>
+            <div class="col-lg-7" style="background-image: url('/event/image/{{event.id}}'); height: 500px;">
+                <div>{{event.name}}</div>
+                <div>{{event.description}}</div>
+                <div>{{event.time}}</div>
+            </div>
+            <div class="col-lg-5" ng-init="viewAllCommentsShow = true">
+                <div style="margin-top: 15px">
+                    <a href="#/user/{{user.id}}"><img src="/user/avatar/{{user.id}}" alt="" style="width: 50px"></a>
+                    <a href="#/user/{{user.id}}"> {{user.username}}</a>
+                    <!--<button class="btn btn-success pull-right">Edit</button>-->
+                    <button ng-show="followShow" class="btn btn-success pull-right">Follow</button>
+                </div>
                 <hr>
-                <div style="height: 315px; overflow-y: scroll">
+                <a href="" ng-show="viewAllCommentsShow" ng-click="getEventCommentsById(eventId, 1, comments.total_items); viewAllCommentsShow = false">View all {{comments.total_items}} comments</a>
+                <div style="height: 265px; overflow-y: scroll">
                     <div ng-repeat="item in comments.items">
-                        <a href="#/user/{{item.user_id}}"><b>{{item.username}}</b></a>
+                        <a href="#/user/{{item.id}}"><b>{{item.username}}</b></a>
                         {{item.comment}}
                     </div>
                 </div>
                 <hr>
-                <input type="text" class="form-control" ng-model="comment" ng-enter="createComment()">
+                <div class="input-group">
+                    <span class="input-group-addon" ng-click="createLike()"><i class="glyphicon" ng-class="{'glyphicon-heart-empty': noLike, 'glyphicon-heart': like}"></i>{{likes.length}}</span>
+                    <input type="text" class="form-control" ng-model="comment" placeholder="Add a new comment"
+                           ng-enter="createComment()">
+                    {{find}}
+                </div>
+
             </div>
         </div>
     </div>

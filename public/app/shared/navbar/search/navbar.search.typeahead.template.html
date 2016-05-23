@@ -1,5 +1,5 @@
 <a href="/event/profile/{{match.model.id}}">
-    <img src="dist/img/photos.jpg" style="width: 25px" align="left">
+    <img src="/event/image/{{match.model.id}}" style="width: 25px" align="left">
     <span>
         <div ng-bind-html="match.label | uibTypeaheadHighlight:query"></div>
         <div>{{match.model.type}}</div>

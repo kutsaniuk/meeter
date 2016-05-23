@@ -169,9 +169,10 @@ class EventController extends Controller
         $event = Event::findFirst($id);
 
         header('Content-Type: image/jpg');
-
+        $response = new Response();
         if ($event->image != null)
             echo base64_decode($event->image);
+        else return $response->setStatusCode(404);
     }
 
     /**
@@ -182,13 +183,14 @@ class EventController extends Controller
         $currentPage = (int)$_GET["page"];
         $limit = (int)$_GET["limit"];
 
-        $comments = Comment::find(array(
-            'conditions' => "event_id = '$id'"
-        ));
+        $comments = $this->
+        modelsManager->
+        createQuery("SELECT User.id, Comment.comment, User.username 
+FROM Comment JOIN User on User.id = Comment.user_id WHERE Comment.event_id = $id ORDER BY Comment.date ASC");
 
         $paginator = new PaginatorModel(
             array(
-                "data" => $comments,
+                "data" => $comments->execute(),
                 "limit" => $limit,
                 "page" => $currentPage
             )
@@ -217,16 +219,78 @@ class EventController extends Controller
         $_comment = $this->request->getJsonRawBody();
 
         $comment->assign(array(
-            'username' => $_comment ->username,
-            'comment' => $_comment ->comment,
+            'username' => $_comment->username,
+            'comment' => $_comment->comment,
             'event_id' => $_comment->event_id,
-            'user_id' => $_comment->user_id
+            'user_id' => $_comment->user_id,
+            'date' => $_comment->date
         ));
 
         $response = new Response();
 
         if ($comment->save())
             $response->setStatusCode(201);
+        else
+            $response->setStatusCode(409);
+
+        return $response;
+    }
+
+    /**
+     * @Get("/likes/{id:[0-9]+}")
+     */
+    public function likesAction($id)
+    {
+        $likes = Like::find(array(
+            'conditions' => "event_id = '$id'"
+        ))->toArray();
+
+        $response = new Response();
+        $response->setContentType("application/json");
+
+        if ($likes)
+            $response->setJsonContent($likes);
+        else
+            $response->setStatusCode(404);
+
+        return $response;
+    }
+
+    /**
+     * @Post
+     */
+    public function likeAction()
+    {
+        $like = new Like();
+
+        $_like = $this->request->getJsonRawBody();
+
+        $like->assign(array(
+            'event_id' => $_like->event_id,
+            'user_id' => $_like->user_id
+        ));
+
+        $response = new Response();
+
+        if ($like->save())
+            $response->setStatusCode(201);
+        else
+            $response->setStatusCode(409);
+
+        return $response;
+    }
+
+    /**
+     * @Delete
+     */
+    public function dislikeAction($id)
+    {
+        $like = Like::findFirst("id = $id");
+
+        $response = new Response();
+
+        if ($like->delete())
+            $response->setStatusCode(200);
         else
             $response->setStatusCode(409);
 

@@ -10,12 +10,15 @@
 
         sc.eventId = $stateParams.id;
         $rootScope.globals = $cookieStore.get('globals') || {};
+        sc.currentUser = $rootScope.globals.currentUser;
+
         sc.comment = null;
 
         sc.getUserById = function (id) {
 
             var getUserSuccess = function (response) {
                 sc.user = response.data;
+                sc.followShow = sc.user.id != sc.currentUser.id;
             };
 
             var getUserFailed = function (response) {
@@ -37,11 +40,39 @@
             EventService.getComments(id, page, limit).then(getCommentsSuccess, getCommentsFailed);
         };
 
+        sc.getEventLikesById = function (id) {
+            var success = function (response) {
+                sc.likes = response.data;
+
+                sc.findUser = function (user) {
+                    return user.user_id === sc.currentUser.id;
+                }
+
+                if (sc.likes.find(sc.findUser) != null) {
+                    sc.like = true;
+                    sc.noLike = false;
+                }
+                else {
+                    sc.like = false;
+                    sc.noLike = true;
+                }
+            };
+
+            var failed = function (response) {
+                sc.likes = response.data;
+                sc.like = false;
+                sc.noLike = true;
+            };
+
+            EventService.getLikes(id).then(success, failed);
+        };
+
         sc.getEventById = function (id) {
             var getEventSuccess = function (response) {
                 sc.event = response.data;
                 sc.getUserById(response.data.user_id);
-                sc.getEventCommentsById(id, 1, 10);
+                sc.getEventCommentsById(id, 1, 15);
+                sc.getEventLikesById(id);
             };
 
             var getEventFailed = function (response) {
@@ -63,14 +94,35 @@
             };
 
             var comment = {
-                'username': $rootScope.globals.currentUser.username,
                 'comment': sc.comment,
                 'event_id': sc.eventId,
-                'user_id': $rootScope.globals.currentUser.id
+                'user_id': $rootScope.globals.currentUser.id,
+                'date': new Date().toISOString()
             };
 
             if (sc.comment != null) EventService.createComment(comment).then(getCommentsSuccess, getCommentsFailed);
-        }
+        };
 
+        sc.createLike = function () {
+            var success = function (response) {
+                sc.getEventLikesById(sc.eventId);
+                sc.like = !sc.like;
+                sc.noLike = !sc.noLike;
+            };
+
+            var failed = function (response) {
+                sc.getEventLikesById(sc.eventId);
+                sc.like = !sc.like;
+                sc.noLike = !sc.noLike;
+            };
+
+            var like = {
+                'event_id': sc.eventId,
+                'user_id': sc.currentUser.id
+            };
+
+            if (sc.like != true) EventService.like(like).then(success, failed);
+            else EventService.dislike(sc.likes.find(sc.findUser).id).then(success, failed);
+        }
     }
 })();

@@ -11,16 +11,12 @@ use Phalcon\Mvc\Model;
 use Phalcon\Mvc\Model\Validator\Email as EmailValidator;
 use Phalcon\Mvc\Model\Validator\Uniqueness as UniquenessValidator;
 
-class Comment extends Model
+class Like extends Model
 {
     public $id;
-    
-    public $comment;
 
     public $event_id;
 
     public $user_id;
-    
-    public $date;
 
 }
