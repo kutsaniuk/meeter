@@ -13,7 +13,7 @@
         <div id="bs-example-navbar-collapse-1">
             <div class="btn-group right">
                 <img class="right navbar-avatar" src="/user/avatar/{{userId}}" data-toggle="dropdown"
-                     aria-haspopup="true" aria-expanded="false">
+                     aria-haspopup="true" aria-expanded="false" onerror="this.src = '/dist/img/user.profile.avatar.default.svg'">
                 <ul class="dropdown-menu dropdown-menu-right">
                     <li><a href="#/user/{{userId}}">Profile</a></li>
                     <li><a href="#">Settings</a></li>
@@ -31,7 +31,7 @@
     </div>
 </nav>
 <center>
-    <button class="btn btn-default glyphicon glyphicon-plus add-event" ng-click="eventAddShow = true"></button>
+    <button class="btn btn-default glyphicon glyphicon-plus add-event" ng-click="createEvent()"></button>
 </center>
 <div class="container-fluid container-meeter">
     <ui-view></ui-view>

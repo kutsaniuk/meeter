@@ -1,3 +1,13 @@
+@mixin bg-gradient-t2b($start-colour, $end-colour, $position)
+  background-color: $start-colour
+  background-image: -webkit-gradient(linear, left top, left bottom, from($start-colour), to($end-colour))
+  background-image: -webkit-linear-gradient($position, $start-colour, $end-colour)
+  background-image: -moz-linear-gradient($position, $start-colour, $end-colour)
+  background-image: -ms-linear-gradient($position, $start-colour, $end-colour)
+  background-image: -o-linear-gradient($position, $start-colour, $end-colour)
+  background-image: linear-gradient($position, $start-colour, $end-colour)
+  filter: progid:DXImageTransform.Microsoft.gradient(start-colourStr='#{$start-colour}', end-colourStr='#{$end-colour}')
+
 .profile
   .username
     color: #eee
@@ -7,3 +17,49 @@
 
 .profile-background
   background-color: rgba(34, 34, 34, .4) !important
+
+.profile
+  .panel-default
+    a
+      color: #2c2c2c
+      font-weight: bold
+      text-decoration: none
+    .view-comments
+      color: #c4c4c4
+      font-weight: 400
+      &:hover
+        color: #a8a8a8
+    overflow: hidden
+    border: none
+    .panel-body
+      padding: 0
+      .col-lg-8
+        padding: 0
+    .profile-container
+      padding: 30px
+      @include bg-gradient-t2b(rgba(34,34,34, 0), rgba(34,34,34,.5), bottom)
+      .name
+        font-size: 30px
+        font-weight: bold
+        color: #eee
+      .location
+        color: rgba(75, 75, 75, 0.5)
+        color: rgba(187, 70, 70, 0.75)
+        color: rgba(238, 238, 238, 0.78)
+        font-size: 15px
+      .description
+        color: #eee
+        margin-top: 15px
+      .type
+        margin: 30px
+      .like
+        font-size: 25px
+        position: absolute
+        bottom: 30px
+        color: rgba(187, 70, 70, 0.75)
+
+    span
+      font-size: 20px
+      position: absolute
+      margin: 3px
+      margin-left: 6px

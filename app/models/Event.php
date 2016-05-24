@@ -26,8 +26,10 @@ class Event extends Model
     public $description;
 
     public $user_id;
-    
+
     public $image;
+    
+    public $location;
 
     public function getSource()
     {

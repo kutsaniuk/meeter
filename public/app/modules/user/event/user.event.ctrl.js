@@ -86,6 +86,7 @@
         sc.createComment = function () {
             var getCommentsSuccess = function (response) {
                 sc.getEventCommentsById(sc.eventId, 1, 100);
+                sc.viewAllCommentsShow = false;
                 sc.comment = null;
             };
 

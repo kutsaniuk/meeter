@@ -168,7 +168,7 @@ class EventController extends Controller
     {
         $event = Event::findFirst($id);
 
-        header('Content-Type: image/jpg');
+        header('Content-Type: image/png');
         $response = new Response();
         if ($event->image != null)
             echo base64_decode($event->image);

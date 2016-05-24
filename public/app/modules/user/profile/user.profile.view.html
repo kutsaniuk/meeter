@@ -2,7 +2,7 @@
     <div class="panel panel-default" style="background-image: url('/user/background/{{user.id}}')">
         <div class="panel-body profile profile-background">
             <div class="col-lg-4">
-                <img src="/user/avatar/{{user.id}}" alt="" style="width: 100%">
+                <img src="/user/avatar/{{user.id}}" alt="" style="width: 100%" onerror="this.src = '/dist/img/user.profile.avatar.default.svg'">
             </div>
             <div class="col-lg-4">
                 <div>
@@ -25,14 +25,19 @@
                 <div class="col-md-4 col-xs-12 event-item" ng-repeat="event in events">
                     <center>
                         <a href="#/event/{{event.id}}">
-                            <div class="event {{event.type}}">
+                            <div class="event" ng-mouseenter="descriptionShow = true" ng-mouseleave="descriptionShow = false">
                                 <img src="/event/image/{{event.id}}" alt="">
-                                <div class="event-container small text-center">
-                                    <span class="title">{{event.name}}</span>
-                                    <span class="time">{{event.time}}</span>
+                                <div class="event-container event-bg">
+                                    <div class="title">{{event.name}}</div>
+                                    <span class="location"><i class="glyphicon glyphicon-map-marker"></i>{{event.location}}</span>
+                                    <span class="time pull-right">{{event.time}}</span>
                                 </div>
-                            </div>
-                        </a>
+                                <div class="type">{{event.type}}</div>
+                                <div class="description show-hide" ng-show="descriptionShow">
+                                    {{event.description}}
+                                </div>
+                            </div></a>
+
                     </center>
                 </div>
             </div>

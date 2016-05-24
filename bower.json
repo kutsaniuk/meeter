@@ -15,8 +15,9 @@
     "angular-animate": "~1.4.x",
     "angular-translate":"2.9.x",
     "angular-translate-loader-static-files":"2.9.x",
+    "ng-dialog": "0.6.1",
     "bootstrap":"3.3.x",
-    "Chart.js":"1.0.x",
+    "Chart.js":"1.0.x",   
     "angular-chart.js":"0.8.x",
     "angular-summernote":"*",
     "jscs":"~2.0.0"

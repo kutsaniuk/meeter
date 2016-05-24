@@ -7,7 +7,8 @@
             'ui.router',
             'ui.bootstrap',
             'ngCookies',
-            'ngAnimate'
+            'ngAnimate',
+            'ngDialog'
         ])
         .config(configure)
         .run(run);

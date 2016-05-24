@@ -5,7 +5,7 @@
         .module('main')
         .controller('UserCtrl', UserCtrl);
 
-    function UserCtrl($scope, $rootScope, $cookieStore, EventService, CredentialsService) {
+    function UserCtrl($scope, $rootScope, $cookieStore, EventService, CredentialsService, ngDialog) {
         var sc = $scope;
 
         sc.getEventsByName = function (page, limit, name) {
@@ -26,7 +26,14 @@
         }
 
         $rootScope.globals = $cookieStore.get('globals') || {};
-        
+
         sc.userId = $rootScope.globals.currentUser.id;
+
+        sc.createEvent = function () {
+            ngDialog.open({
+                // template: 'popupTmpl.html',
+                className: 'ngdialog-theme-plain'
+            });
+        }
     }
 })();

@@ -1,5 +1,7 @@
+
+
 .event-item
-  padding: 30px
+  padding: 20px
   margin: auto
 
 .event
@@ -7,36 +9,90 @@
   height: 250px
   position: relative
   float: left
-  cursor: pointer
-  box-shadow: 0 0 3px silver
+  border-radius: 5px
+  //box-shadow: 0 0 3px silver
   overflow: hidden
-  &:before
-    content: ""
-    display: block
+  .like-container
+    color: #bfbfbf
+    .glyphicon-heart
+      color: #ec3531
+    span.like, span.comment
+      height: 25px
+      span
+        padding: 5px
+  .user
+    position: absolute
+    margin: 15px
+    right: 0
+    top: 0
+    a
+      color: #EEEEEE
+      &:hover
+        color: #e3e3e3
+    .username
+      float: left
+      margin: 12px
+      font-weight: bold
+    img
+      width: 50px
+      border-radius: 100%
+  a
+    color: #333333
+    &:hover
+      text-decoration: none
+      color: #444444
+  .description
     position: absolute
     top: 0
     bottom: 0
     left: 0
     right: 0
-    background: rgba(0, 255, 255, 0.2)
+    //background: rgba(0, 255, 255, 0.2)
     transition: .15s ease-in-out
-  &:hover:before
-    background: none
-  img 
-  	max-height: 150%
+    background: rgba(34, 34, 34, .5)
+    text-align: left
+    color: #eee
+    border-radius: 5px 5px 10px 10px
+    padding: 15px
+  img
+    width: 110%
+    margin-left: -5%
+  //height: 80%
   .event-container
     position: absolute
     width: 100%
     height: auto
-    &:hover
-      background: rgba(34, 34, 34, 0.5)
-      transition: .15s ease-in-out
+    bottom: 0
+    left: 0
+    text-align: left
+    padding: 15px
+    font-weight: bold
+    z-index: 1000
+    //@include bg-gradient-t2b(rgba(34,34,34, 0), rgba(34,34,34,.5), top)
+    background-color: rgba(255, 255, 255, 1)
+    color: rgb(75, 75, 75)
+    border-radius: 0 0 5px 5px
   .time
-  	display: block
-  	font-size: 20px
-  	color: rgba(255, 255, 255, 0.5)
+    display: block
+    font-size: 15px
+    color: rgb(127, 127, 127)
+  //color: rgba(255, 255, 255, 0.8)
   .title
-  	color: #fff
+    //color: rgba(255, 255, 255, 1)
+    font-size: 20px
+  .location
+    color: rgba(75, 75, 75, 0.5)
+    color: #BB4646
+.type
+  position: absolute
+  top: 0
+  right: 0
+  padding: 5px 10px
+  margin: 15px
+  border-radius: 5px
+  color: #eee
+  background: rgba(255, 255, 255, .3)
+  z-index: 5000
   .big
     top: 38%
     left: 0
@@ -46,12 +102,17 @@
     left: 0
     font-size: 25px
 
+
+
 .friends:before
-  background: rgba(0, 249, 255, 0.2)     
+  background: rgba(0, 249, 255, 0.2)
+
 .past:before
   background: rgba(255, 255, 255, 0.3)
+
 .actual:before
   background: rgba(225, 0, 0, 0.2)
+
 .social:before
   background: rgba(234, 255, 0, 0.2)
 
@@ -65,13 +126,13 @@
   background: rgba(255, 255, 255, 0.8)
 
   z-index: 5000
-  input, textarea 
+  input, textarea
     background: transparent
     border: none
     color: #333
     outline: none
     width: 100%
-  input 
+  input
     font-size: 50px
   textarea
     font-size: 20px
