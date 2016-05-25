@@ -96,6 +96,8 @@
         };
 
         sc.register = function () {
+            sc.user.created = new Date().toISOString();
+
             AuthService.register(sc.user)
                 .then(function successCallback(response) {
                     alert('success');
@@ -422,6 +424,18 @@
                 return $http.post(urlBase + '/update', user);
             };
 
+            this.getFollowing = function (id) {
+                return $http.get(urlBase + '/following/' + id);
+            };
+
+            this.follow = function (user) {
+                return $http.post(urlBase + '/follow', user);
+            };
+
+            this.unFollow = function (id) {
+                return $http.delete(urlBase + '/unfollow/' + id);
+            };
+
         });
 })();
 (function () {
@@ -472,7 +486,7 @@
 
                 sc.findUser = function (user) {
                     return user.user_id === sc.currentUser.id;
-                }
+                };
 
                 if (sc.likes.find(sc.findUser) != null) {
                     sc.like = true;
@@ -499,6 +513,7 @@
                 sc.getUserById(response.data.user_id);
                 sc.getEventCommentsById(id, 1, 15);
                 sc.getEventLikesById(id);
+                sc.getFollowingById(sc.currentUser.id);
             };
 
             var getEventFailed = function (response) {
@@ -550,6 +565,55 @@
 
             if (sc.like != true) EventService.like(like).then(success, failed);
             else EventService.dislike(sc.likes.find(sc.findUser).id).then(success, failed);
+        };
+
+        sc.getFollowingById = function (id) {
+            var success = function (response) {
+                sc.following = response.data;
+
+                sc.findFollowingUser = function (following) {
+                    return following.current_user === sc.currentUser.id;
+                };
+
+                if (sc.following.find(sc.findFollowingUser) != null) {
+                    sc.follow = true;
+                    sc.noFollow = false;
+                }
+                else {
+                    sc.follow = false;
+                    sc.noFollow = true;
+                }
+            };
+
+            var failed = function (response) {
+                sc.following = response.data;
+                sc.follow = false;
+                sc.noFollow = true;
+            };
+
+            UserService.getFollowing(id).then(success, failed);
+        };
+
+        sc.followOnUser = function (id) {
+            var success = function (response) {
+                sc.getFollowingById(sc.currentUser.id);
+                sc.follow = !sc.follow;
+                sc.noFollow = !sc.noFollow;
+            };
+
+            var failed = function (response) {
+                sc.getFollowingById(sc.currentUser.id);
+                sc.follow = !sc.follow;
+                sc.noFollow = !sc.noFollow;
+            };
+
+            var user = {
+                'user_id': parseInt(id),
+                'current_user': parseInt(sc.currentUser.id)
+            };
+
+            if (sc.follow != true) UserService.follow(user).then(success, failed);
+            else UserService.unFollow(sc.following.find(sc.findFollowingUser).id).then(success, failed);
         }
     }
 })();
@@ -710,10 +774,12 @@
         .module('main')
         .controller('UserProfileCtrl', UserProfileCtrl);
 
-    function UserProfileCtrl($scope, $stateParams, $location, UserService) {
+    function UserProfileCtrl($scope, $stateParams, $rootScope, $cookieStore, $location, UserService, EventService) {
         var sc = $scope;
 
         sc.userId = $stateParams.id;
+        $rootScope.globals = $cookieStore.get('globals') || {};
+        sc.currentUser = $rootScope.globals.currentUser;
 
         sc.getUserById = function (id) {
 
@@ -742,6 +808,67 @@
 
         sc.editUserProfile = function (id) {
             $location.path('/user/edit/' + id);
+        };
+
+        sc.getEventLikesById = function (id) {
+            var success = function (response) {
+                sc.likes = response.data;
+
+                sc.findUser = function (user) {
+                    return user.user_id === sc.currentUser.id;
+                };
+
+                if (sc.likes.find(sc.findUser) != null) {
+                    sc.like = true;
+                    sc.noLike = false;
+                }
+                else {
+                    sc.like = false;
+                    sc.noLike = true;
+                }
+            };
+
+            var failed = function (response) {
+                sc.likes = response.data;
+                sc.like = false;
+                sc.noLike = true;
+            };
+
+            EventService.getLikes(id).then(success, failed);
+        };
+
+        sc.createLike = function (id) {
+            var success = function (response) {
+                sc.getEventLikesById(id);
+                sc.like = !sc.like;
+                sc.noLike = !sc.noLike;
+            };
+
+            var failed = function (response) {
+                sc.getEventLikesById(id);
+                sc.like = !sc.like;
+                sc.noLike = !sc.noLike;
+            };
+
+            var like = {
+                'event_id': id,
+                'user_id': sc.currentUser.id
+            };
+
+            if (sc.like != true) EventService.like(like).then(success, failed);
+            else EventService.dislike(sc.likes.find(sc.findUser).id).then(success, failed);
+        };
+
+        sc.getEventCommentsById = function (id) {
+            var getCommentsSuccess = function (response) {
+                sc.comments = response.data;
+            };
+
+            var getCommentsFailed = function (response) {
+                alert(response.status);
+            };
+
+            EventService.getComments(id, 1, 1).then(getCommentsSuccess, getCommentsFailed);
         }
 
     }
@@ -765,7 +892,7 @@
                 views: {
                     '': {
                         templateUrl: 'app/modules/user/profile/user.profile.view.html',
-                        controller: 'UserProfileCtrl'
+                        controller: 'UserProfileCtrl as userProfileCtrl'
                     }
                 }
             })

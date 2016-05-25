@@ -1,19 +1,30 @@
 @mixin bg-gradient-t2b($start-colour, $end-colour, $position)
   background-color: $start-colour
-  background-image: -webkit-gradient(linear, left top, left bottom, from($start-colour), to($end-colour))
-  background-image: -webkit-linear-gradient($position, $start-colour, $end-colour)
-  background-image: -moz-linear-gradient($position, $start-colour, $end-colour)
-  background-image: -ms-linear-gradient($position, $start-colour, $end-colour)
-  background-image: -o-linear-gradient($position, $start-colour, $end-colour)
   background-image: linear-gradient($position, $start-colour, $end-colour)
   filter: progid:DXImageTransform.Microsoft.gradient(start-colourStr='#{$start-colour}', end-colourStr='#{$end-colour}')
 
 .profile
+  .panel-body
+    padding: 0
   .username
     color: #eee
     font-size: 25px
+    padding-bottom: 15px
   .name
     color: #e3e3e3
+    font-size: 18px
+    padding-bottom: 15px
+  .info
+    span
+      color: #eee
+      margin-right: 15px
+  .events
+    margin-top: 25px
+    background: rgba(255, 255, 255, 0.8)
+    width: 100%
+    height: 100%
+  .profile-background-container
+    padding: 30px
 
 .profile-background
   background-color: rgba(34, 34, 34, .4) !important
@@ -35,9 +46,16 @@
       padding: 0
       .col-lg-8
         padding: 0
+      .profile-like-container
+        //@include bg-gradient-t2b(rgba(255, 255, 255, 0), rgba(255, 255, 255, .9), top)
+        position: absolute
+        bottom: 0
+        left: 0
+        padding: 30px
+        width: 100%
     .profile-container
       padding: 30px
-      @include bg-gradient-t2b(rgba(34,34,34, 0), rgba(34,34,34,.5), bottom)
+      @include bg-gradient-t2b(rgba(34, 34, 34, 0), rgba(34, 34, 34, .5), bottom)
       .name
         font-size: 30px
         font-weight: bold
@@ -54,12 +72,9 @@
         margin: 30px
       .like
         font-size: 25px
-        position: absolute
-        bottom: 30px
-        color: rgba(187, 70, 70, 0.75)
-
-    span
-      font-size: 20px
-      position: absolute
-      margin: 3px
-      margin-left: 6px
+        color: rgba(187, 70, 70, 1)
+        //span
+        //  font-size: 20px
+        //  position: absolute
+        //  margin: 3px
+        //  margin-left: 6px

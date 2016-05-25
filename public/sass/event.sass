@@ -6,12 +6,15 @@
 
 .event
   width: 100%
-  height: 250px
+  height: 240px
   position: relative
   float: left
   border-radius: 5px
   //box-shadow: 0 0 3px silver
   overflow: hidden
+  .crop
+    height: 70%
+    overflow: hidden
   .like-container
     color: #bfbfbf
     .glyphicon-heart
@@ -55,8 +58,9 @@
     border-radius: 5px 5px 10px 10px
     padding: 15px
   img
-    width: 110%
-    margin-left: -5%
+    width: 120%
+    margin-left: -10%
+    border-radius: 5px 5px 20px 20px
   //height: 80%
   .event-container
     position: absolute
@@ -72,17 +76,22 @@
     background-color: rgba(255, 255, 255, 1)
     color: rgb(75, 75, 75)
     border-radius: 0 0 5px 5px
+    .col-lg-6, .col-xs-6
+      padding: 0
+      margin: 0
   .time
-    display: block
     font-size: 15px
     color: rgb(127, 127, 127)
+    text-align: right
+    font-weight: 400
   //color: rgba(255, 255, 255, 0.8)
   .title
     //color: rgba(255, 255, 255, 1)
-    font-size: 20px
+    font-size: 16px
   .location
     color: rgba(75, 75, 75, 0.5)
     color: #BB4646
+    font-size: 12px
 .type
   position: absolute
   top: 0

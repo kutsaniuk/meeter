@@ -123,7 +123,8 @@ class UserController extends Controller
                 'date' => $event->date,
                 'time' => $event->time,
                 'description' => $event->description,
-                'type' => $event->type
+                'type' => $event->type,
+                'location' => $event->location
             );
             $i++;
         }
@@ -184,4 +185,66 @@ class UserController extends Controller
         if ($user->update()) return $response->setStatusCode(200);
         else return $response->setStatusCode(409);
     }
+
+    /**
+     * @Get("/following/{id:[0-9]+}")
+     */
+    public function followingAction($id)
+    {
+        $following = Follower::find(array(
+            'conditions' => "current_user = $id"
+        ))->toArray();
+
+        $response = new Response();
+        $response->setContentType("application/json");
+
+        if ($following)
+            $response->setJsonContent($following);
+        else
+            $response->setStatusCode(404);
+
+        return $response;
+    }
+
+    /**
+     * @Post
+     */
+    public function followAction()
+    {
+        $follow = new Follower();
+
+        $_follow = $this->request->getJsonRawBody();
+
+        $follow->assign(array(
+            'current_user' => $_follow->current_user,
+            'user_id' => $_follow->user_id
+        ));
+
+        $response = new Response();
+
+        if ($follow->save())
+            $response->setStatusCode(201);
+        else
+            $response->setStatusCode(409);
+
+        return $response;
+    }
+
+    /**
+     * @Delete
+     */
+    public function unfollowAction($id)
+    {
+        $follow = Follower::findFirst("id = $id");
+
+        $response = new Response();
+
+        if ($follow->delete())
+            $response->setStatusCode(200);
+        else
+            $response->setStatusCode(409);
+
+        return $response;
+    }
+
 }

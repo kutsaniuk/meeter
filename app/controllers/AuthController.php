@@ -65,14 +65,12 @@ class AuthController extends Controller
 
         $_user = $this->request->getJsonRawBody();
         
-        $created = date("D", "Y-m-d H:i:s");
-
         $user->assign(array(
             'username' => $_user->username,
             'password' => sha1($_user->password),
             'name' => $_user->name,
             'email' => $_user->email,
-            'created' => $created
+            'created' => $_user->created
         ));
 
         $response = new Response();

@@ -22,6 +22,8 @@
         };
 
         sc.register = function () {
+            sc.user.created = new Date().toISOString();
+
             AuthService.register(sc.user)
                 .then(function successCallback(response) {
                     alert('success');

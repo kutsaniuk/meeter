@@ -46,7 +46,7 @@
 
                 sc.findUser = function (user) {
                     return user.user_id === sc.currentUser.id;
-                }
+                };
 
                 if (sc.likes.find(sc.findUser) != null) {
                     sc.like = true;
@@ -73,6 +73,7 @@
                 sc.getUserById(response.data.user_id);
                 sc.getEventCommentsById(id, 1, 15);
                 sc.getEventLikesById(id);
+                sc.getFollowingById(sc.currentUser.id);
             };
 
             var getEventFailed = function (response) {
@@ -124,6 +125,55 @@
 
             if (sc.like != true) EventService.like(like).then(success, failed);
             else EventService.dislike(sc.likes.find(sc.findUser).id).then(success, failed);
+        };
+
+        sc.getFollowingById = function (id) {
+            var success = function (response) {
+                sc.following = response.data;
+
+                sc.findFollowingUser = function (following) {
+                    return following.current_user === sc.currentUser.id;
+                };
+
+                if (sc.following.find(sc.findFollowingUser) != null) {
+                    sc.follow = true;
+                    sc.noFollow = false;
+                }
+                else {
+                    sc.follow = false;
+                    sc.noFollow = true;
+                }
+            };
+
+            var failed = function (response) {
+                sc.following = response.data;
+                sc.follow = false;
+                sc.noFollow = true;
+            };
+
+            UserService.getFollowing(id).then(success, failed);
+        };
+
+        sc.followOnUser = function (id) {
+            var success = function (response) {
+                sc.getFollowingById(sc.currentUser.id);
+                sc.follow = !sc.follow;
+                sc.noFollow = !sc.noFollow;
+            };
+
+            var failed = function (response) {
+                sc.getFollowingById(sc.currentUser.id);
+                sc.follow = !sc.follow;
+                sc.noFollow = !sc.noFollow;
+            };
+
+            var user = {
+                'user_id': parseInt(id),
+                'current_user': parseInt(sc.currentUser.id)
+            };
+
+            if (sc.follow != true) UserService.follow(user).then(success, failed);
+            else UserService.unFollow(sc.following.find(sc.findFollowingUser).id).then(success, failed);
         }
     }
 })();

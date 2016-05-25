@@ -42,5 +42,17 @@
                 return $http.post(urlBase + '/update', user);
             };
 
+            this.getFollowing = function (id) {
+                return $http.get(urlBase + '/following/' + id);
+            };
+
+            this.follow = function (user) {
+                return $http.post(urlBase + '/follow', user);
+            };
+
+            this.unFollow = function (id) {
+                return $http.delete(urlBase + '/unfollow/' + id);
+            };
+
         });
 })();

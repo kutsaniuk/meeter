@@ -16,7 +16,7 @@
                 views: {
                     '': {
                         templateUrl: 'app/modules/user/profile/user.profile.view.html',
-                        controller: 'UserProfileCtrl'
+                        controller: 'UserProfileCtrl as userProfileCtrl'
                     }
                 }
             })

@@ -7,8 +7,10 @@
                     <div class="location"><i class="glyphicon glyphicon-map-marker"></i> {{event.location}}</div>
                     <div class="description">{{event.description}}</div>
                     <div class="type">{{event.type}}</div>
-                    <div class="like" ng-click="createLike()"><i class="glyphicon"
-                                                                 ng-class="{'glyphicon-heart-empty': noLike, 'glyphicon-heart': like}"></i><span>{{likes.length}}</span>
+                    <div class="profile-like-container">
+                        <div class="like" ng-click="createLike()"><i class="glyphicon"
+                                                                     ng-class="{'glyphicon-heart-empty': noLike, 'glyphicon-heart': like}"></i><span>{{likes.length}}</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -17,7 +19,10 @@
                     <a href="#/user/{{user.id}}"><img src="/user/avatar/{{user.id}}" alt="" style="width: 50px"
                                                       onerror="this.src = '/dist/img/user.profile.avatar.default.svg'"></a>
                     <a href="#/user/{{user.id}}"> {{user.username}}</a>
-                    <button ng-show="followShow" class="btn btn-success pull-right">Follow</button>
+                    <div ng-show="followShow" class="pull-right show-hide">
+                        <button class="btn" ng-class="{'btn-primary': noFollow}" ng-show="noFollow" ng-click="followOnUser(user.id)">Follow</button>
+                        <button class="btn" ng-class="{' btn-success': follow}" ng-show="follow" ng-click="followOnUser(user.id)">Following</button>
+                    </div>
                 </div>
                 <hr>
                 <a href="" class="view-comments" ng-show="viewAllCommentsShow && comments.total_items > 15"
