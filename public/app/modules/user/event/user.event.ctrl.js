@@ -15,6 +15,9 @@
         sc.comment = null;
 
         sc.getUserById = function (id) {
+            sc.findFollowingUser = function (following) {
+                return following.user_id === id;
+            };
 
             var getUserSuccess = function (response) {
                 sc.user = response.data;
@@ -129,12 +132,7 @@
 
         sc.getFollowingById = function (id) {
             var success = function (response) {
-                sc.following = response.data;
-
-                sc.findFollowingUser = function (following) {
-                    return following.current_user === sc.currentUser.id;
-                };
-
+                sc.following = response.data.items;
                 if (sc.following.find(sc.findFollowingUser) != null) {
                     sc.follow = true;
                     sc.noFollow = false;

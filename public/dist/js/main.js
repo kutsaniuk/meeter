@@ -1,6 +1,6 @@
 (function () {
     'use strict';
-
+    
     angular
         .module('main', [
             'user',
@@ -8,7 +8,11 @@
             'ui.bootstrap',
             'ngCookies',
             'ngAnimate',
-            'ngDialog'
+            'ngDialog',
+            'flow',
+            'base64',
+            'naif.base64',
+            'ngScroller'
         ])
         .config(configure)
         .run(run);
@@ -79,7 +83,7 @@
         .module('main')
         .controller('AuthCtrl', AuthCtrl);
 
-    function AuthCtrl($scope, $state, AuthService, CredentialsService) {
+    function AuthCtrl($scope, $state, AuthService, CredentialsService, EventService) {
         var sc = $scope;
 
         CredentialsService.ClearCredentials();
@@ -105,6 +109,19 @@
                     alert('failed');
                 });
         };
+
+        sc.getPageEvents = function (page, limit, type, name) {
+
+            var getPageSuccess = function (response) {
+                sc.events = response.data;
+            };
+
+            var getPageFailed = function (response) {
+                alert(response.status);
+            };
+
+            EventService.getPage(page, limit, type, name).then(getPageSuccess, getPageFailed);
+        }
     }
 })();
 
@@ -254,13 +271,14 @@
 
             var urlBase = '/event';
 
-            this.getPage = function (page, limit, type, name) {
+            this.getPage = function (page, limit, type, name, id) {
                 return $http.get(urlBase, {
                     params : {
                         page: page,
                         limit: limit,
                         type: type,
-                        name: name
+                        name: name,
+                        id: id
                     }
                 });
             };
@@ -347,10 +365,13 @@
 
         sc.createEvent = function () {
             ngDialog.open({
-                // template: 'popupTmpl.html',
-                className: 'ngdialog-theme-plain'
+                template: 'app/modules/user/event/new/user.event.new.view.html',
+                className: 'ngdialog-theme-event',
+                showClose: false,
+                controller: 'EventNewCtrl'
             });
         }
+        
     }
 })();
 
@@ -428,6 +449,10 @@
                 return $http.get(urlBase + '/following/' + id);
             };
 
+            this.getFollowers = function (id) {
+                return $http.get(urlBase + '/followers/' + id);
+            };
+
             this.follow = function (user) {
                 return $http.post(urlBase + '/follow', user);
             };
@@ -455,6 +480,9 @@
         sc.comment = null;
 
         sc.getUserById = function (id) {
+            sc.findFollowingUser = function (following) {
+                return following.user_id === id;
+            };
 
             var getUserSuccess = function (response) {
                 sc.user = response.data;
@@ -569,12 +597,7 @@
 
         sc.getFollowingById = function (id) {
             var success = function (response) {
-                sc.following = response.data;
-
-                sc.findFollowingUser = function (following) {
-                    return following.current_user === sc.currentUser.id;
-                };
-
+                sc.following = response.data.items;
                 if (sc.following.find(sc.findFollowingUser) != null) {
                     sc.follow = true;
                     sc.noFollow = false;
@@ -740,6 +763,7 @@
             EventService.getComments(id, 1, 1).then(getCommentsSuccess, getCommentsFailed);
         };
 
+
     }
 })();
 
@@ -774,7 +798,7 @@
         .module('main')
         .controller('UserProfileCtrl', UserProfileCtrl);
 
-    function UserProfileCtrl($scope, $stateParams, $rootScope, $cookieStore, $location, UserService, EventService) {
+    function UserProfileCtrl($scope, $stateParams, $rootScope, $cookieStore, $location, UserService, EventService, ngDialog) {
         var sc = $scope;
 
         sc.userId = $stateParams.id;
@@ -783,8 +807,15 @@
 
         sc.getUserById = function (id) {
 
+            sc.findFollowingUser = function (following) {
+                return following.user_id === id;
+            };
+
             var getUserSuccess = function (response) {
                 sc.user = response.data;
+                sc.getFollowingById(sc.currentUser.id);
+                sc.followShow = sc.user.id != sc.currentUser.id;
+                sc.editShow = sc.user.id == sc.currentUser.id;
             };
 
             var getUserFailed = function (response) {
@@ -794,16 +825,17 @@
             UserService.getById(id).then(getUserSuccess, getUserFailed);
         };
 
-        sc.getUserEventsById = function (id) {
+        sc.getUserEventsById = function (id, type) {
             var getEventsSuccess = function (response) {
                 sc.events = response.data;
             };
 
             var getEventsFailed = function (response) {
+                sc.events = response.data;
                 sc.getEventsFailed = true;
             };
 
-            UserService.getEventsById(id).then(getEventsSuccess, getEventsFailed);
+            EventService.getPage(1, 100, type, null, id).then(getEventsSuccess, getEventsFailed);
         };
 
         sc.editUserProfile = function (id) {
@@ -869,7 +901,96 @@
             };
 
             EventService.getComments(id, 1, 1).then(getCommentsSuccess, getCommentsFailed);
-        }
+        };
+
+        sc.getUserFollowingById = function (id) {
+            var success = function (response) {
+                sc.userFollowing = response.data;
+            };
+
+            var failed = function (response) {
+                sc.userFollowing = response.data;
+            };
+
+            UserService.getFollowing(id).then(success, failed);
+        };
+
+        sc.getFollowingById = function (id) {
+            var success = function (response) {
+                sc.following = response.data;
+
+                if (sc.following.items.find(sc.findFollowingUser) != null) {
+                    sc.follow = true;
+                    sc.noFollow = false;
+                }
+                else {
+                    sc.follow = false;
+                    sc.noFollow = true;
+                }
+            };
+
+            var failed = function (response) {
+                sc.following = response.data;
+                sc.follow = false;
+                sc.noFollow = true;
+            };
+
+            UserService.getFollowing(id).then(success, failed);
+        };
+
+        sc.getFollowersById = function (id) {
+            var success = function (response) {
+                sc.followers = response.data;
+            };
+
+            var failed = function (response) {
+                sc.followers = response.data;
+            };
+
+            UserService.getFollowers(id).then(success, failed);
+        };
+
+        sc.followOnUser = function (id) {
+            var success = function (response) {
+                sc.getFollowingById(sc.currentUser.id);
+                sc.getFollowersById(sc.userId);
+                sc.follow = !sc.follow;
+                sc.noFollow = !sc.noFollow;
+            };
+
+            var failed = function (response) {
+                sc.getFollowingById(sc.currentUser.id);
+                sc.getFollowersById(sc.userId);
+                sc.follow = !sc.follow;
+                sc.noFollow = !sc.noFollow;
+            };
+
+            var user = {
+                'user_id': parseInt(id),
+                'current_user': parseInt(sc.currentUser.id)
+            };
+
+            if (sc.follow != true) UserService.follow(user).then(success, failed);
+            else UserService.unFollow(sc.following.items.find(sc.findFollowingUser).id).then(success, failed);
+        };
+
+        sc.openFollowers = function () {
+            ngDialog.open({
+                template: 'app/modules/user/profile/followers/user.profile.followers.view.html',
+                className: 'ngdialog-theme-default',
+                showClose: true,
+                scope: $scope
+            });
+        };
+
+        sc.openFollowing = function () {
+            ngDialog.open({
+                template: 'app/modules/user/profile/following/user.profile.following.view.html',
+                className: 'ngdialog-theme-default',
+                showClose: true,
+                scope: $scope
+            });
+        };
 
     }
 })();
@@ -905,6 +1026,60 @@
                     }
                 }
             });
+
+    }
+})();
+
+(function () {
+    'use strict';
+
+    angular
+        .module('main')
+        .controller('EventNewCtrl', EventNewCtrl);
+
+    function EventNewCtrl($scope, $http, $locale, $stateParams, $rootScope, $cookieStore, EventService, UserService) {
+        var sc = $scope;
+
+        sc.eventId = $stateParams.id;
+        $rootScope.globals = $cookieStore.get('globals') || {};
+        sc.currentUser = $rootScope.globals.currentUser;
+
+        sc.event = {
+            'date': new Date(),
+            'time': new Date().setHours(0, 0)
+        };
+
+        sc.getLocation = function (val) {
+            return $http.get('//maps.googleapis.com/maps/api/geocode/json', {
+                params: {
+                    address: val,
+                    sensor: false
+                },
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+                }
+            }).then(function (response) {
+                return response.data.results.map(function (item) {
+                    return item.formatted_address;
+                });
+            });
+        };
+
+        sc.createEvent = function (event) {
+
+            var _event = {
+                'name': event.name,
+                'date': event.date.toISOString(),
+                'time': event.time.getHours() + ":" + event.time.getMinutes(),
+                'description': event.description,
+                'type': event.type,
+                'user_id': parseInt(sc.currentUser.id),
+                'image': event.image.base64,
+                'location': event.location
+            };
+            EventService.create(_event);
+            sc.closeThisDialog(true);
+        };
 
     }
 })();

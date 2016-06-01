@@ -46,13 +46,3 @@
     </footer>
 
 </div>
-
-<div class="show-hide" ng-show="eventAddShow" style="background-image: url('/event/image/{{event.id}}');">
-    <div class="event-add-container show-hide" ng-init="eventAddShow = false" ng-enter="eventAddShow = false">
-        <div class="event-form-group">
-            <input type="text" placeholder="Name event" autofocus><br>
-            <textarea placeholder="Description"></textarea>
-        </div>
-        <span class="glyphicon glyphicon-remove event-add-close" ng-click="eventAddShow = false"></span>
-    </div>
-</div>

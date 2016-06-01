@@ -15,37 +15,34 @@
 
 <div class="container-fluid container-meeter">
     <center>
-        <div class="row">
-            <div class="col-md-4 col-xs-4 event-item">
-                <a href="#">
-                    <div class="event friends">
-                        <img src="dist/img/e.jpg" alt=""/>
-                        <div class="event-container big text-center">
-                            <span class="title">Park</span>
-                            <span class="time">15:32</span>
+        <div class="row" ng-init="getPageEvents(1, 3)">
+            <div class="col-md-4 col-xs-12 event-item" ng-repeat="event in events.items">
+                <center>
+                    <div class="event"
+                         ng-mouseenter="descriptionShow = true; getEventLikesById(event.id); getUserById(event.user_id); getEventCommentsById(event.id)"
+                         ng-mouseleave="descriptionShow = false;">
+                        <div class="crop">
+                            <img src="/event/image/{{event.id}}">
+                        </div>
+                        <div class="event-container event-bg">
+                            <div class="col-lg-6 col-xs-6">
+                                <a href="#/event/{{event.id}}">
+                                    <div class="title">{{event.name}}</div>
+                                </a>
+                                <span class="location"><i class="glyphicon glyphicon-map-marker"></i>{{event.location}}</span>
+                            </div>
+                            <div class="col-lg-6 col-xs-6">
+                                <div class="time">{{event.date | date: 'd MMM y'}}</div>
+                                <div class="time">{{event.time | date: 'mediumTime'}}</div>
+                            </div>
+                        </div>
+                        <!--<div class="type">{{event.type}}</div>-->
+                        <div class="description show-hide" ng-show="descriptionShow">
+                            <div>{{event.description}}</div>
                         </div>
                     </div>
-                </a></div>
-            <div class="col-md-4 col-xs-4 event-item">
-                <a href="#">
-                    <div class="event actual">
-                        <img src="dist/img/photos.jpg" alt=""/>
-                        <div class="event-container small text-center">
-                            <span class="title">Forrest</span>
-                            <span class="time">15:32</span>
-                        </div>
-                    </div>
-                </a></div>
-            <div class="col-md-4 col-xs-4 event-item">
-                <a href="#">
-                    <div class="event actual">
-                        <img src="dist/img/e.jpg" alt=""/>
-                        <div class="event-container big text-center">
-                            <span class="title">Park</span>
-                            <span class="time">15:32</span>
-                        </div>
-                    </div>
-                </a></div>
+                </center>
+            </div>
         </div>
 
         <form class="navbar-form" role="search" ng-init="loginShow = true" ng-show="loginShow">

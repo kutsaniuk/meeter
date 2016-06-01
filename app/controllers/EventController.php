@@ -25,20 +25,36 @@ class EventController extends Controller
         $limit = (int)$_GET["limit"];
         $type = (string)$_GET["type"];
         $name = (string)$_GET["name"];
+        $id = (int)$_GET["id"];
 
-        $events = Event::find(array(
-            'conditions' => "type = '$type' AND name LIKE '%$name%'"
-        ));
+        $_events = $this->
+        modelsManager->
+        createQuery("SELECT Event.id, 
+Event.name, Event.location, Event.date, 
+Event.description, Event.time, Event.user_id FROM Event
+WHERE type = '$type' AND name LIKE '%$name%'");
 
-        if (empty($name)) $events = Event::find(array(
-            'conditions' => "type = '$type'"
-        ));
+        if (empty($type)) $_events = $this->
+        modelsManager->
+        createQuery("SELECT Event.id, 
+Event.name, Event.location, Event.date, 
+Event.description, Event.time, Event.user_id FROM Event");
 
-        if (empty($type)) $events = Event::find();
+        if (!empty($id)) $_events = $this->
+        modelsManager->
+        createQuery("SELECT Event.id, 
+Event.name, Event.location, Event.date, 
+Event.description, Event.time, Event.user_id FROM Event WHERE Event.user_id = $id");
+
+        if (!empty($type) && !empty($id)) $_events = $this->
+        modelsManager->
+        createQuery("SELECT Event.id, 
+Event.name, Event.location, Event.date, 
+Event.description, Event.time, Event.user_id FROM Event WHERE Event.user_id = $id AND type = '$type'");
 
         $paginator = new PaginatorModel(
             array(
-                "data" => $events,
+                "data" => $_events->execute(),
                 "limit" => $limit,
                 "page" => $currentPage
             )
@@ -49,7 +65,7 @@ class EventController extends Controller
         $response = new Response();
         $response->setContentType("application/json");
 
-        if (!$events)
+        if (!$page)
             $response->setStatusCode(404);
         else
             $response->setJsonContent($page);
@@ -84,10 +100,13 @@ class EventController extends Controller
 
         $event->assign(array(
             'name' => $_event->name,
-            'date' => date("now"),
-            'time' => time(),
+            'date' => $_event->date,
+            'time' => $_event->time,
             'description' => $_event->description,
             'type' => $_event->type,
+            'image' => $_event->image,
+            'location' => $_event->location,
+            'user_id' => $_event->user_id
         ));
 
         $response = new Response();

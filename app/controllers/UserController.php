@@ -114,10 +114,8 @@ class UserController extends Controller
             )
         );
 
-        $i = 0;
-        $events = array($_events);
         foreach ($_events as $event) {
-            $events[$i] = array(
+            $events[] = array(
                 'id' => $event->id,
                 'name' => $event->name,
                 'date' => $event->date,
@@ -126,14 +124,25 @@ class UserController extends Controller
                 'type' => $event->type,
                 'location' => $event->location
             );
-            $i++;
         }
+
+        $paginator = new PaginatorModel(
+            array(
+                "data" => $_events,
+                "limit" => 100,
+                "page" => 1
+            )
+        );
+
+        $page = $paginator->getPaginate();
 
         $response = new Response();
         $response->setContentType("application/json; charset=utf-8");
 
-        if ($i == 0) return $response->setStatusCode(404);
-        else return $response->setJsonContent($events);
+        if ($page) $response->setJsonContent($page);
+        else $response->setStatusCode(404);
+
+        return $response;
     }
 
     /**
@@ -191,15 +200,58 @@ class UserController extends Controller
      */
     public function followingAction($id)
     {
-        $following = Follower::find(array(
-            'conditions' => "current_user = $id"
-        ))->toArray();
+        $following = $this->
+        modelsManager->
+        createQuery("SELECT Follower.id, Follower.user_id, Follower.current_user, User.username, User.name 
+FROM Follower JOIN User ON User.id = Follower.user_id
+Where Follower.current_user = $id");
+
+        $paginator = new PaginatorModel(
+            array(
+                "data" => $following->execute(),
+                "limit" => 100,
+                "page" => 1
+            )
+        );
+        $page = $paginator->getPaginate();
 
         $response = new Response();
         $response->setContentType("application/json");
 
-        if ($following)
-            $response->setJsonContent($following);
+        if ($page)
+            $response->setJsonContent($page);
+        else
+            $response->setStatusCode(404);
+
+        return $response;
+    }
+
+    /**
+     * @Get("/followers/{id:[0-9]+}")
+     */
+    public function followersAction($id)
+    {
+        $followers = $this->
+        modelsManager->
+        createQuery("SELECT Follower.id, Follower.user_id, Follower.current_user, User.username, User.name 
+FROM Follower JOIN User ON User.id = Follower.current_user
+Where Follower.user_id = $id");
+
+        $paginator = new PaginatorModel(
+            array(
+                "data" => $followers->execute(),
+                "limit" => 100,
+                "page" => 1
+            )
+        );
+        $page = $paginator->getPaginate();
+
+
+        $response = new Response();
+        $response->setContentType("application/json");
+
+        if ($page)
+            $response->setJsonContent($page);
         else
             $response->setStatusCode(404);
 

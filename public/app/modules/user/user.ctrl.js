@@ -31,9 +31,12 @@
 
         sc.createEvent = function () {
             ngDialog.open({
-                // template: 'popupTmpl.html',
-                className: 'ngdialog-theme-plain'
+                template: 'app/modules/user/event/new/user.event.new.view.html',
+                className: 'ngdialog-theme-event',
+                showClose: false,
+                controller: 'EventNewCtrl'
             });
         }
+        
     }
 })();

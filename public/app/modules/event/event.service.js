@@ -7,13 +7,14 @@
 
             var urlBase = '/event';
 
-            this.getPage = function (page, limit, type, name) {
+            this.getPage = function (page, limit, type, name, id) {
                 return $http.get(urlBase, {
                     params : {
                         page: page,
                         limit: limit,
                         type: type,
-                        name: name
+                        name: name,
+                        id: id
                     }
                 });
             };

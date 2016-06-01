@@ -98,5 +98,6 @@
             EventService.getComments(id, 1, 1).then(getCommentsSuccess, getCommentsFailed);
         };
 
+
     }
 })();

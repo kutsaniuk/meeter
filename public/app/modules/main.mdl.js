@@ -1,6 +1,6 @@
 (function () {
     'use strict';
-
+    
     angular
         .module('main', [
             'user',
@@ -8,7 +8,11 @@
             'ui.bootstrap',
             'ngCookies',
             'ngAnimate',
-            'ngDialog'
+            'ngDialog',
+            'flow',
+            'base64',
+            'naif.base64',
+            'ngScroller'
         ])
         .config(configure)
         .run(run);

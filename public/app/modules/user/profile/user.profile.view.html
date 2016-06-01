@@ -1,61 +1,87 @@
 <div class="col-lg-12 profile" ng-init="getUserById(userId)">
-    <div class="panel panel-default" style="background-image: url('/user/background/{{user.id}}')">
+    <div class="panel panel-default" style="background-image: url('/user/background/{{user.id}}')"
+         ng-init="getUserFollowingById(userId);getFollowersById(userId)">
         <div class="panel-body profile-background" ng-init="getUserEventsById(userId)">
             <div class="profile-background-container">
                 <div class="col-lg-2">
-                    <img src="/user/avatar/{{user.id}}" alt="" style="width: 100%"
-                    onerror="this.src = '/dist/img/user.profile.avatar.default.svg'">
+                    <center>
+                        <img src="/user/avatar/{{user.id}}" alt="" style="height: 100%"
+                             onerror="this.src = '/dist/img/user.profile.avatar.default.svg'">
+                    </center>
                 </div>
                 <div class="col-lg-10">
                     <div class="username">{{user.username}}</div>
-                    <!--<button class="btn btn-default" ng-click="editUserProfile(userId)">Edit</button>-->
+                    <button ng-show="editShow" class="btn btn-default follow" ng-click="editUserProfile(userId)">Edit</button>
+                    <div ng-show="followShow" class="pull-right show-hide follow">
+                        <button class="btn" ng-class="{'btn-primary': noFollow}" ng-show="noFollow"
+                                ng-click="followOnUser(user.id)">Follow
+                        </button>
+                        <button class="btn" ng-class="{' btn-success': follow}" ng-show="follow"
+                                ng-click="followOnUser(user.id)">Following
+                        </button>
+                    </div>
                     <div class="name">{{user.name}}</div>
                     <div class="info">
-                        <span ng-show="events.length != null"><b>{{events.length}}</b> events</span>
-                        <span><b>35</b> followers</span>
-                        <span><b>12</b> following</span>
+                        <span><b>{{events.total_items}}</b> events</span>
+                        <span ng-click="openFollowers()"><b>{{followers.total_items}}</b> followers</span>
+                        <span ng-click="openFollowing()"><b>{{userFollowing.total_items}}</b> following</span>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-12 events">
-                <div class="col-md-4 col-xs-12 event-item" ng-repeat="event in events">
-                    <center>
-                    <div class="event"
-                        ng-mouseenter="descriptionShow = true; getEventLikesById(event.id); getEventCommentsById(event.id)"
-                        ng-mouseleave="descriptionShow = false;">
-                        <div class="crop">
-                            <img src="/event/image/{{event.id}}">
+
+        </div>
+    </div>
+    <div class="container-fluid events">
+        <div class="title-block">
+            Events <span class="sub">{{events.total_items}}</span>
+            <span class="pull-right btn-radio">
+                <label class="btn btn-default" ng-model="eventType" uib-btn-radio=""
+                       ng-click="getUserEventsById(userId, eventType)">All</label>
+                <label class="btn btn-default" ng-model="eventType" uib-btn-radio="'actual'"
+                       ng-click="getUserEventsById(userId, eventType)">Actual</label>
+                <label class="btn btn-default" ng-model="eventType" uib-btn-radio="'past'"
+                       ng-click="getUserEventsById(userId, eventType)">Past</label>
+                <label class="btn btn-default" ng-model="eventType" uib-btn-radio="'social'"
+                       ng-click="getUserEventsById(userId, eventType)">Social</label>
+            </span>
+        </div>
+        <div class="col-md-4 col-xs-12 event-item" ng-repeat="event in events.items">
+            <center>
+                <div class="event"
+                     ng-mouseenter="descriptionShow = true; getEventLikesById(event.id); getEventCommentsById(event.id)"
+                     ng-mouseleave="descriptionShow = false;">
+                    <div class="crop">
+                        <img src="/event/image/{{event.id}}">
+                    </div>
+                    <div class="event-container event-bg">
+                        <div class="col-lg-6 col-xs-6">
+                            <a href="#/event/{{event.id}}">
+                                <div class="title">{{event.name}}</div>
+                            </a>
+                            <span class="location"><i
+                                    class="glyphicon glyphicon-map-marker"></i>{{event.location}}</span>
                         </div>
-                        <div class="event-container event-bg">
-                            <div class="col-lg-6 col-xs-6">
-                                <a href="#/event/{{event.id}}">
-                                    <div class="title">{{event.name}}</div>
-                                </a>
-                                <span class="location"><i class="glyphicon glyphicon-map-marker"></i>{{event.location}}</span>
-                            </div>
-                            <div class="col-lg-6 col-xs-6">
-                                <div class="time">{{event.date | date: 'd MMM y'}}</div>
-                                <div class="time">{{event.time}}</div>
-                            </div>
+                        <div class="col-lg-6 col-xs-6">
+                            <div class="time">{{event.date | date: 'd MMM y'}}</div>
+                            <div class="time">{{event.time}}</div>
                         </div>
-                        <!--<div class="type">{{event.type}}</div>-->
-                        <div class="description show-hide" ng-show="descriptionShow">
-                            <div class="like-container">
+                    </div>
+                    <!--<div class="type">{{event.type}}</div>-->
+                    <div class="description show-hide" ng-show="descriptionShow">
+                        <div class="like-container">
                                 <span class="like" ng-click="createLike(event.id)"><i class="glyphicon"
-                                    ng-class="{'glyphicon-heart-empty': noLike, 'glyphicon-heart': like}"></i><span>{{likes.length}}</span>
+                                                                                      ng-class="{'glyphicon-heart-empty': noLike, 'glyphicon-heart': like}"></i><span>{{likes.length}}</span>
                                 </span>
                                 <span class="comment">
                                     <i id="comment" class="glyphicon glyphicon-comment"></i>
                                     <span>{{comments.total_items}}</span>
                                 </span>
-                            </div>
-                            <br>
-                            <div>{{event.description}}</div>
                         </div>
+                        <br>
+                        <div>{{event.description}}</div>
                     </div>
-                    </center>
                 </div>
-            </div>
+            </center>
         </div>
     </div>
 </div>

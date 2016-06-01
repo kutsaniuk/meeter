@@ -1,0 +1,6 @@
+<div class="col-lg-3" ng-repeat="follower in userFollowing.items">
+    <img ng-src="/user/avatar/{{follower.current_user}}" style="width: 50px"
+         onerror="this.src = '/dist/img/user.profile.avatar.default.svg'">
+    <div>{{follower.username}}</div>
+    <div>{{follower.name}}</div>
+</div>

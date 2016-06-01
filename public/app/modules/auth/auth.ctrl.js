@@ -5,7 +5,7 @@
         .module('main')
         .controller('AuthCtrl', AuthCtrl);
 
-    function AuthCtrl($scope, $state, AuthService, CredentialsService) {
+    function AuthCtrl($scope, $state, AuthService, CredentialsService, EventService) {
         var sc = $scope;
 
         CredentialsService.ClearCredentials();
@@ -31,5 +31,18 @@
                     alert('failed');
                 });
         };
+
+        sc.getPageEvents = function (page, limit, type, name) {
+
+            var getPageSuccess = function (response) {
+                sc.events = response.data;
+            };
+
+            var getPageFailed = function (response) {
+                alert(response.status);
+            };
+
+            EventService.getPage(page, limit, type, name).then(getPageSuccess, getPageFailed);
+        }
     }
 })();

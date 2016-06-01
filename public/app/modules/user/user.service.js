@@ -46,6 +46,10 @@
                 return $http.get(urlBase + '/following/' + id);
             };
 
+            this.getFollowers = function (id) {
+                return $http.get(urlBase + '/followers/' + id);
+            };
+
             this.follow = function (user) {
                 return $http.post(urlBase + '/follow', user);
             };
