@@ -7,6 +7,7 @@
                 'user.feed',
                 'user.profile',
                 'user.event',
+                'user.search',
                 'ui.router'
             ])
         .config(configure); 

@@ -161,7 +161,7 @@ Event.description, Event.time, Event.user_id FROM Event WHERE Event.user_id = $i
 
         $_events = $this->
         modelsManager->
-        createQuery("SELECT Event.id, Event.name, Event.location FROM Event where Event.name like '%%$name%%'")->execute();
+        createQuery("SELECT Event.id, Event.name, Event.location, Event.user_id FROM Event where Event.name like '%%$name%%'")->execute();
 
         $_users = $this->
         modelsManager->
@@ -171,6 +171,8 @@ Event.description, Event.time, Event.user_id FROM Event WHERE Event.user_id = $i
             $__events[] = array(
                 'id' => $_event->id,
                 'name' => $_event->name,
+                'user_id' => $_event->user_id,
+                'location' => $_event->location,
                 'type' => 'event'
             );
         }

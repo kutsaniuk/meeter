@@ -4,7 +4,7 @@
             <td>
                 <div class="crop">
                     <img ng-if="match.model.type == 'event'" ng-src="/{{match.model.type}}/image/{{match.model.id}}" align="left">
-                    <img ng-if="match.model.type == 'user'" ng-src="/{{match.model.type }}/avatar/{{match.model.id}}" align="left">
+                    <img ng-if="match.model.type == 'user'" ng-src="/{{match.model.type }}/avatar/{{match.model.id}}" align="left" onerror="this.src = '/dist/img/user.profile.avatar.default.svg'">
                 </div>
             </td>
             <td>

@@ -38,10 +38,8 @@
             });
         };
 
-        sc.linkEvent = function (searchName) {
-            if (searchName.id != null)
-                $location.path('/' + searchName.type + '/' + id);
-
+        sc.linkSearch = function (searchName) {
+            $location.path('/search/' + searchName);
         }
     }
 })();
