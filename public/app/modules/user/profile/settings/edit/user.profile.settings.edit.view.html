@@ -1,0 +1,56 @@
+<div class="col-lg-12">
+    <ng-form name="userProfileEditForm">
+        <label for="general_info">General</label>
+        <table id="general_info">
+            <tr>
+                <td>username</td>
+                <td><input type="text" class="form-control" name="username" ng-model="user.username"></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>name</td>
+                <td><input type="text" class="form-control" name="name" ng-model="user.name"></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>email</td>
+                <td><input type="email" class="form-control" name="email" ng-model="user.email"></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <button class="btn btn-default" ng-click="updateUser(user)">Update</button>
+                </td>
+                <td></td>
+            </tr>
+        </table>
+    </ng-form>
+</div>
+<div class="col-lg-6 settings-avatar">
+    <label for="avatar">Avatar</label><br>
+    <center>
+        <img src="/user/avatar/{{userId}}" id="avatar" onerror="this.src = '/dist/img/user.profile.avatar.default.svg'" ng-show="avatar.base64 == null">
+        <img ng-src="data:{{avatar.filetype}};base64,{{avatar.base64}}" ng-show="avatar.base64 != null">
+    </center>
+    <button class="upload btn btn-default">
+        Change
+        <input class="btn btn-default" name="avatar" type="file" ng-model="avatar" accept="image/*"
+               base-sixty-four-input>
+    </button>
+    <button ng-show="avatar.base64 != null" class="btn btn-success" ng-click="updateAvatar(avatar)">Apply</button>
+    <uib-alert type="success" ng-show="avatarUpload">Avatar changed</uib-alert>
+</div>
+<div class="col-lg-6 settings-avatar">
+    <label for="background">Background</label><br>
+    <img class="background" src="/user/background/{{userId}}" id="background"
+         onerror="this.src = '/dist/img/not-available.png'" ng-show="background.base64 == null">
+    <img ng-src="data:{{background.filetype}};base64,{{background.base64}}" ng-show="background.base64 != null">
+    <button class="upload btn btn-default">
+        Change
+        <input class="btn btn-default" name="background" type="file" ng-model="background" accept="image/*"
+               base-sixty-four-input>
+    </button>
+    <button ng-show="background.base64 != null" class="btn btn-success" ng-click="updateBackground(background)">Apply</button>
+    <uib-alert type="success" ng-show="avatarBackground">Background changed</uib-alert>
+</div>
+

@@ -16,16 +16,38 @@
                 views: {
                     '': {
                         templateUrl: 'app/modules/user/profile/user.profile.view.html',
-                        controller: 'UserProfileCtrl as userProfileCtrl'
+                        controller: 'UserProfileCtrl'
+                    },
+                    '@main.user.profile': {
+                        templateUrl: 'app/modules/user/profile/main/user.profile.main.view.html'
+                    }
+                }
+            })  
+            .state('main.user.profile.events', {
+                url: '/events',
+                views: {
+                    '': {
+                        templateUrl: 'app/modules/user/profile/events/user.profile.events.view.html'
                     }
                 }
             })
-            .state('main.user.edit', {
-                url: 'user/edit/:id',
+            .state('main.user.profile.settings', {
+                url: '/settings',
                 views: {
                     '': {
-                        templateUrl: 'app/modules/user/profile/edit/user.profile.edit.view.html',
-                        controller: 'UserProfileEditCtrl'
+                        templateUrl: 'app/modules/user/profile/settings/user.profile.settings.view.html',
+                        controller: 'UserProfileSettingsCtrl'
+                    },
+                    '@main.user.profile.settings': {
+                        templateUrl: 'app/modules/user/profile/settings/edit/user.profile.settings.edit.view.html'
+                    }
+                }
+            })
+            .state('main.user.profile.settings.password', {
+                url: '/password',
+                views: {
+                    '': {
+                        templateUrl: 'app/modules/user/profile/settings/password/user.profile.settings.password.view.html'
                     }
                 }
             });

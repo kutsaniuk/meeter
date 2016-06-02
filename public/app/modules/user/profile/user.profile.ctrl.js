@@ -11,6 +11,7 @@
         sc.userId = $stateParams.id;
         $rootScope.globals = $cookieStore.get('globals') || {};
         sc.currentUser = $rootScope.globals.currentUser;
+        sc.currentPage = 1;
 
         sc.getUserById = function (id) {
 
@@ -32,7 +33,7 @@
             UserService.getById(id).then(getUserSuccess, getUserFailed);
         };
 
-        sc.getUserEventsById = function (id, type) {
+        sc.getUserEventsById = function (id, type, page) {
             var getEventsSuccess = function (response) {
                 sc.events = response.data;
             };
@@ -42,11 +43,11 @@
                 sc.getEventsFailed = true;
             };
 
-            EventService.getPage(1, 100, type, null, id).then(getEventsSuccess, getEventsFailed);
+            EventService.getPage(page, 3, type, null, id).then(getEventsSuccess, getEventsFailed);
         };
 
         sc.editUserProfile = function (id) {
-            $location.path('/user/edit/' + id);
+            $location.path('/user/' + id + '/settings');
         };
 
         sc.getEventLikesById = function (id) {
@@ -74,7 +75,7 @@
             };
 
             EventService.getLikes(id).then(success, failed);
-        };
+        }; 
 
         sc.createLike = function (id) {
             var success = function (response) {
@@ -198,6 +199,8 @@
                 scope: $scope
             });
         };
+
+        sc.getUserById(sc.userId);
 
     }
 })();

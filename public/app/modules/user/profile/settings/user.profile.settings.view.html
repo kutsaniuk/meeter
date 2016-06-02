@@ -1,0 +1,14 @@
+<div class="title-block">
+    Setting</span>
+            <span class="pull-right btn-radio">
+                <label class="btn btn-default" ng-model="tab" uib-btn-radio=""
+                       ng-click="getTab(tab)">Edit</label>
+                <label class="btn btn-default" ng-model="tab" uib-btn-radio="'password'"
+                       ng-click="getTab(tab)">Password</label>
+                <label class="btn btn-default" ng-model="tab" uib-btn-radio="'language'"
+                       ng-click="getTab(tab)">Language</label>
+            </span>
+</div>
+<div class="container-fluid settings-container" ng-init="getUserById(userId)">
+    <ui-view></ui-view>
+</div>

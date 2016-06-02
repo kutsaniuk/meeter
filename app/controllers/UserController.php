@@ -92,6 +92,42 @@ class UserController extends Controller
     }
 
     /**
+     * @Post("/avatar")
+     */
+    public function setavatarAction()
+    {
+        $_avatar = $this->request->getJsonRawBody();
+
+        $__avatar = Avatar::findFirst("user_id = $_avatar->user_id");
+
+        $avatar = new Avatar();
+
+        $avatar->assign(array(
+            'id' => $_avatar->id,
+            'image' => $_avatar->image,
+            'type' => $_avatar->type,
+            'user_id' => $_avatar->user_id
+        ));
+
+        $response = new Response();
+
+        if ($__avatar) {
+            if ($avatar->update())
+                $response->setStatusCode(200);
+            else
+                $response->setStatusCode(409);
+        }
+        else {
+            if ($avatar->save())
+                $response->setStatusCode(201);
+            else
+                $response->setStatusCode(409);
+        }
+
+        return $response;
+    }
+
+    /**
      * @Get("/background/{id:[0-9]+}")
      */
     public function backgroundAction($id)
@@ -101,6 +137,42 @@ class UserController extends Controller
         header('Content-Type: image/' . $background->type);
 
         echo base64_decode($background->image);
+    }
+
+    /**
+     * @Post("/avatar")
+     */
+    public function setbackgroundAction()
+    {
+        $_background = $this->request->getJsonRawBody();
+
+        $__background = Background::findFirst("user_id = $_background->user_id");
+
+        $background = new Background();
+
+        $background->assign(array(
+            'id' => $_background->id,
+            'image' => $_background->image,
+            'type' => $_background->type,
+            'user_id' => $_background->user_id
+        ));
+
+        $response = new Response();
+
+        if ($__background) {
+            if ($background->update())
+                $response->setStatusCode(200);
+            else
+                $response->setStatusCode(409);
+        }
+        else {
+            if ($background->save())
+                $response->setStatusCode(201);
+            else
+                $response->setStatusCode(409);
+        }
+
+        return $response;
     }
 
     /**
@@ -174,25 +246,36 @@ class UserController extends Controller
     /**
      * @Put("/update")
      */
-    public function updateAction()
+    public function updateAction($type)
     {
-        $user = new User();
-
         $_user = $this->request->getJsonRawBody();
-        $user->assign(array(
-            'id' => $_user->id,
-            'username' => $_user->username,
-            'password' => sha1($_user->password),
-            'name' => $_user->name,
-            'email' => $_user->email,
-            'created' => $_user->created,
-            'active' => $_user->active
-        ));
+
+        if ($type == 'general') {
+            $user = $this->
+            modelsManager->
+            createQuery("UPDATE User SET User.username='$_user->username', 
+User.name='$_user->name', 
+User.email='$_user->email' 
+WHERE User.id='$_user->id'");
+        }
+
+        if ($type == 'password') {
+            $password = sha1($_user->password);
+            $user = $this->
+            modelsManager->
+            createQuery("UPDATE User SET User.password='$password' WHERE User.id='$_user->id'");
+        }
 
         $response = new Response();
 
-        if ($user->update()) return $response->setStatusCode(200);
-        else return $response->setStatusCode(409);
+        if ($user->execute()) {
+            $__user = User::findFirst("id = '$_user->id'");
+            $response->setStatusCode(200);
+            $response->setJsonContent($__user);
+        }
+        else $response->setStatusCode(409);
+
+        return $response;
     }
 
     /**

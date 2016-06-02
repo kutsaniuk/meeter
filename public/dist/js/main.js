@@ -441,8 +441,8 @@
                 return $http.post(urlBase + '/create', user);
             };
 
-            this.update = function (user) {
-                return $http.post(urlBase + '/update', user);
+            this.update = function (user, type) {
+                return $http.post(urlBase + '/update/' + type, user);
             };
 
             this.getFollowing = function (id) {
@@ -459,6 +459,14 @@
 
             this.unFollow = function (id) {
                 return $http.delete(urlBase + '/unfollow/' + id);
+            };
+
+            this.updateAvatar = function (avatar) {
+                return $http.post(urlBase + '/setavatar', avatar);
+            };
+
+            this.updateBackground = function (background) {
+                return $http.post(urlBase + '/setbackground', background);
             };
 
         });
@@ -804,6 +812,7 @@
         sc.userId = $stateParams.id;
         $rootScope.globals = $cookieStore.get('globals') || {};
         sc.currentUser = $rootScope.globals.currentUser;
+        sc.currentPage = 1;
 
         sc.getUserById = function (id) {
 
@@ -825,7 +834,7 @@
             UserService.getById(id).then(getUserSuccess, getUserFailed);
         };
 
-        sc.getUserEventsById = function (id, type) {
+        sc.getUserEventsById = function (id, type, page) {
             var getEventsSuccess = function (response) {
                 sc.events = response.data;
             };
@@ -835,11 +844,11 @@
                 sc.getEventsFailed = true;
             };
 
-            EventService.getPage(1, 100, type, null, id).then(getEventsSuccess, getEventsFailed);
+            EventService.getPage(page, 3, type, null, id).then(getEventsSuccess, getEventsFailed);
         };
 
         sc.editUserProfile = function (id) {
-            $location.path('/user/edit/' + id);
+            $location.path('/user/' + id + '/settings');
         };
 
         sc.getEventLikesById = function (id) {
@@ -867,7 +876,7 @@
             };
 
             EventService.getLikes(id).then(success, failed);
-        };
+        }; 
 
         sc.createLike = function (id) {
             var success = function (response) {
@@ -992,6 +1001,8 @@
             });
         };
 
+        sc.getUserById(sc.userId);
+
     }
 })();
 
@@ -1013,16 +1024,38 @@
                 views: {
                     '': {
                         templateUrl: 'app/modules/user/profile/user.profile.view.html',
-                        controller: 'UserProfileCtrl as userProfileCtrl'
+                        controller: 'UserProfileCtrl'
+                    },
+                    '@main.user.profile': {
+                        templateUrl: 'app/modules/user/profile/main/user.profile.main.view.html'
+                    }
+                }
+            })  
+            .state('main.user.profile.events', {
+                url: '/events',
+                views: {
+                    '': {
+                        templateUrl: 'app/modules/user/profile/events/user.profile.events.view.html'
                     }
                 }
             })
-            .state('main.user.edit', {
-                url: 'user/edit/:id',
+            .state('main.user.profile.settings', {
+                url: '/settings',
                 views: {
                     '': {
-                        templateUrl: 'app/modules/user/profile/edit/user.profile.edit.view.html',
-                        controller: 'UserProfileEditCtrl'
+                        templateUrl: 'app/modules/user/profile/settings/user.profile.settings.view.html',
+                        controller: 'UserProfileSettingsCtrl'
+                    },
+                    '@main.user.profile.settings': {
+                        templateUrl: 'app/modules/user/profile/settings/edit/user.profile.settings.edit.view.html'
+                    }
+                }
+            })
+            .state('main.user.profile.settings.password', {
+                url: '/password',
+                views: {
+                    '': {
+                        templateUrl: 'app/modules/user/profile/settings/password/user.profile.settings.password.view.html'
                     }
                 }
             });
@@ -1089,9 +1122,9 @@
 
     angular
         .module('main')
-        .controller('UserProfileEditCtrl', UserProfileEditCtrl);
+        .controller('UserProfileSettingsCtrl', UserProfileSettingsCtrl);
 
-    function UserProfileEditCtrl($scope, $rootScope, $cookieStore, $stateParams, UserService, AuthService) {
+    function UserProfileSettingsCtrl($scope, $rootScope, $cookieStore, CredentialsService, UserService, AuthService, $state) {
         var sc = $scope;
 
         $rootScope.globals = $cookieStore.get('globals') || {};
@@ -1111,37 +1144,88 @@
             UserService.getById(id).then(getUserSuccess, getUserFailed);
         };
 
-        sc.checkPassword = function () {
-            return AuthService.login($rootScope.globals.currentUser.username, sc.oldPassword)
+        sc.checkPassword = function (user) {
+            AuthService.login($rootScope.globals.currentUser.username, user.oldPassword)
                 .then(function successCallback(response) {
-                    sc.changePassword();
+                    sc.failedPassword = false;
                 }, function errorCallback(response) {
-                    
+                    sc.failedPassword = true;
                 });
         };
+        
+        sc.repeatPasswordCheck = function (user) {
+            sc.repeatPasswordChecked = angular.equals(user.newPassword, user.repeatNewPassword);
+            if (!sc.repeatPasswordChecked) sc.passwordRepeatFailed = true;
+            else sc.passwordRepeatFailed = false;
+        };
 
-        sc.changePassword = function () {
+        sc.changePassword = function (user) {
 
             sc._user = {
                 'id': $rootScope.globals.currentUser.id,
-                'username': $rootScope.globals.currentUser.username,
-                'password': sc.newPassword,
-                'name': sc.user.name,
-                'email': sc.user.email,
-                'created': sc.user.created,
-                'active': sc.user.active
+                'password': user.newPassword
             };
 
-            var repeatPasswordChecked = angular.equals(sc.newPassword, sc.repeatNewPassword);
+            sc.repeatPasswordCheck(user);
 
-            if (repeatPasswordChecked) {
-                UserService.update(sc._user);
+            if (!sc.failedPassword && sc.repeatPasswordChecked && user.newPassword != null && user.repeatNewPassword != null) {
+                UserService.update(sc._user, 'password'); 
                 alert("Changed!");
             }
         };
 
-        sc.updateUser = function () {
+        sc.updateUser = function (user) {
+            var success = function (response) {
+                CredentialsService.SetCredentials(sc.userId, response.data.username, response.data.password);
+                sc.getUserById(sc.userId);
+            };
+            var failed = function () {
 
+            };
+            UserService.update(user, 'general').then(success, failed);
+        };
+
+        sc.getTab = function (tab) {
+            if (tab !== undefined)
+            {
+                $state.go('main.user.profile.settings.' + tab);
+                sc.tab = tab;
+            }
+            else $state.go('main.user.profile.settings');
+        };
+
+        sc.updateAvatar = function (_avatar) {
+            var avatar = {
+                'id': sc.userId,
+                'image': _avatar.base64,
+                'type': _avatar.filetype,
+                'user_id': sc.userId
+            };
+
+            var success = function (response) {
+                sc.avatarUpload = true;
+            };
+            var failed = function () {
+
+            };
+            UserService.updateAvatar(avatar).then(success, failed);
+        };
+
+        sc.updateBackground = function (_background) {
+            var background = {
+                'id': sc.userId,
+                'image': _background.base64,
+                'type': _background.filetype,
+                'user_id': sc.userId
+            };
+
+            var success = function (response) {
+                sc.avatarBackground = true;
+            };
+            var failed = function () {
+
+            };
+            UserService.updateBackground(background).then(success, failed);
         }
 
     }
