@@ -1,5 +1,5 @@
 <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
-    <div class="container-fluid container-navbar tools">
+    <div class="container-fluid container-navbar">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
                     data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
@@ -8,7 +8,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#/feed">meeter</a>
+            <a class="navbar-brand" href="#/feed"><span>m</span>eeter</a>
         </div>
         <div id="bs-example-navbar-collapse-1">
             <div class="btn-group right " >
@@ -16,7 +16,7 @@
                     <img class="right" src="/user/avatar/{{userId}}"
                          onerror="this.src = '/dist/img/user.profile.avatar.default.svg'">
                 </div>
-                <ul class="dropdown-menu dropdown-menu-right">
+                <ul class="dropdown-menu dropdown-menu-right show-hide">
                     <li><a href="#/user/{{userId}}">Profile</a></li>
                     <li><a href="#/user/{{userId}}/settings">Settings</a></li>
                     <li><a href="#">Followers</a></li>
@@ -24,9 +24,9 @@
                     <li><a href="/" ng-click="logout()">Log out</a></li>
                 </ul>
             </div>
-            <form class="navbar-form navbar-right " role="search" ng-controller="UserFeedCtrl">
-                <div class="form-group">
-                    <input type="text" class="form-control" ng-model="eventName" placeholder="Search" ng-change="getEventsByName(1, 100, eventName)" typeahead-template-url="app/shared/navbar/search/navbar.search.typeahead.template.html" uib-typeahead="event as event.name for event in events.items" typeahead-show-hint="true" typeahead-min-length="0">
+            <form class="navbar-form navbar-right " role="search">
+                <div class="form-group search">
+                    <input type="text" class="form-control" ng-model="searchName" placeholder="Search" ng-change="getEventsByName(1, 100, searchName)" typeahead-template-url="app/shared/navbar/search/navbar.search.typeahead.template.html" uib-typeahead="event as event.name for event in events" typeahead-show-hint="true" typeahead-min-length="1" ng-enter="linkSearch(searchName)">
                 </div>
             </form>
         </div>
@@ -42,7 +42,7 @@
     <footer>
         <div class="row">
             <div class="col-lg-12">
-                <p>Copyright &copy; Your Website 2014</p>
+                <p>Copyright &copy; meeter 2016</p>
             </div>
         </div>
     </footer>

@@ -5,7 +5,7 @@
         .module('main')
         .controller('UserCtrl', UserCtrl);
 
-    function UserCtrl($scope, $rootScope, $cookieStore, EventService, CredentialsService, ngDialog) {
+    function UserCtrl($scope, $rootScope, $location, $cookieStore, EventService, CredentialsService, ngDialog) {
         var sc = $scope;
 
         sc.getEventsByName = function (page, limit, name) {
@@ -19,11 +19,11 @@
             };
 
             EventService.search(page, limit, name).then(getPageSuccess, getPageFailed);
-        }
+        };
 
         sc.logout = function () {
             CredentialsService.ClearCredentials();
-        }
+        };
 
         $rootScope.globals = $cookieStore.get('globals') || {};
 
@@ -36,7 +36,12 @@
                 showClose: false,
                 controller: 'EventNewCtrl'
             });
+        };
+
+        sc.linkEvent = function (searchName) {
+            if (searchName.id != null)
+                $location.path('/' + searchName.type + '/' + id);
+
         }
-        
     }
 })();

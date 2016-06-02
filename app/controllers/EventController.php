@@ -159,6 +159,34 @@ Event.description, Event.time, Event.user_id FROM Event WHERE Event.user_id = $i
             'conditions' => "name LIKE '%$name%'"
         ));
 
+        $_events = $this->
+        modelsManager->
+        createQuery("SELECT Event.id, Event.name, Event.location FROM Event where Event.name like '%%$name%%'")->execute();
+
+        $_users = $this->
+        modelsManager->
+        createQuery("SELECT User.id, User.username FROM User where User.username like '%%$name%%'")->execute();
+
+        foreach ($_events as $_event) {
+            $__events[] = array(
+                'id' => $_event->id,
+                'name' => $_event->name,
+                'type' => 'event'
+            );
+        }
+
+        foreach ($_users as $_user) {
+            $__users[] = array(
+                'id' => $_user->id,
+                'name' => $_user->username,
+                'type' => 'user'
+            );
+        }
+
+        if ($__users != null && $__events !== null) $results = array_merge($__users, $__events);
+        if ($__users != null) $results = $__users;
+        if ($__events != null) $results = $__events;
+
         $paginator = new PaginatorModel(
             array(
                 "data" => $events,
@@ -175,7 +203,7 @@ Event.description, Event.time, Event.user_id FROM Event WHERE Event.user_id = $i
         if (!$events)
             $response->setStatusCode(404);
         else
-            $response->setJsonContent($page);
+            $response->setJsonContent($results);
 
         return $response;
     }

@@ -3,6 +3,7 @@
 	border-radius: 100%
 .navbar-avatar
 	margin: 7px
+	margin-right: 0
 	overflow: hidden
 	border-radius: 100%
 	width: 35px
@@ -12,3 +13,33 @@
 		height: 45px
 .navbar
 	background: #fff
+.navbar-brand
+	font-weight: bold
+	color: #c4c4c4 !important
+	transition: .2s
+	&:hover
+		transition: .2s
+		color: #e36d08!important
+	span
+		color: #e36d08
+
+.search
+	.dropdown-menu
+		overflow-y: scroll
+		height: 200px
+		.active>a
+			background: #eee
+			color: #333
+	.crop
+		width: 30px
+		height: 30px
+		overflow: hidden
+	img
+		width: 50px
+	td
+		padding: 5px
+	.title
+		font-size: 13px
+		font-weight: bold
+		strong
+			color: #e36d08

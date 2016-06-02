@@ -1,7 +1,18 @@
-<a href="#/event/{{match.model.id}}">
-    <img src="/event/image/{{match.model.id}}" style="width: 25px" align="left">
-    <span>
-        <div ng-bind-html="match.label | uibTypeaheadHighlight:query"></div>
-        <div>{{match.model.type}}</div>
-    </span>
+<a href="#/{{match.model.type }}/{{match.model.id}}" class="search">
+    <table>
+        <tr>
+            <td>
+                <div class="crop">
+                    <img ng-if="match.model.type == 'event'" ng-src="/{{match.model.type}}/image/{{match.model.id}}" align="left">
+                    <img ng-if="match.model.type == 'user'" ng-src="/{{match.model.type }}/avatar/{{match.model.id}}" align="left">
+                </div>
+            </td>
+            <td>
+                <div class="title" ng-bind-html="match.label | uibTypeaheadHighlight:query"></div>
+                <div ng-if="match.model.type == 'event'" class="location"><i
+                        class="glyphicon glyphicon-map-marker"></i>{{match.model.location}}</div>
+            </td>
+        </tr>
+    </table>
 </a>
+
