@@ -26,7 +26,10 @@
             </div>
             <form class="navbar-form navbar-right " role="search">
                 <div class="form-group search">
-                    <input type="text" class="form-control" ng-model="searchName" placeholder="Search" ng-change="getEventsByName(1, 100, searchName)" typeahead-template-url="app/shared/navbar/search/navbar.search.typeahead.template.html" uib-typeahead="event as event.name for event in events" typeahead-show-hint="true" typeahead-min-length="1" ng-enter="linkSearch(searchName.name)">
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-search"></i></span>
+                    <input type="text" class="form-control" ng-model="searchName" placeholder="Search" ng-change="getEventsByName(1, 100, searchName)" typeahead-template-url="app/shared/navbar/search/navbar.search.typeahead.template.html" uib-typeahead="event as event.name for event in events.items" typeahead-show-hint="true" typeahead-min-length="1" ng-enter="linkSearch(searchName.name)" pattern="^[а-яА-ЯёЁa-zA-Z0-9]+$">
+                        </div>
                 </div>
             </form>
         </div>

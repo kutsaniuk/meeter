@@ -9,18 +9,34 @@
         var sc = $scope;
 
         sc.name = $stateParams.name;
+        sc.currentPage1 = 1;
+        sc.currentPage2 = 1;
 
-        sc.getResultsByName = function (name) {
+
+        sc.getEventsByName = function (page, limit, name) {
 
             var getPageSuccess = function (response) {
-                sc.results = response.data;
+                sc.events = response.data;
             };
 
             var getPageFailed = function (response) {
-                alert(response.status);
+                // alert(response.status);
+            };
+            sc.eventsLimit = limit;
+            EventService.searchByName(page, limit, name).then(getPageSuccess, getPageFailed);
+        };
+
+        sc.getUserByUsername = function (page, limit, username) {
+
+            var getPageSuccess = function (response) {
+                sc.users = response.data;
             };
 
-            EventService.search(1, 100, name).then(getPageSuccess, getPageFailed);
+            var getPageFailed = function (response) {
+                // alert(response.status);
+            };
+            sc.usersLimit = limit;
+            UserService.searchByUsername(page, limit, username).then(getPageSuccess, getPageFailed);
         };
 
         sc.linkSearch = function (searchName) {
@@ -43,10 +59,11 @@
         
         sc.search = function (searchName) {
             $location.path('/search/' + searchName);
-            sc.getResultsByName(sc.name);
         };
 
-        sc.getResultsByName(sc.name);
+        sc.getEventsByName(1, 3, sc.name);
+        
+        sc.getUserByUsername(1, 4, sc.name);
         
         
     }

@@ -26,6 +26,15 @@
                 });
             };
 
+            this.searchByUsername = function (page, limit, username) {
+                return $http.get(urlBase + '/username/' + username, {
+                    params : {
+                        page: page,
+                        limit: limit
+                    }
+                });
+            };
+
             this.getById = function (id) {
                 return $http.get(urlBase + '/profile/' + id);
             };

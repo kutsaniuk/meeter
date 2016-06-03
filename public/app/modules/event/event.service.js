@@ -54,6 +54,15 @@
                 });
             };
 
+            this.searchByName = function (page, limit, name) {
+                return $http.get(urlBase + '/name/' + name, {
+                    params : {
+                        page: page,
+                        limit: limit
+                    }
+                });
+            };
+
             this.getById = function (id) {
                 return $http.get(urlBase + '/profile/' + id);
             };

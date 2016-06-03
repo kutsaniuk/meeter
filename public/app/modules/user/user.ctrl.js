@@ -15,7 +15,7 @@
             };
 
             var getPageFailed = function (response) {
-                alert(response.status);
+                // alert(response.status);
             };
 
             EventService.search(page, limit, name).then(getPageSuccess, getPageFailed);

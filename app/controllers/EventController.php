@@ -10,6 +10,7 @@ use Phalcon\Mvc\Model\Query;
 use Phalcon\Http\Response as response;
 use Phalcon\Mvc\Controller;
 use Phalcon\Paginator\Adapter\Model as PaginatorModel;
+use Phalcon\Paginator\Adapter\NativeArray as PaginatorArray;
 
 /**
  * @RoutePrefix("/event")
@@ -155,10 +156,6 @@ Event.description, Event.time, Event.user_id FROM Event WHERE Event.user_id = $i
         $type = (string)$_GET["type"];
         $name = (string)$_GET["name"];
 
-        $events = Event::find(array(
-            'conditions' => "name LIKE '%$name%'"
-        ));
-
         $_events = $this->
         modelsManager->
         createQuery("SELECT Event.id, Event.name, Event.location, Event.user_id FROM Event where Event.name like '%%$name%%'")->execute();
@@ -185,11 +182,46 @@ Event.description, Event.time, Event.user_id FROM Event WHERE Event.user_id = $i
             );
         }
 
-        if ($__users != null && $__events !== null) $results = array_merge($__users, $__events);
-        if ($__users != null) $results = $__users;
-        if ($__events != null) $results = $__events;
+        if ($__users != null && $__events != null) $results = array_merge($__users, $__events);
+        elseif ($__events != null) $results = $__events;
+        elseif ($__users != null) $results = $__users;
+        else $results = array();
 
-        $paginator = new PaginatorModel(
+        $pagination = new PaginatorArray(
+            array(
+                "data" => $results,
+                "limit" => $limit,
+                "page" => $currentPage
+            )
+        );
+
+        $page = $pagination->getPaginate();
+
+        $response = new Response();
+        $response->setContentType("application/json");
+
+        if ($page)
+            $response->setJsonContent($page);
+        else
+            $response->setStatusCode(404);
+
+        return $response;
+    }
+
+    /**
+     * @Get("/search")
+     */
+    public function nameAction($name)
+    {
+        $currentPage = (int)$_GET["page"];
+        $limit = (int)$_GET["limit"];
+        $type = (string)$_GET["type"];
+
+        $events = $this->
+        modelsManager->
+        createQuery("SELECT Event.id, Event.name, Event.location, Event.user_id FROM Event where Event.name like '%%$name%%'")->execute();
+
+        $pagination = new PaginatorModel(
             array(
                 "data" => $events,
                 "limit" => $limit,
@@ -197,19 +229,19 @@ Event.description, Event.time, Event.user_id FROM Event WHERE Event.user_id = $i
             )
         );
 
-        $page = $paginator->getPaginate();
+        $page = $pagination->getPaginate();
 
         $response = new Response();
         $response->setContentType("application/json");
 
-        if (!$events)
-            $response->setStatusCode(404);
+        if ($page)
+            $response->setJsonContent($page);
         else
-            $response->setJsonContent($results);
+            $response->setStatusCode(404);
 
         return $response;
     }
-
+    
     /**
      * @Get("/image/{id:[0-9]+}")
      */

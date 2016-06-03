@@ -382,4 +382,39 @@ Where Follower.user_id = $id");
         return $response;
     }
 
+    /**
+     * @Get("/username")
+     */
+    public function usernameAction($username)
+    {
+        $currentPage = (int)$_GET["page"];
+        $limit = (int)$_GET["limit"];
+        $type = (string)$_GET["type"];
+
+        $users = $this->
+        modelsManager->
+        createQuery("SELECT User.id, User.username FROM User where User.username like '%%$username%%'")->execute();
+
+        $pagination = new PaginatorModel(
+            array(
+                "data" => $users,
+                "limit" => $limit,
+                "page" => $currentPage
+            )
+        );
+
+        $page = $pagination->getPaginate();
+
+        $response = new Response();
+        $response->setContentType("application/json");
+
+        if ($page)
+            $response->setJsonContent($page);
+        else
+            $response->setStatusCode(404);
+
+        return $response;
+    }
+
+
 }

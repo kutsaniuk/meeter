@@ -318,6 +318,15 @@
                 });
             };
 
+            this.searchByName = function (page, limit, name) {
+                return $http.get(urlBase + '/name/' + name, {
+                    params : {
+                        page: page,
+                        limit: limit
+                    }
+                });
+            };
+
             this.getById = function (id) {
                 return $http.get(urlBase + '/profile/' + id);
             };
@@ -349,7 +358,7 @@
             };
 
             var getPageFailed = function (response) {
-                alert(response.status);
+                // alert(response.status);
             };
 
             EventService.search(page, limit, name).then(getPageSuccess, getPageFailed);
@@ -429,6 +438,15 @@
                         page: page,
                         limit: limit,
                         name: name
+                    }
+                });
+            };
+
+            this.searchByUsername = function (page, limit, username) {
+                return $http.get(urlBase + '/username/' + username, {
+                    params : {
+                        page: page,
+                        limit: limit
                     }
                 });
             };
@@ -808,6 +826,103 @@
 
     angular
         .module('main')
+        .controller('UserSearchCtrl', UserSearchCtrl);
+
+    function UserSearchCtrl($scope, $stateParams, $location, UserService, EventService, CredentialsService, ngDialog) {
+        var sc = $scope;
+
+        sc.name = $stateParams.name;
+        sc.currentPage1 = 1;
+        sc.currentPage2 = 1;
+
+
+        sc.getEventsByName = function (page, limit, name) {
+
+            var getPageSuccess = function (response) {
+                sc.events = response.data;
+            };
+
+            var getPageFailed = function (response) {
+                // alert(response.status);
+            };
+            sc.eventsLimit = limit;
+            EventService.searchByName(page, limit, name).then(getPageSuccess, getPageFailed);
+        };
+
+        sc.getUserByUsername = function (page, limit, username) {
+
+            var getPageSuccess = function (response) {
+                sc.users = response.data;
+            };
+
+            var getPageFailed = function (response) {
+                // alert(response.status);
+            };
+            sc.usersLimit = limit;
+            UserService.searchByUsername(page, limit, username).then(getPageSuccess, getPageFailed);
+        };
+
+        sc.linkSearch = function (searchName) {
+            $location.path('/search/' + searchName);
+
+        };
+
+        sc.getUserById = function (id) {
+ 
+            var getUserSuccess = function (response) {
+                sc._user = response.data;
+            };
+
+            var getUserFailed = function (response) {
+                alert(response.status);
+            };
+
+            UserService.getById(id).then(getUserSuccess, getUserFailed);
+        };
+        
+        sc.search = function (searchName) {
+            $location.path('/search/' + searchName);
+        };
+
+        sc.getEventsByName(1, 3, sc.name);
+        
+        sc.getUserByUsername(1, 4, sc.name);
+        
+        
+    }
+})();
+
+(function () {
+    'use strict';
+
+    angular
+        .module('user.search', [
+            'ui.router'
+        ])
+        .config(configure);
+ 
+    configure.$inject = ['$stateProvider'];
+    function configure($stateProvider) {
+
+        $stateProvider
+            .state('main.user.search', {
+                url: 'search/:name',
+                views: {
+                    '': {
+                        templateUrl: 'app/modules/user/search/user.search.view.html',
+                        controller: 'UserSearchCtrl'
+                    }
+                }
+            }) ;
+
+    }
+})();
+
+(function () {
+    'use strict';
+
+    angular
+        .module('main')
         .controller('UserProfileCtrl', UserProfileCtrl);
 
     function UserProfileCtrl($scope, $stateParams, $rootScope, $cookieStore, $location, UserService, EventService, ngDialog) {
@@ -1063,86 +1178,6 @@
                     }
                 }
             });
-
-    }
-})();
-
-(function () {
-    'use strict';
-
-    angular
-        .module('main')
-        .controller('UserSearchCtrl', UserSearchCtrl);
-
-    function UserSearchCtrl($scope, $stateParams, $location, UserService, EventService, CredentialsService, ngDialog) {
-        var sc = $scope;
-
-        sc.name = $stateParams.name;
-
-        sc.getResultsByName = function (name) {
-
-            var getPageSuccess = function (response) {
-                sc.results = response.data;
-            };
-
-            var getPageFailed = function (response) {
-                alert(response.status);
-            };
-
-            EventService.search(1, 100, name).then(getPageSuccess, getPageFailed);
-        };
-
-        sc.linkSearch = function (searchName) {
-            $location.path('/search/' + searchName);
-
-        };
-
-        sc.getUserById = function (id) {
- 
-            var getUserSuccess = function (response) {
-                sc._user = response.data;
-            };
-
-            var getUserFailed = function (response) {
-                alert(response.status);
-            };
-
-            UserService.getById(id).then(getUserSuccess, getUserFailed);
-        };
-        
-        sc.search = function (searchName) {
-            $location.path('/search/' + searchName);
-            sc.getResultsByName(sc.name);
-        };
-
-        sc.getResultsByName(sc.name);
-        
-        
-    }
-})();
-
-(function () {
-    'use strict';
-
-    angular
-        .module('user.search', [
-            'ui.router'
-        ])
-        .config(configure);
- 
-    configure.$inject = ['$stateProvider'];
-    function configure($stateProvider) {
-
-        $stateProvider
-            .state('main.user.search', {
-                url: 'search/:name',
-                views: {
-                    '': {
-                        templateUrl: 'app/modules/user/search/user.search.view.html',
-                        controller: 'UserSearchCtrl'
-                    }
-                }
-            }) ;
 
     }
 })();

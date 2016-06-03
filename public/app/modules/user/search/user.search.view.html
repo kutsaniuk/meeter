@@ -1,22 +1,29 @@
 <div class="row no-margin">
-    <div class="container-fluid search_page">
+    <div class="container-fluid container-na search_page">
         <div class="input-group">
             <span class="input-group-addon"><i class="glyphicon glyphicon-search"></i></span>
-            <input type="text" class="form-control" ng-model="name" ng-enter="search(name)">
+            <input type="text" class="form-control" ng-model="name" ng-enter="search(name)"
+            placeholder="Start typing any word">
         </div>
     </div>
 </div>
-<div class="row no-margin" ng-show="results != null">
+
+
+<div class="row no-margin" ng-show="events.total_items != 0 && usersLimit == 4">
     <div class="container-fluid tools">
         <div class="title-block">
-            Events
+            Events <span class="sub">{{events.total_items}}</span>
+            <span class="pull-right show_more" ng-if="events.total_items > 3" ng-hide="events.items.length > 3" ng-click="getEventsByName(1, 9, name)">
+                <a href="">Show more</a>
+                <i class="glyphicon glyphicon-menu-right"></i>
+            </span>
         </div>
     </div>
 </div>
-<div class="row no-margin" >
+<div class="row no-margin" ng-show="events.total_items != 0 && usersLimit == 4">
     <div class="container-fluid events" style="padding-top: 0">
-        <div class="row" ng-show="results != null">
-            <div class="col-md-4 col-xs-12 event-item" ng-repeat="event in results" ng-show="event.type == 'event'">
+        <div class="row">
+            <div class="col-md-4 col-xs-12 event-item" ng-repeat="event in events.items">
                 <center>
                     <div class="event"
                          ng-mouseenter="descriptionShow = true; getEventLikesById(event.id); getUserById(event.user_id); getEventCommentsById(event.id)"
@@ -62,41 +69,60 @@
                 </center>
             </div>
         </div>
-        <div class="row" ng-show="results != null">
+        <div class="row" ng-show="events.total_items > 9  && eventsLimit > 3" >
             <div class="col-lg-12">
-                <uib-pager total-items="events.total_items" ng-model="currentPage"
-                           ng-change="getPageEvents(currentPage, 9)" items-per-page="9"></uib-pager>
-            </div>
-        </div>
-        <div class="row" ng-show="results == null">
-            <div class="col-lg-12">
-                <center>
-                    <div class="no_search_results">Your search returned no results</div>
-                </center>
+                <uib-pager total-items="events.total_items" ng-model="currentPage1"
+                           ng-change="getEventsByName(currentPage1, 9, name)" items-per-page="9"></uib-pager>
             </div>
         </div>
     </div>
 </div>
-<div class="row no-margin" ng-show="results != null">
+
+<div class="row no-margin" ng-show="users.total_items != 0 && eventsLimit == 3">
     <div class="container-fluid tools">
         <div class="title-block">
-            Users
+            Users <span class="sub">{{users.total_items}}</span>
+            <span class="pull-right show_more" ng-show="users.items.length > 4" ng-hide="users.items.length > 4" ng-click="getUserByUsername(1, 9, name)">
+                <a href="">Show more</a>
+                <i class="glyphicon glyphicon-menu-right"></i>
+            </span>
         </div>
     </div>
 </div>
-<div class="row no-margin" ng-show="results != null">
+<div class="row no-margin" ng-show="users.total_items != 0 && eventsLimit == 3">
     <div class="container-fluid events" style="padding-top: 0">
-        <div class="row" ng-show="results != null">
-            <div class="col-md-4 col-xs-12 event-item" ng-repeat="user in results" ng-if="user.type == 'user'">
-                <img ng-src="/user/avatar/{{user.id}}" style="width: 100px">
-                <div>{{user.name}}</div>
+        <div class="row">
+            <div class="col-md-3 col-xs-6 event-item" ng-repeat="user in users.items">
+                <div class="user">
+                    <center>
+                        <a href="#/user/{{user.id}}">
+                            <div class="crop">
+                                <img ng-src="/user/avatar/{{user.id}}"
+                                     onerror="this.src = '/dist/img/user.profile.avatar.default.svg'">
+                            </div>
+                        </a>
+                        <div class="username">
+                            <a href="#/user/{{user.id}}">{{user.username}}</a>
+                        </div>
+                    </center>
+                </div>
             </div>
         </div>
-        <div class="row" ng-show="results != null">
+        <div class="row" ng-show="users.total_items > 9 && usersLimit > 4">
             <div class="col-lg-12">
-                <uib-pager total-items="events.total_items" ng-model="currentPage"
-                           ng-change="getPageEvents(currentPage, 9)" items-per-page="9"></uib-pager>
+                <uib-pager total-items="users.total_items" ng-model="currentPage2"
+                           ng-change="getUserByUsername(currentPage2, 9, name)" items-per-page="9"></uib-pager>
+
             </div>
         </div>
+    </div>
+</div>
+
+
+<div class="row no-margin" ng-show="events.total_items == 0 && users.total_items == 0" style="background: #fff">
+    <div class="container-fluid">
+        <center>
+            <div class="no_search_results">Your search returned no results</div>
+        </center>
     </div>
 </div>
