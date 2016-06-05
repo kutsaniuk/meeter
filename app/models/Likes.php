@@ -11,12 +11,19 @@ use Phalcon\Mvc\Model;
 use Phalcon\Mvc\Model\Validator\Email as EmailValidator;
 use Phalcon\Mvc\Model\Validator\Uniqueness as UniquenessValidator;
 
-class Like extends Model
+class Likes extends Model
 {
     public $id;
 
     public $event_id;
 
     public $user_id;
+    
+    public $created;
+
+    public function getSource()
+    {
+        return 'like';
+    }
 
 }

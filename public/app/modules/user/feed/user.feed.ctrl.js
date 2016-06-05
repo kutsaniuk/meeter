@@ -14,7 +14,7 @@
         sc.getPageEvents = function (page, limit, type, name) {
             
             var getPageSuccess = function (response) {
-                sc.events = response.data;
+                sc.events = response.data;  
             };
 
             var getPageFailed = function (response) {

@@ -11,28 +11,12 @@ use Phalcon\Mvc\Model;
 use Phalcon\Mvc\Model\Validator\Email as EmailValidator;
 use Phalcon\Mvc\Model\Validator\Uniqueness as UniquenessValidator;
 
-class Event extends Model
+class Member extends Model
 {
     public $id;
 
-    public $name;
-
-    public $date;
-
-    public $type;
-
-    public $description;
+    public $event_id;
 
     public $user_id;
 
-    public $image;
-    
-    public $location;
-
-    public $created;
-
-    public function getSource()
-    {
-        return 'event';
-    }
 }

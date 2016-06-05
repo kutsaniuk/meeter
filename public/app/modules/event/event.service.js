@@ -44,6 +44,18 @@
                 return $http.delete(urlBase + '/dislike/' + id);
             };
 
+            this.getMembers = function (id) {
+                return $http.get(urlBase + '/members/' + id);
+            };
+
+            this.join = function (join) {
+                return $http.post(urlBase + '/join', join);
+            };
+
+            this.unJoin = function (id) {
+                return $http.delete(urlBase + '/unjoin/' + id);
+            };
+
             this.search = function (page, limit, name) {
                 return $http.get(urlBase + '/search', {
                     params : {

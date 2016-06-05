@@ -21,11 +21,11 @@
     </div>
 </div>
 <div class="row no-margin" ng-show="events.total_items != 0 && usersLimit == 4">
-    <div class="container-fluid events" style="padding-top: 0">
+    <div class="container-fluid events" style="padding-top: 0; padding-bottom: 0">
         <div class="row">
             <div class="col-md-4 col-xs-12 event-item" ng-repeat="event in events.items">
                 <center>
-                    <div class="event"
+                    <div class="event" ng-controller="UserFeedCtrl"
                          ng-mouseenter="descriptionShow = true; getEventLikesById(event.id); getUserById(event.user_id); getEventCommentsById(event.id)"
                          ng-mouseleave="descriptionShow = false;">
                         <div class="crop">
@@ -56,14 +56,18 @@
             </span>
                             </div>
                             <div class="user">
-                                <a href="#/user/{{_user.id}}">
-                                    <img src="/user/avatar/{{_user.id}}" align="right"
-                                         onerror="this.src = '/dist/img/user.profile.avatar.default.svg'">
+                                <a href="#/user/{{user.id}}">
+                                    <center>
+                                        <div class="crop_event">
+                                            <img src="/user/avatar/{{user.id}}" align="right"
+                                                 onerror="this.src = '/dist/img/user.profile.avatar.default.svg'">
+                                        </div>
+                                    </center>
                                 </a>
-                                <a href="#/user/{{_user.id}}"><span class="username">{{_user.username}}</span></a>
+                                <a href="#/user/{{user.id}}"><div class="username">{{user.username}}</div></a>
                             </div>
                             <br>
-                            <div>{{event.description}}</div>
+                            <div class="description_event">{{event.description}}</div>
                         </div>
                     </div>
                 </center>
@@ -77,6 +81,14 @@
         </div>
     </div>
 </div>
+
+<!--<div class="row no-margin">-->
+    <!--<div class="container-fluid" style="background-color: #fff; padding: 0">-->
+        <!--<div class="col-lg-12">-->
+            <!--<hr>-->
+        <!--</div>-->
+    <!--</div>-->
+<!--</div>-->
 
 <div class="row no-margin" ng-show="users.total_items != 0 && eventsLimit == 3">
     <div class="container-fluid tools">

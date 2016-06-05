@@ -17,6 +17,13 @@
             'time': new Date().setHours(0, 0)
         };
 
+        sc.dateOptions = {
+            formatYear: 'yy',
+            maxDate: new Date(2020, 5, 22),
+            minDate: new Date(),
+            startingDay: 1
+        };
+
         sc.getLocation = function (val) {
             return $http.get('//maps.googleapis.com/maps/api/geocode/json', {
                 params: {
@@ -34,16 +41,17 @@
         };
 
         sc.createEvent = function (event) {
+            event.date.setHours(event.time.getHours() + 3, event.time.getMinutes());
 
             var _event = {
                 'name': event.name,
-                'date': event.date.toISOString(),
-                'time': event.time.getHours() + ":" + event.time.getMinutes(),
+                'date': event.date,
                 'description': event.description,
                 'type': event.type,
                 'user_id': parseInt(sc.currentUser.id),
                 'image': event.image.base64,
-                'location': event.location
+                'location': event.location,
+                'created': new Date().toISOString()
             };
             EventService.create(_event);
             sc.closeThisDialog(true);

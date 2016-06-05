@@ -12,7 +12,8 @@
             'flow',
             'base64',
             'naif.base64',
-            'ngScroller'
+            'ngScroller',
+            'customFilters'
         ])
         .config(configure)
         .run(run);
@@ -73,6 +74,13 @@
                 });
             };
         });
+
+    angular.module('customFilters', []).
+    filter('dateInMillis', function() {
+        return function(dateString) {
+            return Date.parse(dateString);
+        };
+    });
 
 })();
 
@@ -308,6 +316,18 @@
                 return $http.delete(urlBase + '/dislike/' + id);
             };
 
+            this.getMembers = function (id) {
+                return $http.get(urlBase + '/members/' + id);
+            };
+
+            this.join = function (join) {
+                return $http.post(urlBase + '/join', join);
+            };
+
+            this.unJoin = function (id) {
+                return $http.delete(urlBase + '/unjoin/' + id);
+            };
+
             this.search = function (page, limit, name) {
                 return $http.get(urlBase + '/search', {
                     params : {
@@ -517,6 +537,7 @@
             var getUserSuccess = function (response) {
                 sc.user = response.data;
                 sc.followShow = sc.user.id != sc.currentUser.id;
+                sc.joinShow = sc.user.id != sc.currentUser.id;
             };
 
             var getUserFailed = function (response) {
@@ -572,6 +593,7 @@
                 sc.getEventCommentsById(id, 1, 15);
                 sc.getEventLikesById(id);
                 sc.getFollowingById(sc.currentUser.id);
+                sc.getEventMembersById(id);
             };
 
             var getEventFailed = function (response) {
@@ -617,12 +639,62 @@
             };
 
             var like = {
-                'event_id': sc.eventId,
-                'user_id': sc.currentUser.id
+                'event_id': sc.eventId, 
+                'user_id': sc.currentUser.id,
+                'created': new Date().toISOString()
             };
 
             if (sc.like != true) EventService.like(like).then(success, failed);
             else EventService.dislike(sc.likes.find(sc.findUser).id).then(success, failed);
+        };
+
+        sc.getEventMembersById = function (id) {
+            var success = function (response) {
+                sc.members = response.data;
+
+                sc.findUser = function (user) {
+                    return user.user_id === sc.currentUser.id;
+                };
+
+                if (sc.members.find(sc.findUser) != null) {
+                    sc.join = true;
+                    sc.unJoin = false;
+                }
+                else {
+                    sc.join = false;
+                    sc.unJoin = true;
+                }
+            };
+
+            var failed = function (response) {
+                sc.members = response.data;
+                sc.join = false;
+                sc.unJoin = true;
+            };
+
+            EventService.getMembers(id).then(success, failed);
+        };
+
+        sc.joinToEvent = function () {
+            var success = function (response) {
+                sc.getEventMembersById(sc.eventId);
+                sc.join = !sc.join;
+                sc.unJoin = !sc.unJoin;
+            };
+
+            var failed = function (response) {
+                sc.getEventLikesById(sc.eventId);
+                sc.join = !sc.join;
+                sc.unJoin = !sc.unJoin;
+            };
+
+            var join = {
+                'event_id': sc.eventId,
+                'user_id': sc.currentUser.id
+            };
+
+            if (sc.join != true) EventService.join(join).then(success, failed);
+            else EventService.unJoin(sc.members.find(sc.findUser).id).then(success, failed);
         };
 
         sc.getFollowingById = function (id) {
@@ -709,7 +781,7 @@
         sc.getPageEvents = function (page, limit, type, name) {
             
             var getPageSuccess = function (response) {
-                sc.events = response.data;
+                sc.events = response.data;  
             };
 
             var getPageFailed = function (response) {
@@ -818,103 +890,6 @@
                 }
             });
         
-    }
-})();
-
-(function () {
-    'use strict';
-
-    angular
-        .module('main')
-        .controller('UserSearchCtrl', UserSearchCtrl);
-
-    function UserSearchCtrl($scope, $stateParams, $location, UserService, EventService, CredentialsService, ngDialog) {
-        var sc = $scope;
-
-        sc.name = $stateParams.name;
-        sc.currentPage1 = 1;
-        sc.currentPage2 = 1;
-
-
-        sc.getEventsByName = function (page, limit, name) {
-
-            var getPageSuccess = function (response) {
-                sc.events = response.data;
-            };
-
-            var getPageFailed = function (response) {
-                // alert(response.status);
-            };
-            sc.eventsLimit = limit;
-            EventService.searchByName(page, limit, name).then(getPageSuccess, getPageFailed);
-        };
-
-        sc.getUserByUsername = function (page, limit, username) {
-
-            var getPageSuccess = function (response) {
-                sc.users = response.data;
-            };
-
-            var getPageFailed = function (response) {
-                // alert(response.status);
-            };
-            sc.usersLimit = limit;
-            UserService.searchByUsername(page, limit, username).then(getPageSuccess, getPageFailed);
-        };
-
-        sc.linkSearch = function (searchName) {
-            $location.path('/search/' + searchName);
-
-        };
-
-        sc.getUserById = function (id) {
- 
-            var getUserSuccess = function (response) {
-                sc._user = response.data;
-            };
-
-            var getUserFailed = function (response) {
-                alert(response.status);
-            };
-
-            UserService.getById(id).then(getUserSuccess, getUserFailed);
-        };
-        
-        sc.search = function (searchName) {
-            $location.path('/search/' + searchName);
-        };
-
-        sc.getEventsByName(1, 3, sc.name);
-        
-        sc.getUserByUsername(1, 4, sc.name);
-        
-        
-    }
-})();
-
-(function () {
-    'use strict';
-
-    angular
-        .module('user.search', [
-            'ui.router'
-        ])
-        .config(configure);
- 
-    configure.$inject = ['$stateProvider'];
-    function configure($stateProvider) {
-
-        $stateProvider
-            .state('main.user.search', {
-                url: 'search/:name',
-                views: {
-                    '': {
-                        templateUrl: 'app/modules/user/search/user.search.view.html',
-                        controller: 'UserSearchCtrl'
-                    }
-                }
-            }) ;
-
     }
 })();
 
@@ -1187,6 +1162,103 @@
 
     angular
         .module('main')
+        .controller('UserSearchCtrl', UserSearchCtrl);
+
+    function UserSearchCtrl($scope, $stateParams, $location, UserService, EventService, CredentialsService, ngDialog) {
+        var sc = $scope;
+
+        sc.name = $stateParams.name;
+        sc.currentPage1 = 1;
+        sc.currentPage2 = 1;
+
+
+        sc.getEventsByName = function (page, limit, name) {
+
+            var getPageSuccess = function (response) {
+                sc.events = response.data;
+            };
+
+            var getPageFailed = function (response) {
+                // alert(response.status);
+            };
+            sc.eventsLimit = limit;
+            EventService.searchByName(page, limit, name).then(getPageSuccess, getPageFailed);
+        };
+
+        sc.getUserByUsername = function (page, limit, username) {
+
+            var getPageSuccess = function (response) {
+                sc.users = response.data;
+            };
+
+            var getPageFailed = function (response) {
+                // alert(response.status);
+            };
+            sc.usersLimit = limit;
+            UserService.searchByUsername(page, limit, username).then(getPageSuccess, getPageFailed);
+        };
+
+        sc.linkSearch = function (searchName) {
+            $location.path('/search/' + searchName);
+
+        };
+
+        sc.getUserById = function (id) {
+ 
+            var getUserSuccess = function (response) {
+                sc._user = response.data;
+            };
+
+            var getUserFailed = function (response) {
+                alert(response.status);
+            };
+
+            UserService.getById(id).then(getUserSuccess, getUserFailed);
+        };
+        
+        sc.search = function (searchName) {
+            $location.path('/search/' + searchName);
+        };
+
+        sc.getEventsByName(1, 3, sc.name);
+        
+        sc.getUserByUsername(1, 4, sc.name);
+        
+        
+    }
+})();
+
+(function () {
+    'use strict';
+
+    angular
+        .module('user.search', [
+            'ui.router'
+        ])
+        .config(configure);
+ 
+    configure.$inject = ['$stateProvider'];
+    function configure($stateProvider) {
+
+        $stateProvider
+            .state('main.user.search', {
+                url: 'search/:name',
+                views: {
+                    '': {
+                        templateUrl: 'app/modules/user/search/user.search.view.html',
+                        controller: 'UserSearchCtrl'
+                    }
+                }
+            }) ;
+
+    }
+})();
+
+(function () {
+    'use strict';
+
+    angular
+        .module('main')
         .controller('EventNewCtrl', EventNewCtrl);
 
     function EventNewCtrl($scope, $http, $locale, $stateParams, $rootScope, $cookieStore, EventService, UserService) {
@@ -1199,6 +1271,13 @@
         sc.event = {
             'date': new Date(),
             'time': new Date().setHours(0, 0)
+        };
+
+        sc.dateOptions = {
+            formatYear: 'yy',
+            maxDate: new Date(2020, 5, 22),
+            minDate: new Date(),
+            startingDay: 1
         };
 
         sc.getLocation = function (val) {
@@ -1218,16 +1297,17 @@
         };
 
         sc.createEvent = function (event) {
+            event.date.setHours(event.time.getHours() + 3, event.time.getMinutes());
 
             var _event = {
                 'name': event.name,
-                'date': event.date.toISOString(),
-                'time': event.time.getHours() + ":" + event.time.getMinutes(),
+                'date': event.date,
                 'description': event.description,
                 'type': event.type,
                 'user_id': parseInt(sc.currentUser.id),
                 'image': event.image.base64,
-                'location': event.location
+                'location': event.location,
+                'created': new Date().toISOString()
             };
             EventService.create(_event);
             sc.closeThisDialog(true);

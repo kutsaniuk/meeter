@@ -13,13 +13,13 @@
                 <label class="btn btn-default type" ng-model="eventType" uib-btn-radio="'social'"
                        ng-click="getPageEvents(1, 9, eventType)">Social</label>
             </div>
-            <div class="btn-group right">
-                <label class="btn btn-default glyphicon glyphicon-th" ng-model="size" ng-click="size = 4"
-                       uib-btn-radio="4"
-                       uncheckable></label>
-                <label class="btn btn-default glyphicon glyphicon-th-list" ng-model="size" ng-click="size = 12"
-                       uib-btn-radio="12" uncheckable></label>
-            </div>
+            <!--<div class="btn-group right">-->
+                <!--<label class="btn btn-default glyphicon glyphicon-th" ng-model="size" ng-click="size = 4"-->
+                       <!--uib-btn-radio="4"-->
+                       <!--uncheckable></label>-->
+                <!--<label class="btn btn-default glyphicon glyphicon-th-list" ng-model="size" ng-click="size = 12"-->
+                       <!--uib-btn-radio="12" uncheckable></label>-->
+            <!--</div>-->
         </div>
     </div>
 </div>
@@ -43,8 +43,8 @@
                                     class="glyphicon glyphicon-map-marker"></i>{{event.location}}</span>
                             </div>
                             <div class="col-lg-6 col-xs-6">
-                                <div class="time">{{event.date | date: 'd MMM y'}}</div>
-                                <div class="time">{{event.time | date: 'mediumTime'}}</div>
+                                <div class="time">{{event.date | dateInMillis | date: 'd MMM y'}}</div>
+                                <div class="time">{{event.date | dateInMillis | date: 'H:mm'}}</div>
                             </div>
                         </div>
                         <!--<div class="type">{{event.type}}</div>-->
@@ -59,14 +59,18 @@
                 </span>
                             </div>
                             <div class="user">
-                                <a href="#/user/{{user.id}}">
-                                    <img src="/user/avatar/{{user.id}}" align="right"
-                                         onerror="this.src = '/dist/img/user.profile.avatar.default.svg'">
-                                </a>
-                                <a href="#/user/{{user.id}}"><span class="username">{{user.username}}</span></a>
+                                <center>
+                                    <a href="#/user/{{user.id}}">
+                                        <div class="crop_event">
+                                            <img src="/user/avatar/{{user.id}}" align="right"
+                                                 onerror="this.src = '/dist/img/user.profile.avatar.default.svg'">
+                                        </div>
+                                    </a>
+                                    <a href="#/user/{{user.id}}"><div class="username">{{user.username}}</div></a>
+                                </center>
                             </div>
                             <br>
-                            <div>{{event.description}}</div>
+                            <div class="description_event">{{event.description}}</div>
                         </div>
                     </div>
                 </center>

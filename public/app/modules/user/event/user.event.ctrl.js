@@ -22,6 +22,7 @@
             var getUserSuccess = function (response) {
                 sc.user = response.data;
                 sc.followShow = sc.user.id != sc.currentUser.id;
+                sc.joinShow = sc.user.id != sc.currentUser.id;
             };
 
             var getUserFailed = function (response) {
@@ -77,6 +78,7 @@
                 sc.getEventCommentsById(id, 1, 15);
                 sc.getEventLikesById(id);
                 sc.getFollowingById(sc.currentUser.id);
+                sc.getEventMembersById(id);
             };
 
             var getEventFailed = function (response) {
@@ -122,12 +124,62 @@
             };
 
             var like = {
-                'event_id': sc.eventId,
-                'user_id': sc.currentUser.id
+                'event_id': sc.eventId, 
+                'user_id': sc.currentUser.id,
+                'created': new Date().toISOString()
             };
 
             if (sc.like != true) EventService.like(like).then(success, failed);
             else EventService.dislike(sc.likes.find(sc.findUser).id).then(success, failed);
+        };
+
+        sc.getEventMembersById = function (id) {
+            var success = function (response) {
+                sc.members = response.data;
+
+                sc.findUser = function (user) {
+                    return user.user_id === sc.currentUser.id;
+                };
+
+                if (sc.members.find(sc.findUser) != null) {
+                    sc.join = true;
+                    sc.unJoin = false;
+                }
+                else {
+                    sc.join = false;
+                    sc.unJoin = true;
+                }
+            };
+
+            var failed = function (response) {
+                sc.members = response.data;
+                sc.join = false;
+                sc.unJoin = true;
+            };
+
+            EventService.getMembers(id).then(success, failed);
+        };
+
+        sc.joinToEvent = function () {
+            var success = function (response) {
+                sc.getEventMembersById(sc.eventId);
+                sc.join = !sc.join;
+                sc.unJoin = !sc.unJoin;
+            };
+
+            var failed = function (response) {
+                sc.getEventLikesById(sc.eventId);
+                sc.join = !sc.join;
+                sc.unJoin = !sc.unJoin;
+            };
+
+            var join = {
+                'event_id': sc.eventId,
+                'user_id': sc.currentUser.id
+            };
+
+            if (sc.join != true) EventService.join(join).then(success, failed);
+            else EventService.unJoin(sc.members.find(sc.findUser).id).then(success, failed);
         };
 
         sc.getFollowingById = function (id) {

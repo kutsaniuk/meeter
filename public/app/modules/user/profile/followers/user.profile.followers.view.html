@@ -1,6 +1,32 @@
-<div class="col-lg-3" ng-repeat="follower in followers.items">
-    <img ng-src="/user/avatar/{{follower.current_user}}" style="width: 50px"
-         onerror="this.src = '/dist/img/user.profile.avatar.default.svg'">
-    <div>{{follower.username}}</div>
-    <div>{{follower.name}}</div>
+<div class="container-fluid no-padding follower">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="title-block">
+                Followers <span class="sub">{{followers.total_items}}</span>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-3" ng-repeat="follower in followers.items">
+            <div class="user">
+                <center>
+                    <a href="#/user/{{follower.current_user}}" ng-click="closeThisDialog(true)">
+                        <div class="crop" style="width: 65px; height: 65px">
+                            <img ng-src="/user/avatar/{{follower.current_user}}"
+                                 onerror="this.src = '/dist/img/user.profile.avatar.default.svg'"
+                            >
+                        </div>
+                    </a>
+                    <div class="username" ng-click="closeThisDialog(true)">
+                        <a href="#/user/{{follower.current_user}}">{{follower.username}}</a>
+                    </div>
+                </center>
+            </div>
+        </div>
+    </div>
+    <div class="row" ng-if="followers.total_items == 0">
+        <div class="col-lg-12">
+            <uib-alert type="warning">Don't have followers</uib-alert>
+        </div>
+    </div>
 </div>

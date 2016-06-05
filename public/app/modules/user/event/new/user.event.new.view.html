@@ -24,8 +24,7 @@
             <label>Type</label><br>
             <select name="type" ng-model="event.type">
                 <option value="social">Social</option>
-                <option value="actual">Actual</option>
-                <option value="private">Private</option>
+                <option value="entertainment">Entertainment</option>
             </select>
         </div>
         <div class="col-lg-3">
@@ -33,7 +32,7 @@
             <h1 ng-click="popup1 = !popup1">{{event.date | date:"dd"}}</h1>
             <div ng-click="popup1 = !popup1">{{event.date | date:"MMMM"}}</div>
             <uib-datepicker ng-model="event.date" class="well well-sm show-hide" ng-show="popup1"
-                            style="position: absolute; z-index: 5000; bottom: 0;"></uib-datepicker>
+                            style="position: absolute; z-index: 5000; bottom: 0;" datepicker-options="dateOptions" close-on-date-selection="true"></uib-datepicker>
         </div>
         <div class="col-lg-3">
             <label>Image</label>

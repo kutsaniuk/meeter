@@ -12,7 +12,8 @@
             'flow',
             'base64',
             'naif.base64',
-            'ngScroller'
+            'ngScroller',
+            'customFilters'
         ])
         .config(configure)
         .run(run);
@@ -73,5 +74,12 @@
                 });
             };
         });
+
+    angular.module('customFilters', []).
+    filter('dateInMillis', function() {
+        return function(dateString) {
+            return Date.parse(dateString);
+        };
+    });
 
 })();

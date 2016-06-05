@@ -39,7 +39,7 @@ WHERE type = '$type' AND name LIKE '%$name%'");
         modelsManager->
         createQuery("SELECT Event.id, 
 Event.name, Event.location, Event.date, 
-Event.description, Event.time, Event.user_id FROM Event");
+Event.description, Event.time, Event.user_id FROM Event ORDER BY Event.created DESC");
 
         if (!empty($id)) $_events = $this->
         modelsManager->
@@ -102,12 +102,12 @@ Event.description, Event.time, Event.user_id FROM Event WHERE Event.user_id = $i
         $event->assign(array(
             'name' => $_event->name,
             'date' => $_event->date,
-            'time' => $_event->time,
             'description' => $_event->description,
             'type' => $_event->type,
             'image' => $_event->image,
             'location' => $_event->location,
-            'user_id' => $_event->user_id
+            'user_id' => $_event->user_id,
+            'created' => $_event->created
         ));
 
         $response = new Response();
@@ -241,7 +241,7 @@ Event.description, Event.time, Event.user_id FROM Event WHERE Event.user_id = $i
 
         return $response;
     }
-    
+
     /**
      * @Get("/image/{id:[0-9]+}")
      */
@@ -322,9 +322,17 @@ FROM Comment JOIN User on User.id = Comment.user_id WHERE Comment.event_id = $id
      */
     public function likesAction($id)
     {
-        $likes = Like::find(array(
-            'conditions' => "event_id = '$id'"
-        ))->toArray();
+//        $likes = Likes::find(array(
+//            'conditions' => "event_id = '$id'"
+//        ))->toArray();
+
+        $_likes = $this->
+        modelsManager->
+        createQuery("SELECT Likes.id, Likes.user_id, Likes.event_id, User.username 
+FROM Likes JOIN User ON Likes.user_id = User.id WHERE Likes.event_id = $id ORDER BY Likes.created DESC")->execute();
+
+        foreach ($_likes as $like)
+            $likes[] = $like;
 
         $response = new Response();
         $response->setContentType("application/json");
@@ -342,13 +350,14 @@ FROM Comment JOIN User on User.id = Comment.user_id WHERE Comment.event_id = $id
      */
     public function likeAction()
     {
-        $like = new Like();
+        $like = new Likes();
 
         $_like = $this->request->getJsonRawBody();
 
         $like->assign(array(
             'event_id' => $_like->event_id,
-            'user_id' => $_like->user_id
+            'user_id' => $_like->user_id,
+            'created' => $_like->created
         ));
 
         $response = new Response();
@@ -366,11 +375,80 @@ FROM Comment JOIN User on User.id = Comment.user_id WHERE Comment.event_id = $id
      */
     public function dislikeAction($id)
     {
-        $like = Like::findFirst("id = $id");
+        $like = Likes::findFirst("id = $id");
 
         $response = new Response();
 
         if ($like->delete())
+            $response->setStatusCode(200);
+        else
+            $response->setStatusCode(409);
+
+        return $response;
+    }
+
+    /**
+     * @Get("/members/{id:[0-9]+}")
+     */
+    public function membersAction($id)
+    {
+        $_members = Member::find(array(
+            'conditions' => "event_id = '$id'"
+        ))->toArray();
+
+        $_members = $this->
+        modelsManager->
+        createQuery("SELECT Member.id, Member.user_id, Member.event_id, User.username 
+FROM Member JOIN User ON Member.user_id = User.id WHERE event_id = $id")->execute();
+
+        foreach ($_members as $member)
+            $members[] = $member;
+
+        $response = new Response();
+        $response->setContentType("application/json");
+
+        if ($members)
+            $response->setJsonContent($members);
+        else
+            $response->setStatusCode(404);
+
+        return $response;
+    }
+
+    /**
+     * @Post
+     */
+    public function joinAction()
+    {
+        $members = new Member();
+
+        $_members = $this->request->getJsonRawBody();
+
+        $members->assign(array(
+            'event_id' => $_members->event_id,
+            'user_id' => $_members->user_id
+        ));
+
+        $response = new Response();
+
+        if ($members->save())
+            $response->setStatusCode(201);
+        else
+            $response->setStatusCode(409);
+
+        return $response;
+    }
+
+    /**
+     * @Delete
+     */
+    public function unjoinAction($id)
+    {
+        $member = Member::findFirst("id = $id");
+
+        $response = new Response();
+
+        if ($member->delete())
             $response->setStatusCode(200);
         else
             $response->setStatusCode(409);

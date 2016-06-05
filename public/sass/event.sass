@@ -1,5 +1,4 @@
 
-
 .event-item
   padding: 20px
   margin: auto
@@ -34,12 +33,8 @@
       &:hover
         color: #e3e3e3
     .username
-      float: left
-      margin: 12px
       font-weight: bold
-    img
-      width: 50px
-      border-radius: 100%
+      text-align: center
   a
     color: #333333
     &:hover
@@ -58,6 +53,9 @@
     color: #eee
     border-radius: 5px 5px 10px 10px
     padding: 15px
+    .description_event
+      width: 70%
+      overflow: hidden
   img
     width: 120%
     margin-left: -10%
@@ -88,10 +86,13 @@
     font-weight: 400
   .title
     font-size: 13px
+    overflow: hidden
+
 .location
   color: rgba(75, 75, 75, 0.5)
   color: #BB4646
   font-size: 11px
+
 .type
   position: absolute
   top: 0
@@ -110,8 +111,6 @@
     top: 42%
     left: 0
     font-size: 25px
-
-
 
 .friends:before
   background: rgba(0, 249, 255, 0.2)
@@ -161,44 +160,3 @@
     margin: 15px
     height: 100%
     width: 20%
-
-// .location
-//   position: absolute
-//   right: 0
-//   background-image: url('/dist/img/location.svg')
-//   &:hover
-//     background-image: url('/dist/img/location.hover.svg')
-
-// .photos
-//   box-shadow: 0 0 1px #333
-//   position: absolute
-//   left: 0
-//   background-image: url('/dist/img/photos.jpg')
-//   background-size: 50px
-
-// .info
-//   background-image: url('/dist/img/info.svg')
-//   background-size: 10px 
-//   box-shadow: none
-//   &:hover
-//     background-image: url('/dist/img/info.hover.svg')
-
-// .time
-//   color: silver
-//   font-size: 40px
-//   padding-left: 30px
-// /*.photos:hover
-//   /*box-shadow: 0 0 10px #222;
-
-// .title
-//   color: rgba(255, 255, 255, 1)
-//   font-size: 80px
-//   margin: 15px
-//   padding-left: 15px
-//   font-weight: 200
-//   /*text-shadow: 0 0 2px #333;
-
-// .desc
-//   background-color: rgba(255, 255, 255, 0.95) !important
-//   padding: 30px
-//   padding-top: 10px
