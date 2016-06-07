@@ -1,12 +1,10 @@
 <div class="title-block">
-    Setting</span>
+    {{ 'settings' | translate }}</span>
             <span class="pull-right btn-radio">
                 <label class="btn btn-default" ng-model="tab" uib-btn-radio=""
-                       ng-click="getTab(tab)">Edit</label>
+                       ng-click="getTab(tab)">{{ 'edit' | translate}}</label>
                 <label class="btn btn-default" ng-model="tab" uib-btn-radio="'password'"
-                       ng-click="getTab(tab)">Password</label>
-                <label class="btn btn-default" ng-model="tab" uib-btn-radio="'language'"
-                       ng-click="getTab(tab)">Language</label>
+                       ng-click="getTab(tab)">{{ 'password' | translate}}</label>
             </span>
 </div>
 <div class="container-fluid settings-container" ng-init="getUserById(userId)">

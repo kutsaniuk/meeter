@@ -70,7 +70,8 @@ class AuthController extends Controller
             'password' => sha1($_user->password),
             'name' => $_user->name,
             'email' => $_user->email,
-            'created' => $_user->created
+            'created' => $_user->created,
+            'language' => $_user->language
         ));
 
         $response = new Response();

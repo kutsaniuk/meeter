@@ -1,0 +1,76 @@
+{
+  "login": "Sing in",
+  "doNotHaveAcc": "Don't have an account?",
+  "signUp": "Sing up",
+  "haveAnAccount": "Have an account?",
+  "profile": "Profile",
+  "settings": "Settings",
+  "logOut": "Log out",
+
+  "all": "All",
+  "actual": "Actual",
+  "fun": "Fun",
+  "past": "Past",
+  "social": "Social",
+
+  "search": "Search",
+  "password": "Password",
+  "username": "Username",
+  "email": "Email",
+  "fullName": "Full name",
+
+  "previous": "Previous",
+  "next": "Next",
+
+  "_events": "events",
+  "events": "Events",
+  "followers": "followers",
+  "following": "following",
+  "follow": "Follow",
+  "unFollow": "Un follow",
+
+  "edit": "Edit",
+  "language": "Language",
+
+  "general": "General",
+  "avatar": "Avatar",
+  "background": "Background",
+  "change": "Change",
+  "update": "Update",
+  "changed": "changed",
+  "apply": "Apply",
+
+  "old": "Old",
+  "new": "New",
+  "repeat": "Repeat",
+  "failedPassword": "Incorrect password",
+  "passwordRepeatFailed": "Passwords don't match",
+  "success": "Passwords match",
+
+  "name": "Name",
+  "location": "Location",
+  "description": "Description",
+  "time": "Time",
+  "date": "Date",
+  "type": "Type",
+  "image": "Image",
+  "create": "Create",
+  "upload": "Upload",
+  "browse": "Browse",
+
+  "searchPage": "Start typing any word",
+  "users": "Users",
+  "showMore": "Show more",
+
+  "DoNotHaveFollowing": "Don't have following",
+  "DoNotHaveFollowers": "Don't have followers",
+
+  "DoNotHaveEvents": "Don't have events",
+
+  "organizer": "Organizer",
+  "members": "Members",
+  "comments": "Comments",
+  "enterComment": "Enter a comment",
+  "join": "Join",
+  "joined": "Joined"
+}

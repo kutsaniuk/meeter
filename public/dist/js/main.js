@@ -13,13 +13,14 @@
             'base64',
             'naif.base64',
             'ngScroller',
+            'pascalprecht.translate',
             'customFilters'
         ])
         .config(configure)
         .run(run);
 
-    configure.$inject = ['$stateProvider', '$urlRouterProvider'];
-    function configure($stateProvider, $urlRouterProvider) {
+    configure.$inject = ['$stateProvider', '$urlRouterProvider', '$translateProvider'];
+    function configure($stateProvider, $urlRouterProvider, $translateProvider) {
 
         $urlRouterProvider.otherwise(function ($injector) {
             var $state = $injector.get("$state");
@@ -38,16 +39,35 @@
                 controller: 'AuthCtrl'
             });
 
+        $translateProvider.useStaticFilesLoader({
+            prefix: '/app/resources/lang/',
+            suffix: '.json'
+        });
+
     }
 
-    run.$inject = ['$rootScope', '$cookieStore', '$state', '$location', '$http'];
-    function run($rootScope, $cookieStore, $state, $location, $http) {
+    run.$inject = ['$rootScope', '$cookieStore', '$state', '$translate', '$http', 'UserService'];
+    function run($rootScope, $cookieStore, $state, $translate, $http, UserService) {
         // keep user logged in after page refresh
         $rootScope.globals = $cookieStore.get('globals') || {};
+
+        var getUserById = function (id) {
+
+            var getUserSuccess = function (response) {
+                $translate.use(response.data.language);
+            };
+
+            var getUserFailed = function (response) {
+                alert(response.status);
+            };
+
+            UserService.getById(id).then(getUserSuccess, getUserFailed);
+        };
 
         if ($rootScope.globals.currentUser) {
             $http.defaults.headers.common['Authorization'] = 'Basic ' + $rootScope.globals.currentUser.authdata.id;
             $state.go('main.user.feed');
+            getUserById($rootScope.globals.currentUser.id);
         }
 
         $rootScope.$on('$locationChangeStart', function (event, next, current) {
@@ -91,13 +111,17 @@
         .module('main')
         .controller('AuthCtrl', AuthCtrl);
 
-    function AuthCtrl($scope, $state, AuthService, CredentialsService, EventService) {
+    function AuthCtrl($scope, $state, AuthService, $cookieStore, $translate, CredentialsService, EventService) {
         var sc = $scope;
 
         CredentialsService.ClearCredentials();
 
-        sc.login = function () {
-            AuthService.login(sc.username, sc.password)
+        sc.lang = 'uk';
+        sc.langShow = true;
+        $translate.use(sc.lang);
+
+        sc.login = function (username, password) {
+            AuthService.login(username, password)
                 .then(function successCallback(response) {
                     $state.go('main.user.feed');
                     CredentialsService.SetCredentials(response.data.id, sc.username, sc.password);
@@ -109,10 +133,10 @@
 
         sc.register = function () {
             sc.user.created = new Date().toISOString();
-            
+            sc.user.language = sc.lang;
             if (sc.registerForm.$valid && sc.usernameCheked) AuthService.register(sc.user)
                 .then(function successCallback(response) {
-                    alert('success');
+                    sc.login(sc.user.username, sc.user.password);
                 }, function errorCallback(response) {
                     alert('failed');
                 });
@@ -138,6 +162,12 @@
             };
 
             EventService.getPage(page, limit, type, name).then(getPageSuccess, getPageFailed);
+        };
+
+        sc.setLang = function (lang) {
+            $translate.use(lang);
+            sc.lang = lang;
+            sc.langShow = !sc.langShow;
         }
     }
 })();
@@ -385,7 +415,7 @@
         .module('main')
         .controller('UserCtrl', UserCtrl);
 
-    function UserCtrl($scope, $rootScope, $location, $cookieStore, EventService, CredentialsService, ngDialog) {
+    function UserCtrl($scope, $rootScope, $location, $cookieStore, $translate, EventService, CredentialsService, ngDialog) {
         var sc = $scope;
 
         sc.getEventsByName = function (page, limit, name) {
@@ -405,7 +435,7 @@
             CredentialsService.ClearCredentials();
         };
 
-        $rootScope.globals = $cookieStore.get('globals') || {};
+        // $rootScope.globals = $cookieStore.get('globals') || {};
 
         sc.userId = $rootScope.globals.currentUser.id;
 
@@ -416,11 +446,12 @@
                 showClose: false,
                 controller: 'EventNewCtrl'
             });
-        };
+        };  
 
         sc.linkSearch = function (searchName) {
             $location.path('/search/' + searchName);
-        }
+        };
+
     }
 })();
 
@@ -501,7 +532,7 @@
             };
 
             this.update = function (user, type) {
-                return $http.post(urlBase + '/update/' + type, user);
+                return $http.put(urlBase + '/update/' + type, user);
             };
 
             this.getFollowing = function (id) {
@@ -607,7 +638,7 @@
             var getEventSuccess = function (response) {
                 sc.event = response.data;
                 sc.getUserById(response.data.user_id);
-                sc.getEventCommentsById(id, 1, 15);
+                sc.getEventCommentsById(id, 1, 100);
                 sc.getEventLikesById(id);
                 sc.getFollowingById(sc.currentUser.id);
                 sc.getEventMembersById(id);
@@ -1334,10 +1365,10 @@
         .module('main')
         .controller('UserProfileSettingsCtrl', UserProfileSettingsCtrl);
 
-    function UserProfileSettingsCtrl($scope, $rootScope, $cookieStore, CredentialsService, UserService, AuthService, $state) {
+    function UserProfileSettingsCtrl($scope, $rootScope, $cookieStore, $translate, CredentialsService, UserService, AuthService, $state) {
         var sc = $scope;
 
-        $rootScope.globals = $cookieStore.get('globals') || {};
+        // $rootScope.globals = $cookieStore.get('globals') || {};
 
         sc.userId = $rootScope.globals.currentUser.id;
 
@@ -1449,6 +1480,21 @@
                     sc.usernameCheked = false;
                 });
         };
+        
+        sc.setLang = function (lang) {
+            var success = function (response) {
+                $translate.use(response.data.language);
+            };
+            var failed = function () {
+
+            };
+
+            var _lang = {
+                'id': sc.userId,
+                'language': sc.user.language
+            };
+            UserService.update(_lang, 'lang').then(success, failed);
+        }
 
     }
 })();

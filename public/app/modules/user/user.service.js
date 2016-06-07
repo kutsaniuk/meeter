@@ -48,7 +48,7 @@
             };
 
             this.update = function (user, type) {
-                return $http.post(urlBase + '/update/' + type, user);
+                return $http.put(urlBase + '/update/' + type, user);
             };
 
             this.getFollowing = function (id) {

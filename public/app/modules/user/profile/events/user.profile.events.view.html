@@ -1,6 +1,6 @@
 <div class="row">
     <div class="title-block">
-        Events <span class="sub">{{events.total_items}}</span>
+        {{ 'events' | translate }} <span class="sub">{{events.total_items}}</span>
             <span class="pull-right btn-radio">
                 <label class="btn btn-default" ng-model="eventType" uib-btn-radio=""
                        ng-click="getUserEventsById(userId, eventType, currentPage)">All</label>

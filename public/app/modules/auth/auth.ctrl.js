@@ -5,13 +5,17 @@
         .module('main')
         .controller('AuthCtrl', AuthCtrl);
 
-    function AuthCtrl($scope, $state, AuthService, CredentialsService, EventService) {
+    function AuthCtrl($scope, $state, AuthService, $cookieStore, $translate, CredentialsService, EventService) {
         var sc = $scope;
 
         CredentialsService.ClearCredentials();
 
-        sc.login = function () {
-            AuthService.login(sc.username, sc.password)
+        sc.lang = 'uk';
+        sc.langShow = true;
+        $translate.use(sc.lang);
+
+        sc.login = function (username, password) {
+            AuthService.login(username, password)
                 .then(function successCallback(response) {
                     $state.go('main.user.feed');
                     CredentialsService.SetCredentials(response.data.id, sc.username, sc.password);
@@ -23,10 +27,10 @@
 
         sc.register = function () {
             sc.user.created = new Date().toISOString();
-            
+            sc.user.language = sc.lang;
             if (sc.registerForm.$valid && sc.usernameCheked) AuthService.register(sc.user)
                 .then(function successCallback(response) {
-                    alert('success');
+                    sc.login(sc.user.username, sc.user.password);
                 }, function errorCallback(response) {
                     alert('failed');
                 });
@@ -52,6 +56,12 @@
             };
 
             EventService.getPage(page, limit, type, name).then(getPageSuccess, getPageFailed);
+        };
+
+        sc.setLang = function (lang) {
+            $translate.use(lang);
+            sc.lang = lang;
+            sc.langShow = !sc.langShow;
         }
     }
 })();

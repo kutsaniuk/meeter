@@ -1,28 +1,27 @@
 <div class="evene-new">
     <form name="eventForm">
-        <input class="name" type="text" name="name" ng-model="event.name" placeholder="Name" pattern="^[A-zА-яі0-9 ]*$">
+        <input class="name" type="text" name="name" ng-model="event.name" placeholder="{{ 'name' | translate}}" pattern="^[A-zА-яі0-9 ]*$">
         <br>
         <span class="location">
         <i class="glyphicon glyphicon-map-marker"></i>
-         <input type="text" ng-model="event.location" placeholder="Location" pattern="^[A-zА-яі0-9 ]*$">
+         <input type="text" ng-model="event.location" placeholder="{{ 'location' | translate}}" pattern="^[A-zА-яі0-9 ]*$">
         </span>
         <br>
-        <textarea class="description" name="description" ng-model="event.description" placeholder="Description"
-                  rows="10"></textarea> <br>
+        <textarea class="description" name="description" ng-model="event.description" placeholder="{{ 'description' | translate}}" rows="10"></textarea> <br>
         <br>
         <div class="col-lg-3">
-            <label>Time</label>
+            <label translate>time</label>
             <uib-timepicker ng-model="event.time" hour-step="1" minute-step="5" show-meridian="false"></uib-timepicker>
         </div>
         <div class="col-lg-3">
-            <label>Type</label><br>
+            <label translate>type</label><br>
             <select name="type" class="form-control" ng-model="event.type">
-                <option value="social">Social</option>
-                <option value="entertainment">Entertainment</option>
+                <option value="social">{{ 'social' | translate}}</option>
+                <option value="fun">{{ 'fun' | translate}}</option>
             </select>
         </div>
         <div class="col-lg-3">
-            <label ng-click="popup1 = !popup1">Date</label>
+            <label ng-click="popup1 = !popup1">{{ 'date' | translate}}</label>
             <h1 ng-click="popup1 = !popup1">{{event.date | date:"dd"}}</h1>
             <div ng-click="popup1 = !popup1">{{event.date | date:"MMMM"}}</div>
             <uib-datepicker ng-model="event.date" class="well well-sm show-hide" ng-show="popup1"
@@ -32,12 +31,12 @@
             <label>Image</label>
             <img ng-if="event.image !== null" ng-src="data:{{event.image.filetype}};base64,{{event.image.base64}}">
             <button class="upload btn btn-default">
-                <span ng-show="event.image == null">Upload</span>
-                <span ng-show="event.image != null">Change</span>
+                <span ng-show="event.image == null">{{ 'browse' | translate}}</span>
+                <span ng-show="event.image != null">{{ 'change' | translate}}</span>
                 <input class="btn btn-default" name="image" type="file" ng-model="event.image" accept="image/*"
                        base-sixty-four-input>
             </button>
         </div>
-        <button class="btn btn-success create" ng-click="createEvent(event)">Create</button>
+        <button class="btn btn-success create" ng-click="createEvent(event)" translate>create</button>
     </form>
 </div>

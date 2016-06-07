@@ -1,15 +1,17 @@
 <div class="row">
     <div class="title-block">
-        Events <span class="sub">{{events.total_items}}</span>
+        {{ 'events' | translate }} <span class="sub">{{events.total_items}}</span>
             <span class="pull-right btn-radio">
                 <label class="btn btn-default" ng-model="eventType" uib-btn-radio=""
-                       ng-click="getUserEventsById(userId, eventType, currentPage)">All</label>
+                       ng-click="getUserEventsById(userId, eventType, currentPage)">{{ 'all' | translate}}</label>
                 <label class="btn btn-default" ng-model="eventType" uib-btn-radio="'actual'"
-                       ng-click="getUserEventsById(userId, eventType, currentPage)">Actual</label>
-                <label class="btn btn-default" ng-model="eventType" uib-btn-radio="'past'"
-                       ng-click="getUserEventsById(userId, eventType, currentPage)">Past</label>
+                       ng-click="getUserEventsById(userId, eventType, currentPage)">{{ 'actual' | translate}}</label>
+                <label class="btn btn-default" ng-model="eventType" uib-btn-radio="'fun'"
+                       ng-click="getUserEventsById(userId, eventType, currentPage)">{{ 'fun' | translate}}</label>
+                <!--<label class="btn btn-default" ng-model="eventType" uib-btn-radio="'past'"-->
+                       <!--ng-click="getUserEventsById(userId, eventType, currentPage)">{{ 'past' | translate}}</label>-->
                 <label class="btn btn-default" ng-model="eventType" uib-btn-radio="'social'"
-                       ng-click="getUserEventsById(userId, eventType, currentPage)">Social</label>
+                       ng-click="getUserEventsById(userId, eventType, currentPage)">{{ 'social' | translate}}</label>
             </span>
     </div>
 </div>
@@ -59,6 +61,6 @@
 </div>
 <div class="row" ng-if="events.total_items == 0">
     <div class="col-lg-12">
-        <uib-alert type="warning" style="margin-top: 30px">Don't have events</uib-alert>
+        <uib-alert type="warning" style="margin-top: 30px"><span translate>DoNotHaveEvents</span></uib-alert>
     </div>
 </div>

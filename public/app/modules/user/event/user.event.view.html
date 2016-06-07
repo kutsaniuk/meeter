@@ -27,15 +27,15 @@
                             </td>
                             <td class="username">
                                 <a href="#/user/{{user.id}}">{{user.username}}</a>
-                                <div>Organizer</div>
+                                <div translate>organizer</div>
                             </td>
                             <td>
-                                <div ng-show="followShow" class="pull-right show-hide">
+                                <div ng-show="false" class="pull-right show-hide">
                                     <button class="btn" ng-class="{'btn-primary': noFollow}" ng-show="noFollow"
-                                            ng-click="followOnUser(user.id)">Follow
+                                            ng-click="followOnUser(user.id)"><span translate>follow</span>
                                     </button>
                                     <button class="btn" ng-class="{'btn-default': follow}" ng-show="follow"
-                                            ng-click="followOnUser(user.id)">Following
+                                            ng-click="followOnUser(user.id)"><span translate>unFollow</span>
                                     </button>
                                 </div>
                             </td>
@@ -45,8 +45,8 @@
                 <div class="join" ng-click="joinToEvent()" ng-show="joinShow">
                     <button class="btn pull-right"
                             ng-class="{'btn-default': unJoin, 'btn-success': join}">
-                        <span ng-show="join">Joined</span>
-                        <span ng-show="unJoin">Join</span>
+                        <span ng-show="join" translate>joined</span>
+                        <span ng-show="unJoin" translate>join</span>
                         <label class="label label-default">{{members.length}}</label>
                     </button>
                 </div>
@@ -59,7 +59,7 @@
             </div>
             <div class="col-lg-6">
                 <div class="title-block">
-                    Members <span class="sub">{{members.length}}</span>
+                    <span translate>members</span> <span class="sub">{{members.length}}</span>
                 </div>
                 <div class="members" ng-class="{ 'comments-scroll': members.total_items > 10}">
                 <div ng-repeat="member in members">
@@ -103,14 +103,14 @@
             </div>
             <div class="col-lg-6">
                 <div class="title-block">
-                    Comments <span class="sub">{{comments.total_items}}</span>
+                    <span translate>comments</span> <span class="sub">{{comments.total_items}}</span>
                 </div>
                 <!--<a href="" class="view-comments" ng-show="viewAllCommentsShow && comments.total_items > 15"-->
                    <!--ng-click="getEventCommentsById(eventId, 1, comments.total_items); viewAllCommentsShow = false">View-->
                     <!--all {{comments.total_items}} comments</a>-->
                 <!--<a href="" class="view-comments" ng-show="!viewAllCommentsShow"-->
                    <!--ng-click="getEventCommentsById(eventId, 1, 15); viewAllCommentsShow = true">View new comments</a>-->
-                <div class="comments" ng-class="{ 'comments-scroll': comments.total_items > 10}">
+                <div class="comments" ng-class="{ 'comments-scroll': comments.total_items > 7}">
                     <table>
                         <tr ng-repeat="item in comments.items">
                             <td>
@@ -129,7 +129,7 @@
                     </table>
                 </div>
                 <hr>
-                <input type="text" class="form-control" ng-model="comment" placeholder="Add a new comment"
+                <input type="text" class="form-control" ng-model="comment" placeholder="{{ 'enterComment' | translate}}"
                        ng-enter="createComment()">
             </div>
         </div>

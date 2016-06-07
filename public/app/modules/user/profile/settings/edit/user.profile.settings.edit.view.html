@@ -1,57 +1,64 @@
 <div class="col-lg-12">
     <form name="userProfileEditForm">
-        <label for="general_info">General</label>
+        <label for="general_info" translate>general</label>
         <table id="general_info">
             <tr>
-                <td>username</td>
+                <td translate>username</td>
                 <td><input type="text" class="form-control" name="username" ng-model="user.username"
                            pattern="^[a-zA-Z][a-zA-Z0-9-_\.]{1,20}$" ng-change="checkUsername(user.username)" required></td>
                 <td><i ng-show="checkUsernameShow" class="glyphicon" ng-class="{'glyphicon-ok': usernameCheked, 'glyphicon-remove': !usernameCheked}"></i></td>
             </tr>
             <tr>
-                <td>name</td>
+                <td translate>fullName</td>
                 <td><input type="text" class="form-control" name="name" ng-model="user.name" pattern="^[A-zА-яі ]*$" required></td>
                 <td></td>
             </tr>
             <tr>
-                <td>email</td>
+                <td translate>email</td>
                 <td><input type="email" class="form-control" name="email" ng-model="user.email"></td>
             </tr>
             <tr>
                 <td></td>
                 <td>
-                    <button class="btn btn-default" ng-click="updateUser(user)">Update</button>
+                    <button class="btn btn-default" ng-click="updateUser(user)" translate>update</button>
                 </td>
                 <td></td>
             </tr>
         </table>
     </form>
 </div>
+<div class="col-lg-12">
+    <label for="language" translate>language</label>
+    <select name="language" id="language" class="form-control" ng-model="user.language" ng-change="setLang(user.language)">
+        <option value="uk">Українська</option>
+        <option value="en">English</option>
+    </select>
+    <br>
+</div>
 <div class="col-lg-6 settings-avatar">
-    <label for="avatar">Avatar</label><br>
+    <label for="avatar" translate>avatar</label><br>
     <center>
         <img src="/user/avatar/{{userId}}" id="avatar" onerror="this.src = '/dist/img/user.profile.avatar.default.svg'" ng-show="avatar.base64 == null">
         <img ng-src="data:{{avatar.filetype}};base64,{{avatar.base64}}" ng-show="avatar.base64 != null">
     </center>
     <button class="upload btn btn-default">
-        Change
+        {{ 'change' | translate}}
         <input class="btn btn-default" name="avatar" type="file" ng-model="avatar" accept="image/*"
                base-sixty-four-input>
     </button>
-    <button ng-show="avatar.base64 != null" class="btn btn-success" ng-click="updateAvatar(avatar)">Apply</button>
-    <uib-alert type="success" ng-show="avatarUpload">Avatar changed</uib-alert>
+    <button ng-show="avatar.base64 != null" class="btn btn-success" ng-click="updateAvatar(avatar)" translate>apply</button>
+    <uib-alert type="success" ng-show="avatarUpload">{{ 'avatar' | translate }} {{ 'changed' | translate}}</uib-alert>
 </div>
 <div class="col-lg-6 settings-avatar">
-    <label for="background">Background</label><br>
+    <label for="background" translate>background</label><br>
     <img class="background" src="/user/background/{{userId}}" id="background"
          onerror="this.src = '/dist/img/not-available.png'" ng-show="background.base64 == null">
     <img ng-src="data:{{background.filetype}};base64,{{background.base64}}" ng-show="background.base64 != null">
     <button class="upload btn btn-default">
-        Change
+        {{ 'change' | translate}}
         <input class="btn btn-default" name="background" type="file" ng-model="background" accept="image/*"
                base-sixty-four-input>
     </button>
-    <button ng-show="background.base64 != null" class="btn btn-success" ng-click="updateBackground(background)">Apply</button>
-    <uib-alert type="success" ng-show="avatarBackground">Background changed</uib-alert>
+    <button ng-show="background.base64 != null" class="btn btn-success" ng-click="updateBackground(background)" translate>apply</button>
+    <uib-alert type="success" ng-show="avatarBackground">{{ 'background' | translate }} {{ 'changed' | translate}}</uib-alert>
 </div>
-

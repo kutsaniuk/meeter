@@ -14,17 +14,17 @@
                     <!--<button ng-show="editShow" class="btn btn-default follow" ng-click="editUserProfile(userId)">Edit</button>-->
                     <div ng-show="followShow" class="pull-right show-hide follow">
                         <button class="btn" ng-class="{'btn-primary': noFollow}" ng-show="noFollow"
-                                ng-click="followOnUser(user.id)">Follow
+                                ng-click="followOnUser(user.id)">{{ 'follow' | translate }}
                         </button>
                         <button class="btn" ng-class="{' btn-success': follow}" ng-show="follow"
-                                ng-click="followOnUser(user.id)">Following
+                                ng-click="followOnUser(user.id)">{{ 'unFollow' | translate}}
                         </button>
                     </div>
                     <div class="name">{{user.name}}</div>
                     <div class="info">
-                        <span><b>{{events.total_items}}</b> events</span>
-                        <span ng-click="openFollowers()"><b>{{followers.total_items}}</b> followers</span>
-                        <span ng-click="openFollowing()"><b>{{userFollowing.total_items}}</b> following</span>
+                        <span><b>{{events.total_items}}</b> {{ '_events' | translate }}</span>
+                        <span ng-click="openFollowers()"><b>{{followers.total_items}}</b> {{ 'followers' | translate }}</span>
+                        <span ng-click="openFollowing()"><b>{{userFollowing.total_items}}</b> {{ 'following' | translate }}</span>
                     </div>
                 </div>
             </div>

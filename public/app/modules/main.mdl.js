@@ -13,13 +13,14 @@
             'base64',
             'naif.base64',
             'ngScroller',
+            'pascalprecht.translate',
             'customFilters'
         ])
         .config(configure)
         .run(run);
 
-    configure.$inject = ['$stateProvider', '$urlRouterProvider'];
-    function configure($stateProvider, $urlRouterProvider) {
+    configure.$inject = ['$stateProvider', '$urlRouterProvider', '$translateProvider'];
+    function configure($stateProvider, $urlRouterProvider, $translateProvider) {
 
         $urlRouterProvider.otherwise(function ($injector) {
             var $state = $injector.get("$state");
@@ -38,16 +39,35 @@
                 controller: 'AuthCtrl'
             });
 
+        $translateProvider.useStaticFilesLoader({
+            prefix: '/app/resources/lang/',
+            suffix: '.json'
+        });
+
     }
 
-    run.$inject = ['$rootScope', '$cookieStore', '$state', '$location', '$http'];
-    function run($rootScope, $cookieStore, $state, $location, $http) {
+    run.$inject = ['$rootScope', '$cookieStore', '$state', '$translate', '$http', 'UserService'];
+    function run($rootScope, $cookieStore, $state, $translate, $http, UserService) {
         // keep user logged in after page refresh
         $rootScope.globals = $cookieStore.get('globals') || {};
+
+        var getUserById = function (id) {
+
+            var getUserSuccess = function (response) {
+                $translate.use(response.data.language);
+            };
+
+            var getUserFailed = function (response) {
+                alert(response.status);
+            };
+
+            UserService.getById(id).then(getUserSuccess, getUserFailed);
+        };
 
         if ($rootScope.globals.currentUser) {
             $http.defaults.headers.common['Authorization'] = 'Basic ' + $rootScope.globals.currentUser.authdata.id;
             $state.go('main.user.feed');
+            getUserById($rootScope.globals.currentUser.id);
         }
 
         $rootScope.$on('$locationChangeStart', function (event, next, current) {

@@ -10,6 +10,8 @@
             </button>
             <a class="navbar-brand" href="#/"><span>m</span>eeter</a>
         </div>
+        <a href="" ng-if="langShow" class="pull-right" style="padding: 15px" ng-click="setLang('en')">Switch to English</a>
+        <a href="" ng-if="!langShow" class="pull-right" style="padding: 15px" ng-click="setLang('uk')">Переключити на українську мову</a>
     </div>
 </nav>
 
@@ -48,24 +50,24 @@
         <form class="navbar-form" role="search" ng-init="loginShow = true" ng-show="loginShow">
             <div class="form-group">
                 <uib-alert ng-show="authFailed" type="danger">Username or password incorrect.</uib-alert>
-                <input type="text" class="form-control" placeholder="username" ng-model="username" pattern="^[a-zA-Z][a-zA-Z0-9-_\.]{1,20}$"><br><br>
-                <input type="password" class="form-control" placeholder="password" ng-model="password"><br><br>
-                <button class="btn btn-default" ng-click="login()">Log in</button>
+                <input type="text" class="form-control" placeholder="{{ 'username' | translate}}" ng-model="username" pattern="^[a-zA-Z][a-zA-Z0-9-_\.]{1,20}$"><br><br>
+                <input type="password" class="form-control" placeholder="{{ 'password' | translate}}" ng-model="password"><br><br>
+                <button class="btn btn-default" ng-click="login(username, password)"><span translate>login</span></button>
                 <br><br>
-                Don't have an account? <a href="" ng-click="signupShow = true; loginShow = false">Sign up</a>
+                <span translate>doNotHaveAcc</span> <a href="" ng-click="signupShow = true; loginShow = false"><span translate>signUp</span></a>
             </div>
         </form>
         <form name="registerForm" class="navbar-form" role="search" ng-show="signupShow" novalidate>
             <div class="form-group">
-                <input type="email" class="form-control" placeholder="email" ng-model="user.email" required><br><br>
-                <input type="text" class="form-control" placeholder="full name" ng-model="user.name" pattern="^[A-zА-яі ]*$" required><br><br>
-                <input type="text" class="form-control" placeholder="username" ng-model="user.username" pattern="^[a-zA-Z][a-zA-Z0-9-_\.]{1,20}$" ng-change="checkUsername(user.username)" required>
+                <input type="email" class="form-control" placeholder="{{ 'email' | translate}}" ng-model="user.email" required><br><br>
+                <input type="text" class="form-control" placeholder="{{ 'fullName' | translate}}" ng-model="user.name" pattern="^[A-zА-яі ]*$" required><br><br>
+                <input type="text" class="form-control" placeholder="{{ 'username' | translate}}" ng-model="user.username" pattern="^[a-zA-Z][a-zA-Z0-9-_\.]{1,20}$" ng-change="checkUsername(user.username)" required>
                 <i class="glyphicon" ng-class="{'glyphicon-ok': usernameCheked, 'glyphicon-remove': !usernameCheked}"></i>
                 <br><br>
-                <input type="password" name="password" class="form-control" placeholder="password" ng-model="user.password" pattern="^(?=.*\d)(?=.*[A-z])(?=.*[A-z])(?!.*\s).*$" uib-popover="Min length 6 symbols" popover-trigger="focus" popover-placement="right" required><br><br>
-                <button class="btn btn-default" ng-click="register()">Sign up</button>
+                <input type="password" name="password" class="form-control" placeholder="{{ 'password' | translate}}" ng-model="user.password" pattern="^(?=.*\d)(?=.*[A-z])(?=.*[A-z])(?!.*\s).*$" uib-popover="Min length 6 symbols" popover-trigger="focus" popover-placement="right" required><br><br>
+                <button class="btn btn-default" ng-click="register()" translate="">signUp</button>
                 <br><br>
-                Have an account? <a href="" ng-click="loginShow = true; signupShow = false">Log in</a>
+                <span translate>haveAnAccount</span> <a href="" ng-click="loginShow = true; signupShow = false"><span translate>login</span></a>
             </div>
         </form>
     </center>

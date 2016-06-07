@@ -5,10 +5,10 @@
         .module('main')
         .controller('UserProfileSettingsCtrl', UserProfileSettingsCtrl);
 
-    function UserProfileSettingsCtrl($scope, $rootScope, $cookieStore, CredentialsService, UserService, AuthService, $state) {
+    function UserProfileSettingsCtrl($scope, $rootScope, $cookieStore, $translate, CredentialsService, UserService, AuthService, $state) {
         var sc = $scope;
 
-        $rootScope.globals = $cookieStore.get('globals') || {};
+        // $rootScope.globals = $cookieStore.get('globals') || {};
 
         sc.userId = $rootScope.globals.currentUser.id;
 
@@ -120,6 +120,21 @@
                     sc.usernameCheked = false;
                 });
         };
+        
+        sc.setLang = function (lang) {
+            var success = function (response) {
+                $translate.use(response.data.language);
+            };
+            var failed = function () {
+
+            };
+
+            var _lang = {
+                'id': sc.userId,
+                'language': sc.user.language
+            };
+            UserService.update(_lang, 'lang').then(success, failed);
+        }
 
     }
 })();

@@ -7,7 +7,7 @@ class IndexController extends Controller
 {
     public function indexAction($id)
     {
-        echo "Welcome!";
+//        phpinfo();
     }
 
 }

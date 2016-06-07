@@ -75,7 +75,7 @@
             var getEventSuccess = function (response) {
                 sc.event = response.data;
                 sc.getUserById(response.data.user_id);
-                sc.getEventCommentsById(id, 1, 15);
+                sc.getEventCommentsById(id, 1, 100);
                 sc.getEventLikesById(id);
                 sc.getFollowingById(sc.currentUser.id);
                 sc.getEventMembersById(id);

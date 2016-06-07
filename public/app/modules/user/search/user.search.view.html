@@ -3,7 +3,7 @@
         <div class="input-group">
             <span class="input-group-addon"><i class="glyphicon glyphicon-search"></i></span>
             <input type="text" class="form-control" ng-model="name" ng-enter="search(name)"
-            placeholder="Start typing any word">
+            placeholder="{{ 'searchPage' | translate}}">
         </div>
     </div>
 </div>
@@ -12,9 +12,9 @@
 <div class="row no-margin" ng-show="events.total_items != 0 && usersLimit == 4">
     <div class="container-fluid tools">
         <div class="title-block">
-            Events <span class="sub">{{events.total_items}}</span>
+            {{ 'events' | translate}} <span class="sub">{{events.total_items}}</span>
             <span class="pull-right show_more" ng-if="events.total_items > 3" ng-hide="events.items.length > 3" ng-click="getEventsByName(1, 9, name)">
-                <a href="">Show more</a>
+                <a href="" translate>showMore</a>
                 <i class="glyphicon glyphicon-menu-right"></i>
             </span>
         </div>
@@ -93,9 +93,9 @@
 <div class="row no-margin" ng-show="users.total_items != 0 && eventsLimit == 3">
     <div class="container-fluid tools">
         <div class="title-block">
-            Users <span class="sub">{{users.total_items}}</span>
+            {{ 'users' | translate}} <span class="sub">{{users.total_items}}</span>
             <span class="pull-right show_more" ng-show="users.items.length > 4" ng-hide="users.items.length > 4" ng-click="getUserByUsername(1, 9, name)">
-                <a href="">Show more</a>
+                <a href="" translate>showMore</a>
                 <i class="glyphicon glyphicon-menu-right"></i>
             </span>
         </div>

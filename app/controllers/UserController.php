@@ -67,7 +67,7 @@ class UserController extends Controller
             'email' => $_user->email,
             'created' => $_user->created,
             'active' => $_user->active,
-//            'events' => $events
+            'language' => $_user->language
         ));
 
         $response = new Response();
@@ -264,6 +264,13 @@ WHERE User.id='$_user->id'");
             $user = $this->
             modelsManager->
             createQuery("UPDATE User SET User.password='$password' WHERE User.id='$_user->id'");
+        }
+
+        if ($type == 'lang') {
+            $language = $_user->language;
+            $user = $this->
+            modelsManager->
+            createQuery("UPDATE User SET User.language='$language' WHERE User.id='$_user->id'");
         }
 
         $response = new Response();

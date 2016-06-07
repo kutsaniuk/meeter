@@ -1,0 +1,76 @@
+{
+  "login": "Увійти",
+  "doNotHaveAcc": "Ще не зареєстровані?",
+  "signUp": "Зареєструватися",
+  "haveAnAccount": "Вже зареєстровані?",
+  "profile": "Профіль",
+  "settings": "Налаштування",
+  "logOut": "Вийти",
+
+  "all": "Усі",
+  "actual": "Актуальне",
+  "fun": "Розвага",
+  "past": "Минуле",
+  "social": "Соціальне",
+
+  "search": "Пошук",
+  "password": "Пароль",
+  "username": "Ім’я користувача",
+  "email": "Ел. пошта",
+  "fullName": "Повне ім’я",
+
+  "previous": "Попередня",
+  "next": "Наступна",
+
+  "_events": "події",
+  "events": "Події",
+  "followers": "підписники",
+  "following": "підписки",
+  "follow": "Підписатися",
+  "unFollow": "Відписатися",
+
+  "edit": "Редагувати",
+  "language": "Мова",
+
+  "general": "Загальне",
+  "avatar": "Аватар",
+  "background": "Фон",
+  "change": "Змінити",
+  "update": "Оновити",
+  "changed": "змінено",
+  "apply": "Застосовувати",
+
+  "old": "Старий",
+  "new": "Новий",
+  "repeat": "Повторіть",
+  "failedPassword": "Неправильний пароль",
+  "passwordRepeatFailed": "Паролі не збігаються",
+  "success": "Паролі збігаються",
+
+  "name": "Назва",
+  "location": "Місце",
+  "description": "Опис",
+  "time": "Час",
+  "date": "Дата",
+  "type": "Тип",
+  "image": "Фото",
+  "create": "Створити",
+  "upload": "Завантажити",
+  "browse": "Огляд",
+
+  "searchPage": "Почніть вводити будь-яке слово",
+  "users": "Люди",
+  "showMore": "Показати більше",
+
+  "DoNotHaveFollowing": "Нема підписок",
+  "DoNotHaveFollowers": "Нема підписників",
+
+  "DoNotHaveEvents": "Нема подій",
+
+  "organizer": "Організатор",
+  "members": "Учасники",
+  "comments": "Коментарі",
+  "enterComment": "Введіть коментар",
+  "join": "Приєднатися",
+  "joined": "Приєднався"
+}

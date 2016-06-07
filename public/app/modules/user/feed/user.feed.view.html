@@ -3,15 +3,15 @@
         <div class="col-lg-12">
             <div class="btn-group left btn-radio">
                 <label class="btn btn-default type" ng-model="eventType" uib-btn-radio=""
-                       ng-click="getPageEvents(1, 9, eventType)">All</label>
+                       ng-click="getPageEvents(1, 9, eventType)"><span translate>all</span></label>
                 <label class="btn btn-default type" ng-model="eventType" uib-btn-radio="'actual'"
-                       ng-click="getPageEvents(1, 9, eventType)">Actual</label>
-                <label class="btn btn-default type" ng-model="eventType" uib-btn-radio="'friends'"
-                       ng-click="getPageEvents(1, 9, eventType)">Friends</label>
-                <label class="btn btn-default type" ng-model="eventType" uib-btn-radio="'past'"
-                       ng-click="getPageEvents(1, 9, eventType)">Past</label>
+                       ng-click="getPageEvents(1, 9, eventType)"><span translate>actual</span></label>
+                <label class="btn btn-default type" ng-model="eventType" uib-btn-radio="'fun'"
+                       ng-click="getPageEvents(1, 9, eventType)"><span translate>fun</span></label>
+                <!--<label class="btn btn-default type" ng-model="eventType" uib-btn-radio="'past'"-->
+                       <!--ng-click="getPageEvents(1, 9, eventType)"><span translate>past</span></label>-->
                 <label class="btn btn-default type" ng-model="eventType" uib-btn-radio="'social'"
-                       ng-click="getPageEvents(1, 9, eventType)">Social</label>
+                       ng-click="getPageEvents(1, 9, eventType)"><span translate>social</span></label>
             </div>
             <!--<div class="btn-group right">-->
                 <!--<label class="btn btn-default glyphicon glyphicon-th" ng-model="size" ng-click="size = 4"-->
@@ -78,7 +78,7 @@
         </div>
         <div class="row">
             <div class="col-lg-12">
-                <uib-pager total-items="events.total_items" ng-model="currentPage"
+                <uib-pager previous-text="{{ 'previous' | translate }}" next-text="{{ 'next' | translate}}" total-items="events.total_items" ng-model="currentPage"
                            ng-change="getPageEvents(currentPage, 9)" items-per-page="9"></uib-pager>
             </div>
         </div>

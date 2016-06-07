@@ -19,5 +19,7 @@ class User extends Model
     public $active;
 
     public $created;
+
+    public $language;
     
 }
