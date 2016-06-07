@@ -1,17 +1,11 @@
 <div class="evene-new">
     <form name="eventForm">
-        <input class="name" type="text" name="name" ng-model="event.name" placeholder="Name">
+        <input class="name" type="text" name="name" ng-model="event.name" placeholder="Name" pattern="^[A-zА-яі0-9 ]*$">
         <br>
         <span class="location">
         <i class="glyphicon glyphicon-map-marker"></i>
-         <input type="text" ng-model="event.location" placeholder="Location"
-                uib-typeahead="address for address in getLocation($viewValue)" typeahead-loading="loadingLocations"
-                typeahead-no-results="noResults">
+         <input type="text" ng-model="event.location" placeholder="Location" pattern="^[A-zА-яі0-9 ]*$">
         </span>
-        <!--<i ng-show="loadingLocations" class="glyphicon glyphicon-refresh"></i>-->
-        <!--<span ng-show="noResults">-->
-        <!--<i class="glyphicon glyphicon-remove"></i> No Results-->
-        <!--</span>-->
         <br>
         <textarea class="description" name="description" ng-model="event.description" placeholder="Description"
                   rows="10"></textarea> <br>
@@ -22,7 +16,7 @@
         </div>
         <div class="col-lg-3">
             <label>Type</label><br>
-            <select name="type" ng-model="event.type">
+            <select name="type" class="form-control" ng-model="event.type">
                 <option value="social">Social</option>
                 <option value="entertainment">Entertainment</option>
             </select>
@@ -37,12 +31,12 @@
         <div class="col-lg-3">
             <label>Image</label>
             <img ng-if="event.image !== null" ng-src="data:{{event.image.filetype}};base64,{{event.image.base64}}">
-            <div class="upload">
-                <input class="btn btn-default" name="image" type="file" ng-model="event.image" accept="image/*"
-                       base-sixty-four-input>
+            <button class="upload btn btn-default">
                 <span ng-show="event.image == null">Upload</span>
                 <span ng-show="event.image != null">Change</span>
-            </div>
+                <input class="btn btn-default" name="image" type="file" ng-model="event.image" accept="image/*"
+                       base-sixty-four-input>
+            </button>
         </div>
         <button class="btn btn-success create" ng-click="createEvent(event)">Create</button>
     </form>

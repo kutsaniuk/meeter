@@ -1,104 +1,3 @@
-<!--<div class="col-lg-12 profile" ng-init="getEventById(eventId)">-->
-    <!--<div class="panel panel-default">-->
-        <!--<div class="panel-body">-->
-            <!--<div class="col-lg-8" style="background-image: url('/event/image/{{event.id}}'); height: 495px;">-->
-                <!--<div class="profile-container">-->
-                    <!--<div class="name">{{event.name}}</div>-->
-                    <!--<div class="location"><i class="glyphicon glyphicon-map-marker"></i> {{event.location}}</div>-->
-                    <!--<div class="description">{{event.description}}</div>-->
-                    <!--<div class="type" ng-show="joinShow">-->
-                        <!--<div class="join" ng-click="joinToEvent()">-->
-                            <!--<button class="btn"-->
-                                    <!--ng-class="{'btn-default': unJoin, 'btn-success': join}">-->
-                                <!--<span ng-show="join">Joined</span>-->
-                                <!--<span ng-show="unJoin">Join</span>-->
-                            <!--</button>-->
-                        <!--</div>-->
-                    <!--</div>-->
-                    <!--<div class="profile-like-container">-->
-                        <!--<div class="like" ng-click="createLike()"><i class="glyphicon"-->
-                                                                     <!--ng-class="{'glyphicon-heart-empty': noLike, 'glyphicon-heart': like}"></i><span>{{likes.length}}</span>-->
-                        <!--</div>-->
-                    <!--</div>-->
-                <!--</div>-->
-            <!--</div>-->
-            <!--<div class="col-lg-4">-->
-                <!--<div style="margin-top: 15px">-->
-                    <!--<table class="member">-->
-                        <!--<tr>-->
-                            <!--<td>-->
-                                <!--<a href="#/user/{{user.id}}">-->
-                                    <!--<div class="crop">-->
-                                        <!--<img src="/user/avatar/{{user.id}}" align="left">-->
-                                    <!--</div>-->
-                                <!--</a>-->
-                            <!--</td>-->
-                            <!--<td class="username">-->
-                                <!--<a href="#/user/{{user.id}}">{{user.username}}</a>-->
-                                <!--<div>Organizer</div>-->
-                            <!--</td>-->
-                            <!--<td>-->
-                                <!--<div ng-show="followShow" class="pull-right show-hide">-->
-                                    <!--<button class="btn" ng-class="{'btn-primary': noFollow}" ng-show="noFollow"-->
-                                            <!--ng-click="followOnUser(user.id)">Follow-->
-                                    <!--</button>-->
-                                    <!--<button class="btn" ng-class="{' btn-success': follow}" ng-show="follow"-->
-                                            <!--ng-click="followOnUser(user.id)">Following-->
-                                    <!--</button>-->
-                                <!--</div>-->
-                            <!--</td>-->
-                        <!--</tr>-->
-                    <!--</table>-->
-                <!--</div>-->
-                <!--<hr>-->
-                <!--<div class="title-block">-->
-                    <!--Members <span class="sub">{{members.length}}</span>-->
-                <!--</div>-->
-                <!--<div ng-repeat="member in members">-->
-                    <!--<table class="member">-->
-                        <!--<tr>-->
-                            <!--<td>-->
-                                <!--<a href="#/user/{{member.user_id}}">-->
-                                    <!--<div class="crop">-->
-                                        <!--<img src="/user/avatar/{{member.user_id}}" align="left">-->
-                                    <!--</div>-->
-                                <!--</a>-->
-                            <!--</td>-->
-                            <!--<td class="username">-->
-                                <!--<a href="#/user/{{member.user_id}}">{{member.username}}</a>-->
-                            <!--</td>-->
-                        <!--</tr>-->
-                    <!--</table>-->
-                <!--</div>-->
-            <!--</div>-->
-            <!--<div class="col-lg-12" ng-init="viewAllCommentsShow = true" style="background-color: #fff">-->
-
-                <!--<hr>-->
-                <!--<div class="title-block">-->
-                    <!--Comments <span class="sub">{{comments.total_items}}</span>-->
-                <!--</div>-->
-                <!--<a href="" class="view-comments" ng-show="viewAllCommentsShow && comments.total_items > 15"-->
-                   <!--ng-click="getEventCommentsById(eventId, 1, comments.total_items); viewAllCommentsShow = false">View-->
-                    <!--all {{comments.total_items}} comments</a>-->
-                <!--<a href="" class="view-comments" ng-show="!viewAllCommentsShow"-->
-                   <!--ng-click="getEventCommentsById(eventId, 1, 15); viewAllCommentsShow = true">View new comments</a>-->
-                <!--<div style="height: 275px; overflow-y: scroll">-->
-                    <!--<div ng-repeat="item in comments.items" style="padding: 5px">-->
-                        <!--<a href="#/user/{{item.id}}"><img src="/user/avatar/{{item.id}}" alt="" style="width: 25px"-->
-                                                          <!--onerror="this.src = '/dist/img/user.profile.avatar.default.svg'"></a>-->
-                        <!--<a href="#/user/{{item.id}}"><b>{{item.username}}</b></a>-->
-                        <!--{{item.comment}}-->
-                    <!--</div>-->
-                <!--</div>-->
-                <!--<hr>-->
-                <!--<input type="text" class="form-control" ng-model="comment" placeholder="Add a new comment"-->
-                       <!--ng-enter="createComment()">-->
-                <!--<br>-->
-            <!--</div>-->
-        <!--</div>-->
-    <!--</div>-->
-<!--</div>-->
-
 <div class="profile profile-event" ng-init="getEventById(eventId)">
     <div class="panel panel-default" style="background-image: url('/event/image/{{event.id}}')">
         <div class="panel-body profile-background"></div>
@@ -106,10 +5,15 @@
     <div class="container-fluid events">
         <div class="row">
             <div class="col-lg-12">
-                <div class="col-lg-6">
+                <div class="col-lg-4">
                     <div class="name">{{event.name}}</div>
                     <div class="location"><i class="glyphicon glyphicon-map-marker"></i> {{event.location}}</div>
+
                     <div class="description">{{event.description}}</div>
+                </div>
+                <div class="col-lg-2">
+                    <div class="time">{{event.date | dateInMillis | date: 'd MMM y'}}</div>
+                    <div class="time">{{event.date | dateInMillis | date: 'H:mm'}}</div>
                 </div>
                 <div class="col-lg-6">
                     <table class="member organizer">
@@ -130,7 +34,7 @@
                                     <button class="btn" ng-class="{'btn-primary': noFollow}" ng-show="noFollow"
                                             ng-click="followOnUser(user.id)">Follow
                                     </button>
-                                    <button class="btn" ng-class="{' btn-success': follow}" ng-show="follow"
+                                    <button class="btn" ng-class="{'btn-default': follow}" ng-show="follow"
                                             ng-click="followOnUser(user.id)">Following
                                     </button>
                                 </div>
@@ -138,7 +42,7 @@
                         </tr>
                     </table>
                 </div>
-                <div class="join" ng-click="joinToEvent()">
+                <div class="join" ng-click="joinToEvent()" ng-show="joinShow">
                     <button class="btn pull-right"
                             ng-class="{'btn-default': unJoin, 'btn-success': join}">
                         <span ng-show="join">Joined</span>
@@ -187,7 +91,7 @@
                             </td>
                             <td ng-repeat="user in likes | limitTo: 10">
                                 <a href="#/user/{{user.user_id}}">
-                                    <div class="crop" uib-tooltip="{{user.username}}">
+                                    <div class="user_crop" uib-tooltip="{{user.username}}">
                                         <img src="/user/avatar/{{user.user_id}}"
                                              onerror="this.src = '/dist/img/user.profile.avatar.default.svg'">
                                     </div>
@@ -207,12 +111,22 @@
                 <!--<a href="" class="view-comments" ng-show="!viewAllCommentsShow"-->
                    <!--ng-click="getEventCommentsById(eventId, 1, 15); viewAllCommentsShow = true">View new comments</a>-->
                 <div class="comments" ng-class="{ 'comments-scroll': comments.total_items > 10}">
-                    <div ng-repeat="item in comments.items" style="padding: 5px">
-                        <a href="#/user/{{item.id}}"><img src="/user/avatar/{{item.id}}" alt="" style="width: 25px"
-                                                          onerror="this.src = '/dist/img/user.profile.avatar.default.svg'"></a>
-                        <a href="#/user/{{item.id}}"><b>{{item.username}}</b></a>
-                        {{item.comment}}
-                    </div>
+                    <table>
+                        <tr ng-repeat="item in comments.items">
+                            <td>
+                                <a href="#/user/{{item.id}}">
+                                    <div class="user_crop">
+                                        <img src="/user/avatar/{{item.id}}" alt="{{item.username}}"
+                                             onerror="this.src = '/dist/img/user.profile.avatar.default.svg'">
+                                    </div>
+                                </a>
+                            </td>
+                            <td>
+                                <a href="#/user/{{item.id}}">{{item.username}}</a>
+                                {{item.comment}}
+                            </td>
+                        </tr>
+                    </table>
                 </div>
                 <hr>
                 <input type="text" class="form-control" ng-model="comment" placeholder="Add a new comment"

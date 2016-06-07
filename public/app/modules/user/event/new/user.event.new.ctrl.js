@@ -14,7 +14,8 @@
 
         sc.event = {
             'date': new Date(),
-            'time': new Date().setHours(0, 0)
+            'time': new Date(),
+            'type': 'entertainment'
         };
 
         sc.dateOptions = {
@@ -24,37 +25,28 @@
             startingDay: 1
         };
 
-        sc.getLocation = function (val) {
-            return $http.get('//maps.googleapis.com/maps/api/geocode/json', {
-                params: {
-                    address: val,
-                    sensor: false
-                },
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
-                }
-            }).then(function (response) {
-                return response.data.results.map(function (item) {
-                    return item.formatted_address;
-                });
-            });
-        };
-
         sc.createEvent = function (event) {
             event.date.setHours(event.time.getHours() + 3, event.time.getMinutes());
 
-            var _event = {
-                'name': event.name,
-                'date': event.date,
-                'description': event.description,
-                'type': event.type,
-                'user_id': parseInt(sc.currentUser.id),
-                'image': event.image.base64,
-                'location': event.location,
-                'created': new Date().toISOString()
-            };
-            EventService.create(_event);
-            sc.closeThisDialog(true);
+            if (event.name != ''
+                && event.description != ''
+                && event.image != null
+                && event.location != ''
+                && sc.eventForm.$valid) {
+                var _event = {
+                    'name': event.name,
+                    'date': event.date,
+                    'description': event.description,
+                    'type': event.type,
+                    'user_id': parseInt(sc.currentUser.id),
+                    'image': event.image.base64,
+                    'location': event.location,
+                    'created': new Date().toISOString()
+                };
+                
+                EventService.create(_event);
+                sc.closeThisDialog(true);
+            }
         };
 
     }

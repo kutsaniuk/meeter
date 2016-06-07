@@ -8,7 +8,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="feed"><span>m</span>eeter</a>
+            <a class="navbar-brand" href="#/"><span>m</span>eeter</a>
         </div>
     </div>
 </nav>
@@ -48,19 +48,21 @@
         <form class="navbar-form" role="search" ng-init="loginShow = true" ng-show="loginShow">
             <div class="form-group">
                 <uib-alert ng-show="authFailed" type="danger">Username or password incorrect.</uib-alert>
-                <input type="name" class="form-control" placeholder="username" ng-model="username"><br><br>
+                <input type="text" class="form-control" placeholder="username" ng-model="username" pattern="^[a-zA-Z][a-zA-Z0-9-_\.]{1,20}$"><br><br>
                 <input type="password" class="form-control" placeholder="password" ng-model="password"><br><br>
                 <button class="btn btn-default" ng-click="login()">Log in</button>
                 <br><br>
                 Don't have an account? <a href="" ng-click="signupShow = true; loginShow = false">Sign up</a>
             </div>
         </form>
-        <form class="navbar-form" role="search" ng-show="signupShow">
+        <form name="registerForm" class="navbar-form" role="search" ng-show="signupShow" novalidate>
             <div class="form-group">
-                <input type="email" class="form-control" placeholder="email" ng-model="user.email"><br><br>
-                <input type="text" class="form-control" placeholder="full name" ng-model="user.name"><br><br>
-                <input type="text" class="form-control" placeholder="username" ng-model="user.username"><br><br>
-                <input type="password" class="form-control" placeholder="password" ng-model="user.password"><br><br>
+                <input type="email" class="form-control" placeholder="email" ng-model="user.email" required><br><br>
+                <input type="text" class="form-control" placeholder="full name" ng-model="user.name" pattern="^[A-zА-яі ]*$" required><br><br>
+                <input type="text" class="form-control" placeholder="username" ng-model="user.username" pattern="^[a-zA-Z][a-zA-Z0-9-_\.]{1,20}$" ng-change="checkUsername(user.username)" required>
+                <i class="glyphicon" ng-class="{'glyphicon-ok': usernameCheked, 'glyphicon-remove': !usernameCheked}"></i>
+                <br><br>
+                <input type="password" name="password" class="form-control" placeholder="password" ng-model="user.password" pattern="^(?=.*\d)(?=.*[A-z])(?=.*[A-z])(?!.*\s).*$" uib-popover="Min length 6 symbols" popover-trigger="focus" popover-placement="right" required><br><br>
                 <button class="btn btn-default" ng-click="register()">Sign up</button>
                 <br><br>
                 Have an account? <a href="" ng-click="loginShow = true; signupShow = false">Log in</a>

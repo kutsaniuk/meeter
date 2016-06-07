@@ -53,6 +53,28 @@ Event.description, Event.time, Event.user_id FROM Event WHERE Event.user_id = $i
 Event.name, Event.location, Event.date, 
 Event.description, Event.time, Event.user_id FROM Event WHERE Event.user_id = $id AND type = '$type'");
 
+        if ($type == 'actual' && empty($id)) $_events = $this->
+        modelsManager->
+        createQuery("SELECT Event.id, 
+Event.name, Event.location, Event.date, 
+Event.description, Event.time, Event.user_id FROM Event ORDER BY Event.date ASC");
+
+        if ($type == 'actual' && !empty($id)) $_events = $this->
+        modelsManager->
+        createQuery("SELECT Event.id, 
+Event.name, Event.location, Event.date, 
+Event.description, Event.time, Event.user_id FROM Event WHERE Event.user_id = $id ORDER BY Event.date ASC");
+
+        $dateTimeZone = new DateTimeZone('Europe/Kiev');
+        $now = new DateTime();
+        $now->setTimezone($dateTimeZone);
+        $now->format('Y\-m\-d\ h:i:s');
+        if ($type == 'past') $_events = $this->
+        modelsManager->
+        createQuery("SELECT Event.id, 
+Event.name, Event.location, Event.date, 
+Event.description, Event.time, Event.user_id FROM Event WHERE Event.date < $now ORDER BY Event.date ASC");
+
         $paginator = new PaginatorModel(
             array(
                 "data" => $_events->execute(),

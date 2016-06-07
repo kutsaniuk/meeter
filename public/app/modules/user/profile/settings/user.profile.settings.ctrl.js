@@ -12,6 +12,8 @@
 
         sc.userId = $rootScope.globals.currentUser.id;
 
+        sc.checkUsernameShow = false;
+
         sc.getUserById = function (id) {
 
             var getUserSuccess = function (response) {
@@ -49,7 +51,7 @@
 
             sc.repeatPasswordCheck(user);
 
-            if (!sc.failedPassword && sc.repeatPasswordChecked && user.newPassword != null && user.repeatNewPassword != null) {
+            if (sc.passwordForm.$valid && !sc.failedPassword && sc.repeatPasswordChecked && user.newPassword != null && user.repeatNewPassword != null) {
                 UserService.update(sc._user, 'password'); 
                 alert("Changed!");
             }
@@ -63,7 +65,7 @@
             var failed = function () {
 
             };
-            UserService.update(user, 'general').then(success, failed);
+            if (sc.userProfileEditForm.$valid && sc.usernameCheked) UserService.update(user, 'general').then(success, failed);
         };
 
         sc.getTab = function (tab) {
@@ -107,7 +109,17 @@
 
             };
             UserService.updateBackground(background).then(success, failed);
-        }
+        };
+
+        sc.checkUsername = function (username) {
+            sc.checkUsernameShow = true;
+            AuthService.check(username)
+                .then(function successCallback(response) {
+                    sc.usernameCheked = true;
+                }, function errorCallback(response) {
+                    sc.usernameCheked = false;
+                });
+        };
 
     }
 })();

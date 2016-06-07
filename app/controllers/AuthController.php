@@ -59,7 +59,7 @@ class AuthController extends Controller
     /**
      * @Post("/register")
      */
-    public function registerAction() // DATE !!!
+    public function registerAction()
     {
         $user = new User();
 
@@ -79,5 +79,31 @@ class AuthController extends Controller
             return $response->setStatusCode(200);
         else
             return $response->setStatusCode(409);
+    }
+
+    /**
+     * @Get("check")
+     */
+    public function checkAction(){
+        $username = (string)$_GET["username"];
+
+        $query = "SELECT * FROM User WHERE User.username = '$username'";
+        $users = $this->modelsManager->createQuery($query)->execute();
+
+        $_users = array();
+
+        foreach ($users as $user)
+            $_users[] = $user;
+
+        $response = new Response();
+
+        if ($_users != null) {
+            $response->setStatusCode(409);
+        }
+        else $response->setStatusCode(200);
+
+
+
+        return $response;
     }
 }

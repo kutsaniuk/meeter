@@ -15,6 +15,14 @@
             return $http.post(urlBase + '/register', user);
         };
 
+        this.check = function (username) {
+            return $http.get(urlBase + '/check', {
+                params: {
+                    username: username
+                }
+            });
+        };
+
     });
 
     angular

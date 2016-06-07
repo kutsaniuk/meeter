@@ -23,12 +23,21 @@
 
         sc.register = function () {
             sc.user.created = new Date().toISOString();
-
-            AuthService.register(sc.user)
+            
+            if (sc.registerForm.$valid && sc.usernameCheked) AuthService.register(sc.user)
                 .then(function successCallback(response) {
                     alert('success');
                 }, function errorCallback(response) {
                     alert('failed');
+                });
+        };
+        
+        sc.checkUsername = function (username) {
+            AuthService.check(username)
+                .then(function successCallback(response) {
+                    sc.usernameCheked = true;
+                }, function errorCallback(response) {
+                    sc.usernameCheked = false;
                 });
         };
 

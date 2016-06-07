@@ -109,12 +109,21 @@
 
         sc.register = function () {
             sc.user.created = new Date().toISOString();
-
-            AuthService.register(sc.user)
+            
+            if (sc.registerForm.$valid && sc.usernameCheked) AuthService.register(sc.user)
                 .then(function successCallback(response) {
                     alert('success');
                 }, function errorCallback(response) {
                     alert('failed');
+                });
+        };
+        
+        sc.checkUsername = function (username) {
+            AuthService.check(username)
+                .then(function successCallback(response) {
+                    sc.usernameCheked = true;
+                }, function errorCallback(response) {
+                    sc.usernameCheked = false;
                 });
         };
 
@@ -148,6 +157,14 @@
 
         this.register = function (user) {
             return $http.post(urlBase + '/register', user);
+        };
+
+        this.check = function (username) {
+            return $http.get(urlBase + '/check', {
+                params: {
+                    username: username
+                }
+            });
         };
 
     });
@@ -1141,7 +1158,8 @@
                         controller: 'UserProfileSettingsCtrl'
                     },
                     '@main.user.profile.settings': {
-                        templateUrl: 'app/modules/user/profile/settings/edit/user.profile.settings.edit.view.html'
+                        templateUrl: 'app/modules/user/profile/settings/edit/user.profile.settings.edit.view.html',
+                        controller: 'UserProfileSettingsCtrl'
                     }
                 }
             })
@@ -1149,7 +1167,8 @@
                 url: '/password',
                 views: {
                     '': {
-                        templateUrl: 'app/modules/user/profile/settings/password/user.profile.settings.password.view.html'
+                        templateUrl: 'app/modules/user/profile/settings/password/user.profile.settings.password.view.html',
+                        controller: 'UserProfileSettingsCtrl'
                     }
                 }
             });
@@ -1270,7 +1289,8 @@
 
         sc.event = {
             'date': new Date(),
-            'time': new Date().setHours(0, 0)
+            'time': new Date(),
+            'type': 'entertainment'
         };
 
         sc.dateOptions = {
@@ -1280,37 +1300,28 @@
             startingDay: 1
         };
 
-        sc.getLocation = function (val) {
-            return $http.get('//maps.googleapis.com/maps/api/geocode/json', {
-                params: {
-                    address: val,
-                    sensor: false
-                },
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
-                }
-            }).then(function (response) {
-                return response.data.results.map(function (item) {
-                    return item.formatted_address;
-                });
-            });
-        };
-
         sc.createEvent = function (event) {
             event.date.setHours(event.time.getHours() + 3, event.time.getMinutes());
 
-            var _event = {
-                'name': event.name,
-                'date': event.date,
-                'description': event.description,
-                'type': event.type,
-                'user_id': parseInt(sc.currentUser.id),
-                'image': event.image.base64,
-                'location': event.location,
-                'created': new Date().toISOString()
-            };
-            EventService.create(_event);
-            sc.closeThisDialog(true);
+            if (event.name != ''
+                && event.description != ''
+                && event.image != null
+                && event.location != ''
+                && sc.eventForm.$valid) {
+                var _event = {
+                    'name': event.name,
+                    'date': event.date,
+                    'description': event.description,
+                    'type': event.type,
+                    'user_id': parseInt(sc.currentUser.id),
+                    'image': event.image.base64,
+                    'location': event.location,
+                    'created': new Date().toISOString()
+                };
+                
+                EventService.create(_event);
+                sc.closeThisDialog(true);
+            }
         };
 
     }
@@ -1329,6 +1340,8 @@
         $rootScope.globals = $cookieStore.get('globals') || {};
 
         sc.userId = $rootScope.globals.currentUser.id;
+
+        sc.checkUsernameShow = false;
 
         sc.getUserById = function (id) {
 
@@ -1367,7 +1380,7 @@
 
             sc.repeatPasswordCheck(user);
 
-            if (!sc.failedPassword && sc.repeatPasswordChecked && user.newPassword != null && user.repeatNewPassword != null) {
+            if (sc.passwordForm.$valid && !sc.failedPassword && sc.repeatPasswordChecked && user.newPassword != null && user.repeatNewPassword != null) {
                 UserService.update(sc._user, 'password'); 
                 alert("Changed!");
             }
@@ -1381,7 +1394,7 @@
             var failed = function () {
 
             };
-            UserService.update(user, 'general').then(success, failed);
+            if (sc.userProfileEditForm.$valid && sc.usernameCheked) UserService.update(user, 'general').then(success, failed);
         };
 
         sc.getTab = function (tab) {
@@ -1425,7 +1438,17 @@
 
             };
             UserService.updateBackground(background).then(success, failed);
-        }
+        };
+
+        sc.checkUsername = function (username) {
+            sc.checkUsernameShow = true;
+            AuthService.check(username)
+                .then(function successCallback(response) {
+                    sc.usernameCheked = true;
+                }, function errorCallback(response) {
+                    sc.usernameCheked = false;
+                });
+        };
 
     }
 })();

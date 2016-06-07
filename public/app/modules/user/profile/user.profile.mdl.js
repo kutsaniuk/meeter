@@ -39,7 +39,8 @@
                         controller: 'UserProfileSettingsCtrl'
                     },
                     '@main.user.profile.settings': {
-                        templateUrl: 'app/modules/user/profile/settings/edit/user.profile.settings.edit.view.html'
+                        templateUrl: 'app/modules/user/profile/settings/edit/user.profile.settings.edit.view.html',
+                        controller: 'UserProfileSettingsCtrl'
                     }
                 }
             })
@@ -47,7 +48,8 @@
                 url: '/password',
                 views: {
                     '': {
-                        templateUrl: 'app/modules/user/profile/settings/password/user.profile.settings.password.view.html'
+                        templateUrl: 'app/modules/user/profile/settings/password/user.profile.settings.password.view.html',
+                        controller: 'UserProfileSettingsCtrl'
                     }
                 }
             });
