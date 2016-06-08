@@ -478,4 +478,23 @@ FROM Member JOIN User ON Member.user_id = User.id WHERE event_id = $id")->execut
         return $response;
     }
 
+    /**
+     * @Delete
+     */
+    public function deleteAction()
+    {
+        $_event = $this->request->getJsonRawBody();
+
+        $event = Event::findFirst("id = $_event->id AND user_id = $_event->user_id");
+
+        $response = new Response();
+
+        if ($event->delete())
+            $response->setStatusCode(200);
+        else
+            $response->setStatusCode(409);
+
+        return $response;
+    }
+
 }

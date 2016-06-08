@@ -87,5 +87,9 @@
                 return $http.post(urlBase + '/update', event);
             };
 
+            this.delete = function (event) {
+                return $http.post(urlBase + '/delete', event);
+            };
+
         });
 })();

@@ -406,6 +406,10 @@
                 return $http.post(urlBase + '/update', event);
             };
 
+            this.delete = function (event) {
+                return $http.post(urlBase + '/delete', event);
+            };
+
         });
 })();
 (function () {
@@ -967,6 +971,7 @@
                 sc.getFollowingById(sc.currentUser.id);
                 sc.followShow = sc.user.id != sc.currentUser.id;
                 sc.editShow = sc.user.id == sc.currentUser.id;
+                sc.removeShow = sc.user.id == sc.currentUser.id;
             };
 
             var getUserFailed = function (response) {
@@ -986,7 +991,7 @@
                 sc.getEventsFailed = true;
             };
 
-            EventService.getPage(page, 3, type, null, id).then(getEventsSuccess, getEventsFailed);
+            EventService.getPage(page, 9, type, null, id).then(getEventsSuccess, getEventsFailed);
         };
 
         sc.editUserProfile = function (id) {
@@ -1141,6 +1146,24 @@
                 showClose: true,
                 scope: $scope
             });
+        };
+        
+        sc.removeEvent = function (id) {
+            
+            var event = {
+                'id': id,
+                'user_id': sc.userId
+            };
+
+            var getEventsSuccess = function (response) {
+                sc.getUserEventsById(sc.userId, null, sc.currentPage);
+            };
+
+            var getEventsFailed = function (response) {
+
+            };
+
+            EventService.delete(event).then(getEventsSuccess, getEventsFailed);
         };
 
         sc.getUserById(sc.userId);
