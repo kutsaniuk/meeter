@@ -5,7 +5,7 @@
         .module('main')
         .controller('UserCtrl', UserCtrl);
 
-    function UserCtrl($scope, $rootScope, $location, $cookieStore, $translate, EventService, CredentialsService, ngDialog) {
+    function UserCtrl($scope, $rootScope, $location, $state, crAcl, EventService, CredentialsService, ngDialog) {
         var sc = $scope;
 
         sc.getEventsByName = function (page, limit, name) {
@@ -23,6 +23,8 @@
 
         sc.logout = function () {
             CredentialsService.ClearCredentials();
+            crAcl.setRole('ROLE_GUEST');
+            $state.go('main.auth');
         };
 
         // $rootScope.globals = $cookieStore.get('globals') || {};

@@ -16,8 +16,11 @@
                         templateUrl: 'app/modules/user/feed/user.feed.view.html',
                         controller: 'UserFeedCtrl'
                     }
+                },
+                data: {
+                    is_granted: ["ROLE_USER"]
                 }
             });
-        
+
     }
 })();

@@ -70,7 +70,11 @@
                                 </center>
                             </div>
                             <br>
-                            <div class="description_event">{{event.description}}</div>
+                            <div class="description_event">
+                                {{event.description}}
+                            </div>
+                            <!--<span ng-if="event.description.length > 54">...</span>-->
+                            <span ng-if="event.description.length > 54" ><a class="more" href="#/event/{{event.id}}" translate>more</a></span>
                         </div>
                     </div>
                 </center>

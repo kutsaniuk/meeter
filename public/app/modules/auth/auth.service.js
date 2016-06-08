@@ -31,13 +31,14 @@
     function (Base64, $http, $cookieStore, $rootScope) {
         var service = {};
  
-        service.SetCredentials = function (id, username, password) {
+        service.SetCredentials = function (id, username, password, role) {
             var authdata = Base64.encode(username + ':' + password);
  
             $rootScope.globals = {
                 currentUser: {
                     id: id,
                     username: username,
+                    role: role,
                     authdata: authdata
                 }
             };

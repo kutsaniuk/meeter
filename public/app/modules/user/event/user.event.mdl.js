@@ -15,7 +15,10 @@
             .state('main.user.event', {
                 url: 'event/:id',
                 templateUrl: 'app/modules/user/event/user.event.view.html',
-                controller: 'EventCtrl'
+                controller: 'EventCtrl',
+                data: {
+                    is_granted: ["ROLE_USER"]
+                }
             });
     }
 })();

@@ -21,6 +21,9 @@
                     '@main.user.profile': {
                         templateUrl: 'app/modules/user/profile/main/user.profile.main.view.html'
                     }
+                },
+                data: {
+                    is_granted: ["ROLE_USER"]
                 }
             })  
             .state('main.user.profile.events', {
@@ -29,6 +32,9 @@
                     '': {
                         templateUrl: 'app/modules/user/profile/events/user.profile.events.view.html'
                     }
+                },
+                data: {
+                    is_granted: ["ROLE_USER"]
                 }
             })
             .state('main.user.profile.settings', {
@@ -42,6 +48,9 @@
                         templateUrl: 'app/modules/user/profile/settings/edit/user.profile.settings.edit.view.html',
                         controller: 'UserProfileSettingsCtrl'
                     }
+                },
+                data: {
+                    is_granted: ["ROLE_USER"]
                 }
             })
             .state('main.user.profile.settings.password', {
@@ -51,6 +60,9 @@
                         templateUrl: 'app/modules/user/profile/settings/password/user.profile.settings.password.view.html',
                         controller: 'UserProfileSettingsCtrl'
                     }
+                },
+                data: {
+                    is_granted: ["ROLE_USER"]
                 }
             });
 

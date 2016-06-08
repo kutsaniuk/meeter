@@ -67,7 +67,10 @@
                                 <a href="#/user/{{user.id}}"><div class="username">{{user.username}}</div></a>
                             </div>
                             <br>
-                            <div class="description_event">{{event.description}}</div>
+                            <div class="description_event">
+                                {{event.description}}
+                            </div>
+                            <span ng-if="event.description.length > 54" ><a class="more" href="#/event/{{event.id}}" translate>more</a></span>
                         </div>
                     </div>
                 </center>
@@ -134,7 +137,7 @@
 <div class="row no-margin" ng-show="events.total_items == 0 && users.total_items == 0" style="background: #fff">
     <div class="container-fluid">
         <center>
-            <div class="no_search_results">Your search returned no results</div>
+            <div class="no_search_results" translate>noResults</div>
         </center>
     </div>
 </div>

@@ -1,9 +1,10 @@
 (function () {
     'use strict';
-    
+
     angular
         .module('main', [
             'user',
+            'admin',
             'ui.router',
             'ui.bootstrap',
             'ngCookies',
@@ -12,9 +13,9 @@
             'flow',
             'base64',
             'naif.base64',
-            'ngScroller',
             'pascalprecht.translate',
-            'customFilters'
+            'customFilters',
+            'cr.acl'
         ])
         .config(configure)
         .run(run);
@@ -24,7 +25,7 @@
 
         $urlRouterProvider.otherwise(function ($injector) {
             var $state = $injector.get("$state");
-            $state.go('main.auth');
+            $state.go('main.user.feed');
         });
 
         $stateProvider
@@ -36,7 +37,10 @@
             .state('main.auth', {
                 url: '',
                 templateUrl: 'app/modules/auth/auth.view.html',
-                controller: 'AuthCtrl'
+                controller: 'AuthCtrl',
+                data: {
+                    is_granted: ["ROLE_GUEST"]
+                }
             });
 
         $translateProvider.useStaticFilesLoader({
@@ -46,10 +50,18 @@
 
     }
 
-    run.$inject = ['$rootScope', '$cookieStore', '$state', '$translate', '$http', 'UserService'];
-    function run($rootScope, $cookieStore, $state, $translate, $http, UserService) {
+    run.$inject = ['$rootScope', '$cookieStore', '$state', '$translate', '$http', 'UserService', 'crAcl'];
+    function run($rootScope, $cookieStore, $state, $translate, $http, UserService, crAcl) {
         // keep user logged in after page refresh
         $rootScope.globals = $cookieStore.get('globals') || {};
+
+        crAcl.setInheritanceRoles({
+            "ROLE_USER": ["ROLE_USER"],
+            "ROLE_ADMIN": ["ROLE_ADMIN", "ROLE_USER"],
+            "ROLE_GUEST": ["ROLE_GUEST"]
+        });
+
+        crAcl.setRedirect('main.auth');
 
         var getUserById = function (id) {
 
@@ -66,16 +78,11 @@
 
         if ($rootScope.globals.currentUser) {
             $http.defaults.headers.common['Authorization'] = 'Basic ' + $rootScope.globals.currentUser.authdata.id;
-            $state.go('main.user.feed');
             getUserById($rootScope.globals.currentUser.id);
+            crAcl.setRole($rootScope.globals.currentUser.role);
         }
+        else crAcl.setRole("ROLE_GUEST");
 
-        $rootScope.$on('$locationChangeStart', function (event, next, current) {
-            // redirect to login page if not logged in
-            if (!$state.is('main.auth') == false && $rootScope.globals.currentUser) {
-                $state.go('main.auth');
-            }
-        });
     }
 
 
@@ -95,9 +102,8 @@
             };
         });
 
-    angular.module('customFilters', []).
-    filter('dateInMillis', function() {
-        return function(dateString) {
+    angular.module('customFilters', []).filter('dateInMillis', function () {
+        return function (dateString) {
             return Date.parse(dateString);
         };
     });
@@ -108,10 +114,37 @@
     'use strict';
 
     angular
+        .module('admin',
+            [
+                'admin.dashboard',
+                'ui.router'
+            ])
+        .config(configure); 
+
+    configure.$inject = ['$stateProvider'];
+    function configure($stateProvider) {
+
+        $stateProvider
+            .state('main.admin', {
+                url: '',
+                abstract: true,
+                templateUrl: 'app/modules/admin/admin.view.html',
+                controller: 'UserCtrl',
+                data: {
+                    is_granted: ["ROLE_ADMIN"]
+                }
+            });
+    }
+})();
+
+(function () {
+    'use strict';
+
+    angular
         .module('main')
         .controller('AuthCtrl', AuthCtrl);
 
-    function AuthCtrl($scope, $state, AuthService, $cookieStore, $translate, CredentialsService, EventService) {
+    function AuthCtrl($scope, $state, AuthService, crAcl, $translate, CredentialsService, EventService) {
         var sc = $scope;
 
         CredentialsService.ClearCredentials();
@@ -123,8 +156,18 @@
         sc.login = function (username, password) {
             AuthService.login(username, password)
                 .then(function successCallback(response) {
-                    $state.go('main.user.feed');
-                    CredentialsService.SetCredentials(response.data.id, sc.username, sc.password);
+                    CredentialsService.SetCredentials(response.data.id, sc.username, sc.password, response.data.role);
+                    crAcl.setRole(response.data.role);
+
+                    switch (crAcl.getRole()) {
+                        case 'ROLE_USER':
+                            $state.go('main.user.feed');  
+                            break;
+                        case 'ROLE_ADMIN':
+                            $state.go('main.admin.dashboard');
+                            break;
+                    }
+
                     sc.user = response.data;
                 }, function errorCallback(response) {
                     sc.authFailed = true;
@@ -205,13 +248,14 @@
     function (Base64, $http, $cookieStore, $rootScope) {
         var service = {};
  
-        service.SetCredentials = function (id, username, password) {
+        service.SetCredentials = function (id, username, password, role) {
             var authdata = Base64.encode(username + ':' + password);
  
             $rootScope.globals = {
                 currentUser: {
                     id: id,
                     username: username,
+                    role: role,
                     authdata: authdata
                 }
             };
@@ -419,7 +463,7 @@
         .module('main')
         .controller('UserCtrl', UserCtrl);
 
-    function UserCtrl($scope, $rootScope, $location, $cookieStore, $translate, EventService, CredentialsService, ngDialog) {
+    function UserCtrl($scope, $rootScope, $location, $state, crAcl, EventService, CredentialsService, ngDialog) {
         var sc = $scope;
 
         sc.getEventsByName = function (page, limit, name) {
@@ -437,6 +481,8 @@
 
         sc.logout = function () {
             CredentialsService.ClearCredentials();
+            crAcl.setRole('ROLE_GUEST');
+            $state.go('main.auth');
         };
 
         // $rootScope.globals = $cookieStore.get('globals') || {};
@@ -481,7 +527,10 @@
                 url: '',
                 abstract: true,
                 templateUrl: 'app/modules/user/user.view.html',
-                controller: 'UserCtrl'
+                controller: 'UserCtrl',
+                data: {
+                    is_granted: ["ROLE_USER"]
+                }
             });
     }
 })();
@@ -565,6 +614,35 @@
 
         });
 })();
+(function () {
+    'use strict';
+
+    angular
+        .module('admin.dashboard',
+            [
+                'ui.router'
+            ])
+        .config(configure);
+
+    configure.$inject = ['$stateProvider'];
+    function configure($stateProvider) {
+
+        $stateProvider
+            .state('main.admin.dashboard', {
+                url: 'dashboard',
+                views: {
+                    '': {
+                        templateUrl: 'app/modules/admin/dashboard/admin.dashboard.view.html',
+                        controller: 'UserProfileCtrl'
+                    }
+                },
+                data: {
+                    is_granted: ["ROLE_ADMIN"]
+                }
+            });
+    }
+})();
+
 (function () {
     'use strict';
 
@@ -812,7 +890,10 @@
             .state('main.user.event', {
                 url: 'event/:id',
                 templateUrl: 'app/modules/user/event/user.event.view.html',
-                controller: 'EventCtrl'
+                controller: 'EventCtrl',
+                data: {
+                    is_granted: ["ROLE_USER"]
+                }
             });
     }
 })();
@@ -939,9 +1020,12 @@
                         templateUrl: 'app/modules/user/feed/user.feed.view.html',
                         controller: 'UserFeedCtrl'
                     }
+                },
+                data: {
+                    is_granted: ["ROLE_USER"]
                 }
             });
-        
+
     }
 })();
 
@@ -1194,6 +1278,9 @@
                     '@main.user.profile': {
                         templateUrl: 'app/modules/user/profile/main/user.profile.main.view.html'
                     }
+                },
+                data: {
+                    is_granted: ["ROLE_USER"]
                 }
             })  
             .state('main.user.profile.events', {
@@ -1202,6 +1289,9 @@
                     '': {
                         templateUrl: 'app/modules/user/profile/events/user.profile.events.view.html'
                     }
+                },
+                data: {
+                    is_granted: ["ROLE_USER"]
                 }
             })
             .state('main.user.profile.settings', {
@@ -1215,6 +1305,9 @@
                         templateUrl: 'app/modules/user/profile/settings/edit/user.profile.settings.edit.view.html',
                         controller: 'UserProfileSettingsCtrl'
                     }
+                },
+                data: {
+                    is_granted: ["ROLE_USER"]
                 }
             })
             .state('main.user.profile.settings.password', {
@@ -1224,6 +1317,9 @@
                         templateUrl: 'app/modules/user/profile/settings/password/user.profile.settings.password.view.html',
                         controller: 'UserProfileSettingsCtrl'
                     }
+                },
+                data: {
+                    is_granted: ["ROLE_USER"]
                 }
             });
 
@@ -1321,6 +1417,9 @@
                         templateUrl: 'app/modules/user/search/user.search.view.html',
                         controller: 'UserSearchCtrl'
                     }
+                },
+                data: {
+                    is_granted: ["ROLE_USER"]
                 }
             }) ;
 

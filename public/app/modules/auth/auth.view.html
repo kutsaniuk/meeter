@@ -1,13 +1,6 @@
 <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
     <div class="container-fluid container-navbar">
         <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse"
-                    data-target="#bs-example-navbar-collapse-1">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
             <a class="navbar-brand" href="#/"><span>m</span>eeter</a>
         </div>
         <a href="" ng-if="langShow" class="pull-right" style="padding: 15px" ng-click="setLang('en')">Switch to English</a>
@@ -28,9 +21,8 @@
                         </div>
                         <div class="event-container event-bg">
                             <div class="col-lg-6 col-xs-6">
-                                <a href="#/event/{{event.id}}">
+
                                     <div class="title">{{event.name}}</div>
-                                </a>
                                 <span class="location"><i class="glyphicon glyphicon-map-marker"></i>{{event.location}}</span>
                             </div>
                             <div class="col-lg-6 col-xs-6">
@@ -49,7 +41,7 @@
 
         <form class="navbar-form" role="search" ng-init="loginShow = true" ng-show="loginShow">
             <div class="form-group">
-                <uib-alert ng-show="authFailed" type="danger">Username or password incorrect.</uib-alert>
+                <uib-alert ng-show="authFailed" type="danger"><span translate>authFailed</span></uib-alert>
                 <input type="text" class="form-control" placeholder="{{ 'username' | translate}}" ng-model="username" pattern="^[a-zA-Z][a-zA-Z0-9-_\.]{1,20}$"><br><br>
                 <input type="password" class="form-control" placeholder="{{ 'password' | translate}}" ng-model="password"><br><br>
                 <button class="btn btn-default" ng-click="login(username, password)"><span translate>login</span></button>
@@ -57,14 +49,14 @@
                 <span translate>doNotHaveAcc</span> <a href="" ng-click="signupShow = true; loginShow = false"><span translate>signUp</span></a>
             </div>
         </form>
-        <form name="registerForm" class="navbar-form" role="search" ng-show="signupShow" novalidate>
+        <form name="registerForm" class="navbar-form" role="search" ng-show="signupShow">
             <div class="form-group">
                 <input type="email" class="form-control" placeholder="{{ 'email' | translate}}" ng-model="user.email" required><br><br>
                 <input type="text" class="form-control" placeholder="{{ 'fullName' | translate}}" ng-model="user.name" pattern="^[A-zА-яі ]*$" required><br><br>
                 <input type="text" class="form-control" placeholder="{{ 'username' | translate}}" ng-model="user.username" pattern="^[a-zA-Z][a-zA-Z0-9-_\.]{1,20}$" ng-change="checkUsername(user.username)" required>
                 <i class="glyphicon" ng-class="{'glyphicon-ok': usernameCheked, 'glyphicon-remove': !usernameCheked}" style="margin-right: -20px"></i>
                 <br><br>
-                <input type="password" name="password" class="form-control" placeholder="{{ 'password' | translate}}" ng-model="user.password" pattern="^(?=.*\d)(?=.*[A-z])(?=.*[A-z])(?!.*\s).*$" uib-popover="Min length 6 symbols" popover-trigger="focus" popover-placement="right" required><br><br>
+                <input type="password" name="password" class="form-control" placeholder="{{ 'password' | translate}}" ng-model="user.password" pattern="^(?=.*\d)(?=.*[A-z])(?=.*[A-z])(?!.*\s).*$" required><br><br>
                 <button class="btn btn-default" ng-click="register()" translate="">signUp</button>
                 <br><br>
                 <span translate>haveAnAccount</span> <a href="" ng-click="loginShow = true; signupShow = false"><span translate>login</span></a>
@@ -77,7 +69,7 @@
     <footer>
         <div class="row">
             <div class="col-lg-12">
-                <p>Copyright &copy; Your Website 2014</p>
+
             </div>
         </div>
     </footer>

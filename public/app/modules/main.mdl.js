@@ -1,9 +1,10 @@
 (function () {
     'use strict';
-    
+
     angular
         .module('main', [
             'user',
+            'admin',
             'ui.router',
             'ui.bootstrap',
             'ngCookies',
@@ -12,9 +13,9 @@
             'flow',
             'base64',
             'naif.base64',
-            'ngScroller',
             'pascalprecht.translate',
-            'customFilters'
+            'customFilters',
+            'cr.acl'
         ])
         .config(configure)
         .run(run);
@@ -24,7 +25,7 @@
 
         $urlRouterProvider.otherwise(function ($injector) {
             var $state = $injector.get("$state");
-            $state.go('main.auth');
+            $state.go('main.user.feed');
         });
 
         $stateProvider
@@ -36,7 +37,10 @@
             .state('main.auth', {
                 url: '',
                 templateUrl: 'app/modules/auth/auth.view.html',
-                controller: 'AuthCtrl'
+                controller: 'AuthCtrl',
+                data: {
+                    is_granted: ["ROLE_GUEST"]
+                }
             });
 
         $translateProvider.useStaticFilesLoader({
@@ -46,10 +50,18 @@
 
     }
 
-    run.$inject = ['$rootScope', '$cookieStore', '$state', '$translate', '$http', 'UserService'];
-    function run($rootScope, $cookieStore, $state, $translate, $http, UserService) {
+    run.$inject = ['$rootScope', '$cookieStore', '$state', '$translate', '$http', 'UserService', 'crAcl'];
+    function run($rootScope, $cookieStore, $state, $translate, $http, UserService, crAcl) {
         // keep user logged in after page refresh
         $rootScope.globals = $cookieStore.get('globals') || {};
+
+        crAcl.setInheritanceRoles({
+            "ROLE_USER": ["ROLE_USER"],
+            "ROLE_ADMIN": ["ROLE_ADMIN", "ROLE_USER"],
+            "ROLE_GUEST": ["ROLE_GUEST"]
+        });
+
+        crAcl.setRedirect('main.auth');
 
         var getUserById = function (id) {
 
@@ -66,16 +78,11 @@
 
         if ($rootScope.globals.currentUser) {
             $http.defaults.headers.common['Authorization'] = 'Basic ' + $rootScope.globals.currentUser.authdata.id;
-            $state.go('main.user.feed');
             getUserById($rootScope.globals.currentUser.id);
+            crAcl.setRole($rootScope.globals.currentUser.role);
         }
+        else crAcl.setRole("ROLE_GUEST");
 
-        $rootScope.$on('$locationChangeStart', function (event, next, current) {
-            // redirect to login page if not logged in
-            if (!$state.is('main.auth') == false && $rootScope.globals.currentUser) {
-                $state.go('main.auth');
-            }
-        });
     }
 
 
@@ -95,9 +102,8 @@
             };
         });
 
-    angular.module('customFilters', []).
-    filter('dateInMillis', function() {
-        return function(dateString) {
+    angular.module('customFilters', []).filter('dateInMillis', function () {
+        return function (dateString) {
             return Date.parse(dateString);
         };
     });

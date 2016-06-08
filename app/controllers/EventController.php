@@ -175,7 +175,6 @@ Event.description, Event.time, Event.user_id FROM Event WHERE Event.date < $now 
     {
         $currentPage = (int)$_GET["page"];
         $limit = (int)$_GET["limit"];
-        $type = (string)$_GET["type"];
         $name = (string)$_GET["name"];
 
         $_events = $this->
@@ -241,7 +240,7 @@ Event.description, Event.time, Event.user_id FROM Event WHERE Event.date < $now 
 
         $events = $this->
         modelsManager->
-        createQuery("SELECT Event.id, Event.name, Event.location, Event.user_id FROM Event where Event.name like '%%$name%%'")->execute();
+        createQuery("SELECT Event.id, Event.name, Event.location, Event.user_id, Event.description FROM Event where Event.name like '%%$name%%'")->execute();
 
         $pagination = new PaginatorModel(
             array(

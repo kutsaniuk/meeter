@@ -21,5 +21,7 @@ class User extends Model
     public $created;
 
     public $language;
+
+    public $role;
     
 }

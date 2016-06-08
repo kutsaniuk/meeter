@@ -18,6 +18,9 @@
                         templateUrl: 'app/modules/user/search/user.search.view.html',
                         controller: 'UserSearchCtrl'
                     }
+                },
+                data: {
+                    is_granted: ["ROLE_USER"]
                 }
             }) ;
 

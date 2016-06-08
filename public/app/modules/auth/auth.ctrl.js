@@ -5,7 +5,7 @@
         .module('main')
         .controller('AuthCtrl', AuthCtrl);
 
-    function AuthCtrl($scope, $state, AuthService, $cookieStore, $translate, CredentialsService, EventService) {
+    function AuthCtrl($scope, $state, AuthService, crAcl, $translate, CredentialsService, EventService) {
         var sc = $scope;
 
         CredentialsService.ClearCredentials();
@@ -17,8 +17,18 @@
         sc.login = function (username, password) {
             AuthService.login(username, password)
                 .then(function successCallback(response) {
-                    $state.go('main.user.feed');
-                    CredentialsService.SetCredentials(response.data.id, sc.username, sc.password);
+                    CredentialsService.SetCredentials(response.data.id, sc.username, sc.password, response.data.role);
+                    crAcl.setRole(response.data.role);
+
+                    switch (crAcl.getRole()) {
+                        case 'ROLE_USER':
+                            $state.go('main.user.feed');  
+                            break;
+                        case 'ROLE_ADMIN':
+                            $state.go('main.admin.dashboard');
+                            break;
+                    }
+
                     sc.user = response.data;
                 }, function errorCallback(response) {
                     sc.authFailed = true;

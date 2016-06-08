@@ -72,5 +72,11 @@
   "comments": "Comments",
   "enterComment": "Enter a comment",
   "join": "Join",
-  "joined": "Joined"
+  "joined": "Joined",
+
+  "more": "More",
+
+  "noResults": "Your search returned no results",
+
+  "authFailed": "Password or username is incorrect"
 }

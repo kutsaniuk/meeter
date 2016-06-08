@@ -2,12 +2,9 @@
     'use strict';
 
     angular
-        .module('user',
+        .module('admin',
             [
-                'user.feed',
-                'user.profile',
-                'user.event',
-                'user.search',
+                'admin.dashboard',
                 'ui.router'
             ])
         .config(configure); 
@@ -16,13 +13,13 @@
     function configure($stateProvider) {
 
         $stateProvider
-            .state('main.user', {
+            .state('main.admin', {
                 url: '',
                 abstract: true,
-                templateUrl: 'app/modules/user/user.view.html',
+                templateUrl: 'app/modules/admin/admin.view.html',
                 controller: 'UserCtrl',
                 data: {
-                    is_granted: ["ROLE_USER"]
+                    is_granted: ["ROLE_ADMIN"]
                 }
             });
     }
