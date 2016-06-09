@@ -1,0 +1,75 @@
+<div class="row no-margin">
+    <div class="container-fluid container-na search_page">
+        <div class="input-group">
+            <span class="input-group-addon"><i class="glyphicon glyphicon-search"></i></span>
+            <input type="text" class="form-control" ng-model="name" ng-change="getUserByUsername(currentPage, 9, name)"
+                   placeholder="{{ 'searchPageUsers' | translate}}">
+        </div>
+    </div>
+</div>
+
+<!--<div class="row no-margin" ng-show="users.total_items != 0">-->
+    <!--<div class="container-fluid tools">-->
+        <!--<div class="title-block">-->
+            <!--{{ 'users' | translate}} <span class="sub">{{events.total_items}}</span>-->
+        <!--</div>-->
+    <!--</div>-->
+<!--</div>-->
+
+<div class="row no-margin" ng-show="users.total_items != 0" ng-init="getUserByUsername(currentPage, 9, name)">
+    <div class="container-fluid events" style="padding-top: 0">
+        <div class="row">
+            <div class="col-lg-12 col-xs-6 user-list">
+                <table>
+                    <tr ng-repeat="user in users.items">
+                        <td class="user" style="padding: 15px">
+                            <a href="#/user/{{user.id}}">
+                                <div class="crop" style="width: 35px; height: 35px">
+                                    <img ng-src="/user/avatar/{{user.id}}"
+                                         onerror="this.src = '/dist/img/user.profile.avatar.default.svg'">
+                                </div>
+                            </a>
+                        </td>
+                        <td class="user">
+                            <span class="username" ng-class="{'disabled': !(!!+user.active)}"><a href="#/user/{{user.id}}">{{user.username}}</a></span>
+                        </td>
+                        <td ng-class="{'admin': user.role === 'ROLE_ADMIN', 'user': user.role === 'ROLE_USER'}">
+                            <span translate>{{user.role}}</span>
+                        </td>
+                        <td>
+                            <select class="form-control" ng-model="user.role" ng-change="setRoleUser(user.id, user.role)">
+                                <option value="ROLE_USER" translate>ROLE_USER</option>
+                                <option value="ROLE_ADMIN" translate>ROLE_ADMIN</option>
+                            </select>
+                        </td>
+                        <td>
+                            <div class="btn-group pull-right">
+                                <button class="btn btn-default"><i class="glyphicon glyphicon-pencil"></i></button>
+                                <button class="btn btn-default" ng-click="setActiveUser(user.id, !!+user.active)"><i class="glyphicon" ng-class="{'glyphicon-remove': !!+user.active, 'glyphicon-repeat': !(!!+user.active)}"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="row" ng-show="users.total_items > 9 && usersLimit > 4">
+            <div class="col-lg-12">
+                <uib-pager total-items="users.total_items" ng-model="currentPage"
+                           ng-change="getUserByUsername(currentPage, 9, name)" items-per-page="9"></uib-pager>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row no-margin" ng-show="users.total_items == 0" style="background: #fff">
+    <div class="container-fluid">
+        <center>
+            <div class="no_search_results">
+                {{ 'noResultsUsers' | translate}}
+                <b>{{name}}</b>
+                {{ '_noResultsUsers' | translate}}
+            </div>
+        </center>
+    </div>
+</div>

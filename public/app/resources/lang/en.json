@@ -59,6 +59,7 @@
   "browse": "Browse",
 
   "searchPage": "Start typing any word",
+  "searchPageUsers": "Start typing username",
   "users": "Users",
   "showMore": "Show more",
 
@@ -77,6 +78,11 @@
   "more": "More",
 
   "noResults": "Your search returned no results",
+  "noResultsUsers": "Under the username ",
+  "_noResultsUsers": " is not found",
 
-  "authFailed": "Password or username is incorrect"
+  "authFailed": "Password or username is incorrect",
+
+  "ROLE_ADMIN": "Admin",
+  "ROLE_USER": "User"
 }

@@ -2,7 +2,7 @@
     'use strict';
 
     angular
-        .module('admin.dashboard',
+        .module('admin.users',
             [
                 'ui.router'
             ])
@@ -12,12 +12,12 @@
     function configure($stateProvider) {
 
         $stateProvider
-            .state('main.user.dashboard', {
-                url: 'dashboard',
+            .state('main.user.users', {
+                url: 'users',
                 views: {
                     '': {
-                        templateUrl: 'app/modules/admin/dashboard/admin.dashboard.view.html',
-                        controller: 'UserProfileCtrl'
+                        templateUrl: 'app/modules/admin/users/admin.users.view.html',
+                        controller: 'AdminUsersCtrl'
                     }
                 },
                 data: {

@@ -25,7 +25,7 @@ class AuthController extends Controller
 
         $user = User::findFirst(
             array(
-                "username = :username: AND password = :password:",
+                "username = :username: AND password = :password: AND active = true",
                 'bind' => array(
                     'username' => $_user->username,
                     'password' => sha1($_user->password)

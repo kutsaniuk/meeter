@@ -8,7 +8,9 @@
                 'user.profile',
                 'user.event',
                 'user.search',
-                'ui.router'
+                'ui.router',
+                'admin.dashboard',
+                'admin.users'
             ])
         .config(configure); 
 
@@ -24,6 +26,6 @@
                 data: {
                     is_granted: ["ROLE_USER"]
                 }
-            });
+            });        
     }
 })();

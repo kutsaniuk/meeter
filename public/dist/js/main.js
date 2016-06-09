@@ -4,7 +4,6 @@
     angular
         .module('main', [
             'user',
-            'admin',
             'ui.router',
             'ui.bootstrap',
             'ngCookies',
@@ -114,33 +113,6 @@
     'use strict';
 
     angular
-        .module('admin',
-            [
-                'admin.dashboard',
-                'ui.router'
-            ])
-        .config(configure); 
-
-    configure.$inject = ['$stateProvider'];
-    function configure($stateProvider) {
-
-        $stateProvider
-            .state('main.admin', {
-                url: '',
-                abstract: true,
-                templateUrl: 'app/modules/admin/admin.view.html',
-                controller: 'UserCtrl',
-                data: {
-                    is_granted: ["ROLE_ADMIN"]
-                }
-            });
-    }
-})();
-
-(function () {
-    'use strict';
-
-    angular
         .module('main')
         .controller('AuthCtrl', AuthCtrl);
 
@@ -164,7 +136,7 @@
                             $state.go('main.user.feed');  
                             break;
                         case 'ROLE_ADMIN':
-                            $state.go('main.admin.dashboard');
+                            $state.go('main.user.dashboard'); 
                             break;
                     }
 
@@ -515,7 +487,9 @@
                 'user.profile',
                 'user.event',
                 'user.search',
-                'ui.router'
+                'ui.router',
+                'admin.dashboard',
+                'admin.users'
             ])
         .config(configure); 
 
@@ -531,7 +505,7 @@
                 data: {
                     is_granted: ["ROLE_USER"]
                 }
-            });
+            });        
     }
 })();
 
@@ -584,6 +558,14 @@
                 return $http.post(urlBase + '/create', user);
             };
 
+            this.active = function (user) {
+                return $http.post(urlBase + '/active', user);
+            };
+
+            this.role = function (user) {
+                return $http.post(urlBase + '/role', user);
+            };
+
             this.update = function (user, type) {
                 return $http.put(urlBase + '/update/' + type, user);
             };
@@ -628,12 +610,121 @@
     function configure($stateProvider) {
 
         $stateProvider
-            .state('main.admin.dashboard', {
+            .state('main.user.dashboard', {
                 url: 'dashboard',
                 views: {
                     '': {
                         templateUrl: 'app/modules/admin/dashboard/admin.dashboard.view.html',
                         controller: 'UserProfileCtrl'
+                    }
+                },
+                data: {
+                    is_granted: ["ROLE_ADMIN"]
+                }
+            });
+    }
+})();
+
+(function () {
+    'use strict';
+
+    angular
+        .module('main')
+        .controller('AdminUsersCtrl', AdminUsersCtrl);
+
+    function AdminUsersCtrl($scope, $state, UserService, crAcl, $translate, CredentialsService, EventService) {
+        var sc = $scope;
+        sc.currentPage = 1;
+        sc.name = '';
+
+        sc.getUsers = function (page, limit) {
+
+            var success = function (response) {
+                sc.users = response.data;
+            };
+
+            var failed = function (response) {
+                alert(response.status);
+            };
+
+            UserService.getPage(page, limit).then(success, failed);
+        };
+
+        sc.setActiveUser = function (id, active) {
+
+            var user = {
+                'id': id,
+                'active': !active
+            };
+
+            var success = function (response) {
+                sc.getUsers(sc.currentPage, 9);
+            };
+
+            var failed = function (response) {
+                alert(response.status);
+            };
+
+            UserService.active(user).then(success, failed);
+
+
+        };
+
+        sc.setRoleUser = function (id, role) {
+
+            var user = {
+                'id': id,
+                'role': role
+            };
+
+            var success = function (response) {
+                // sc.getUsers(1, 9);
+            };
+
+            var failed = function (response) {
+                alert(response.status);
+            };
+
+            UserService.role(user).then(success, failed);
+
+
+        };
+
+        sc.getUserByUsername = function (page, limit, username) {
+
+            var getPageSuccess = function (response) {
+                sc.users = response.data;
+            };
+
+            var getPageFailed = function (response) {
+                // alert(response.status);
+            };
+            sc.usersLimit = limit;
+            UserService.searchByUsername(page, limit, username).then(getPageSuccess, getPageFailed);
+        }
+    }
+})();
+
+(function () {
+    'use strict';
+
+    angular
+        .module('admin.users',
+            [
+                'ui.router'
+            ])
+        .config(configure);
+
+    configure.$inject = ['$stateProvider'];
+    function configure($stateProvider) {
+
+        $stateProvider
+            .state('main.user.users', {
+                url: 'users',
+                views: {
+                    '': {
+                        templateUrl: 'app/modules/admin/users/admin.users.view.html',
+                        controller: 'AdminUsersCtrl'
                     }
                 },
                 data: {

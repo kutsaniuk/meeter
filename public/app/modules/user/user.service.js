@@ -47,6 +47,14 @@
                 return $http.post(urlBase + '/create', user);
             };
 
+            this.active = function (user) {
+                return $http.post(urlBase + '/active', user);
+            };
+
+            this.role = function (user) {
+                return $http.post(urlBase + '/role', user);
+            };
+
             this.update = function (user, type) {
                 return $http.put(urlBase + '/update/' + type, user);
             };

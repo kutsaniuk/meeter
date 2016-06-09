@@ -25,7 +25,7 @@
                             $state.go('main.user.feed');  
                             break;
                         case 'ROLE_ADMIN':
-                            $state.go('main.admin.dashboard');
+                            $state.go('main.user.dashboard'); 
                             break;
                     }
 

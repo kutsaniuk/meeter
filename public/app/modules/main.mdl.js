@@ -4,7 +4,6 @@
     angular
         .module('main', [
             'user',
-            'admin',
             'ui.router',
             'ui.bootstrap',
             'ngCookies',

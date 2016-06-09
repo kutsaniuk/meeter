@@ -116,8 +116,7 @@ class UserController extends Controller
                 $response->setStatusCode(200);
             else
                 $response->setStatusCode(409);
-        }
-        else {
+        } else {
             if ($avatar->save())
                 $response->setStatusCode(201);
             else
@@ -164,8 +163,7 @@ class UserController extends Controller
                 $response->setStatusCode(200);
             else
                 $response->setStatusCode(409);
-        }
-        else {
+        } else {
             if ($background->save())
                 $response->setStatusCode(201);
             else
@@ -279,8 +277,7 @@ WHERE User.id='$_user->id'");
             $__user = User::findFirst("id = '$_user->id'");
             $response->setStatusCode(200);
             $response->setJsonContent($__user);
-        }
-        else $response->setStatusCode(409);
+        } else $response->setStatusCode(409);
 
         return $response;
     }
@@ -400,7 +397,7 @@ Where Follower.user_id = $id");
 
         $users = $this->
         modelsManager->
-        createQuery("SELECT User.id, User.username FROM User where User.username like '%%$username%%'")->execute();
+        createQuery("SELECT User.id, User.username, User.role, User.active FROM User where User.username like '%%$username%%'")->execute();
 
         $pagination = new PaginatorModel(
             array(
@@ -423,5 +420,38 @@ Where Follower.user_id = $id");
         return $response;
     }
 
+    public function activeAction()
+    {
+        $_user = $this->request->getJsonRawBody();
+
+        $user = $this->
+        modelsManager->
+        createQuery("UPDATE User SET User.active='$_user->active' WHERE User.id='$_user->id'");
+
+        $response = new Response();
+
+        if ($user->execute()) {
+            $response->setStatusCode(200);
+        } else $response->setStatusCode(409);
+
+        return $response;
+    }
+
+    public function roleAction()
+    {
+        $_user = $this->request->getJsonRawBody();
+
+        $user = $this->
+        modelsManager->
+        createQuery("UPDATE User SET User.role='$_user->role' WHERE User.id='$_user->id'");
+
+        $response = new Response();
+
+        if ($user->execute()) {
+            $response->setStatusCode(200);
+        } else $response->setStatusCode(409);
+
+        return $response;
+    }
 
 }
