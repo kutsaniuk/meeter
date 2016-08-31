@@ -114,230 +114,6 @@
 
     angular
         .module('main')
-        .controller('AuthCtrl', AuthCtrl);
-
-    function AuthCtrl($scope, $state, AuthService, crAcl, $translate, CredentialsService, EventService) {
-        var sc = $scope;
-
-        CredentialsService.ClearCredentials();
-
-        sc.lang = 'uk';
-        sc.langShow = true;
-        $translate.use(sc.lang);
-
-        sc.login = function (username, password) {
-            AuthService.login(username, password)
-                .then(function successCallback(response) {
-                    CredentialsService.SetCredentials(response.data.id, sc.username, sc.password, response.data.role);
-                    crAcl.setRole(response.data.role);
-
-                    switch (crAcl.getRole()) {
-                        case 'ROLE_USER':
-                            $state.go('main.user.feed');  
-                            break;
-                        case 'ROLE_ADMIN':
-                            $state.go('main.user.dashboard'); 
-                            break;
-                    }
-
-                    sc.user = response.data;
-                }, function errorCallback(response) {
-                    sc.authFailed = true;
-                });
-        };
-
-        sc.register = function () {
-            sc.user.created = new Date().toISOString();
-            sc.user.language = sc.lang;
-            if (sc.registerForm.$valid && sc.usernameCheked) AuthService.register(sc.user)
-                .then(function successCallback(response) {
-                    sc.login(sc.user.username, sc.user.password);
-                }, function errorCallback(response) {
-                    alert('failed');
-                });
-        };
-        
-        sc.checkUsername = function (username) {
-            AuthService.check(username)
-                .then(function successCallback(response) {
-                    sc.usernameCheked = true;
-                }, function errorCallback(response) {
-                    sc.usernameCheked = false;
-                });
-        };
-
-        sc.getPageEvents = function (page, limit, type, name) {
-
-            var getPageSuccess = function (response) {
-                sc.events = response.data;
-            };
-
-            var getPageFailed = function (response) {
-                alert(response.status);
-            };
-
-            EventService.getPage(page, limit, type, name).then(getPageSuccess, getPageFailed);
-        };
-
-        sc.setLang = function (lang) {
-            $translate.use(lang);
-            sc.lang = lang;
-            sc.langShow = !sc.langShow;
-        }
-    }
-})();
-
-(function () {
-    'use strict';
-
-    angular
-    .module('main')
-    .service('AuthService', function ($http) {
-
-        var urlBase = '/auth';
-
-        this.login = function (username, password, callback) {
-            return $http.post(urlBase + '/login', { username: username, password: password });
-        };
-
-        this.register = function (user) {
-            return $http.post(urlBase + '/register', user);
-        };
-
-        this.check = function (username) {
-            return $http.get(urlBase + '/check', {
-                params: {
-                    username: username
-                }
-            });
-        };
-
-    });
-
-    angular
-    .module('main')
-    .factory('CredentialsService',
-    function (Base64, $http, $cookieStore, $rootScope) {
-        var service = {};
- 
-        service.SetCredentials = function (id, username, password, role) {
-            var authdata = Base64.encode(username + ':' + password);
- 
-            $rootScope.globals = {
-                currentUser: {
-                    id: id,
-                    username: username,
-                    role: role,
-                    authdata: authdata
-                }
-            };
- 
-            $http.defaults.headers.common['Authorization'] = 'Basic ' + authdata; // jshint ignore:line
-            $cookieStore.put('globals', $rootScope.globals);
-        };
- 
-        service.ClearCredentials = function () {
-            $rootScope.globals = {};
-            $cookieStore.remove('globals');
-            $http.defaults.headers.common.Authorization = 'Basic ';
-        };
- 
-        return service;
-    });
-
-    angular
-    .module('main')
-    .factory('Base64', function () {
-    /* jshint ignore:start */
-
-    var keyStr = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
-
-    return {
-    encode: function (input) {
-        var output = "";
-        var chr1, chr2, chr3 = "";
-        var enc1, enc2, enc3, enc4 = "";
-        var i = 0;
-
-        do {
-            chr1 = input.charCodeAt(i++);
-            chr2 = input.charCodeAt(i++);
-            chr3 = input.charCodeAt(i++);
-
-            enc1 = chr1 >> 2;
-            enc2 = ((chr1 & 3) << 4) | (chr2 >> 4);
-            enc3 = ((chr2 & 15) << 2) | (chr3 >> 6);
-            enc4 = chr3 & 63;
-
-            if (isNaN(chr2)) {
-                enc3 = enc4 = 64;
-            } else if (isNaN(chr3)) {
-                enc4 = 64;
-            }
-
-            output = output +
-                keyStr.charAt(enc1) +
-                keyStr.charAt(enc2) +
-                keyStr.charAt(enc3) +
-                keyStr.charAt(enc4);
-            chr1 = chr2 = chr3 = "";
-            enc1 = enc2 = enc3 = enc4 = "";
-        } while (i < input.length);
-
-        return output;
-    },
-
-    decode: function (input) {
-        var output = "";
-        var chr1, chr2, chr3 = "";
-        var enc1, enc2, enc3, enc4 = "";
-        var i = 0;
-
-        // remove all characters that are not A-Z, a-z, 0-9, +, /, or =
-        var base64test = /[^A-Za-z0-9\+\/\=]/g;
-        if (base64test.exec(input)) {
-            window.alert("There were invalid base64 characters in the input text.\n" +
-                "Valid base64 characters are A-Z, a-z, 0-9, '+', '/',and '='\n" +
-                "Expect errors in decoding.");
-        }
-        input = input.replace(/[^A-Za-z0-9\+\/\=]/g, "");
-
-        do {
-            enc1 = keyStr.indexOf(input.charAt(i++));
-            enc2 = keyStr.indexOf(input.charAt(i++));
-            enc3 = keyStr.indexOf(input.charAt(i++));
-            enc4 = keyStr.indexOf(input.charAt(i++));
-
-            chr1 = (enc1 << 2) | (enc2 >> 4);
-            chr2 = ((enc2 & 15) << 4) | (enc3 >> 2);
-            chr3 = ((enc3 & 3) << 6) | enc4;
-
-            output = output + String.fromCharCode(chr1);
-
-            if (enc3 != 64) {
-                output = output + String.fromCharCode(chr2);
-            }
-            if (enc4 != 64) {
-                output = output + String.fromCharCode(chr3);
-            }
-
-            chr1 = chr2 = chr3 = "";
-            enc1 = enc2 = enc3 = enc4 = "";
-
-        } while (i < input.length);
-
-        return output;
-    }
-    };
-
-    /* jshint ignore:end */
-    });
-})();
-(function () {
-    'use strict';
-
-    angular
-        .module('main')
         .service('EventService', function ($http) {
 
             var urlBase = '/event';
@@ -471,7 +247,8 @@
         };  
 
         sc.linkSearch = function (searchName) {
-            $location.path('/search/' + searchName);
+            if (searchName.name !== undefined) $location.path('/search/' + searchName.name);
+            else $location.path('/search/' + searchName);
         };
 
     }
@@ -487,6 +264,7 @@
                 'user.profile',
                 'user.event',
                 'user.search',
+                'user.activity',
                 'ui.router',
                 'admin.dashboard',
                 'admin.users'
@@ -514,7 +292,7 @@
 
     angular
         .module('main')
-        .service('UserService', function ($http) {
+        .service('UserService', function ($http, $filter) {
 
             var urlBase = '/user';
 
@@ -594,37 +372,20 @@
                 return $http.post(urlBase + '/setbackground', background);
             };
 
+            this.activity = function (page, limit, type) {
+                var currentDate = new Date();
+                currentDate.setHours(0);
+                return $http.get('/activity/' + type, {
+                    params: {
+                        page: page,
+                        limit: limit,
+                        date: $filter("date")(currentDate.toISOString(),'yyyy-MM-dd HH:MM:ss')
+                    }
+                });
+            };
+
         });
 })();
-(function () {
-    'use strict';
-
-    angular
-        .module('admin.dashboard',
-            [
-                'ui.router'
-            ])
-        .config(configure);
-
-    configure.$inject = ['$stateProvider'];
-    function configure($stateProvider) {
-
-        $stateProvider
-            .state('main.user.dashboard', {
-                url: 'dashboard',
-                views: {
-                    '': {
-                        templateUrl: 'app/modules/admin/dashboard/admin.dashboard.view.html',
-                        controller: 'UserProfileCtrl'
-                    }
-                },
-                data: {
-                    is_granted: ["ROLE_ADMIN"]
-                }
-            });
-    }
-})();
-
 (function () {
     'use strict';
 
@@ -659,6 +420,8 @@
 
             var success = function (response) {
                 sc.getUsers(sc.currentPage, 9);
+                sc.user.id = id;
+                sc.user.active = !active;
             };
 
             var failed = function (response) {
@@ -731,6 +494,140 @@
                     is_granted: ["ROLE_ADMIN"]
                 }
             });
+    }
+})();
+
+(function () {
+    'use strict';
+
+    angular
+        .module('main')
+        .controller('UserActivityCtrl', UserActivityCtrl);
+
+    function UserActivityCtrl($scope, $state, $rootScope, $cookieStore, EventService, UserService) {
+        var sc = $scope;
+
+        sc.currentUser = $rootScope.globals.currentUser;
+        sc.currentPage = 1;
+        sc.activityType = 'new';
+
+        sc.getEventLikesById = function (id) {
+            var success = function (response) {
+                sc.likes = response.data;
+
+                sc.findUser = function (user) {
+                    return user.user_id === sc.currentUser.id;
+                };
+
+                if (sc.likes.find(sc.findUser) != null) {
+                    sc.like = true;
+                    sc.noLike = false;
+                }
+                else {
+                    sc.like = false;
+                    sc.noLike = true;
+                }
+            };
+
+            var failed = function (response) {
+                sc.likes = response.data;
+                sc.like = false;
+                sc.noLike = true;
+            };
+
+            EventService.getLikes(id).then(success, failed);
+        };
+
+        sc.createLike = function (id) {
+            var success = function (response) {
+                sc.getEventLikesById(id);
+                sc.like = !sc.like;
+                sc.noLike = !sc.noLike;
+            };
+
+            var failed = function (response) {
+                sc.getEventLikesById(id);
+                sc.like = !sc.like;
+                sc.noLike = !sc.noLike;
+            };
+
+            var like = {
+                'event_id': id,
+                'user_id': sc.currentUser.id
+            };
+
+            if (sc.like != true) EventService.like(like).then(success, failed);
+            else EventService.dislike(sc.likes.find(sc.findUser).id).then(success, failed);
+        };
+
+        sc.getUserById = function (id) {
+
+            var getUserSuccess = function (response) {
+                sc.user = response.data;
+            };
+
+            var getUserFailed = function (response) {
+                alert(response.status);
+            };
+
+            UserService.getById(id).then(getUserSuccess, getUserFailed);
+        };
+
+        sc.getEventCommentsById = function (id) {
+            var getCommentsSuccess = function (response) {
+                sc.comments = response.data;
+            };
+
+            var getCommentsFailed = function (response) {
+                alert(response.status);
+            };
+
+            EventService.getComments(id, 1, 1).then(getCommentsSuccess, getCommentsFailed);
+        };
+
+        sc.getPageUpdates = function () {
+            $state.go('main.user.feed.updates');
+        };
+        
+        sc.getActivity = function (page, limit, type) {
+            var success = function (response) {
+                sc.activities = response.data;
+            };
+
+            var failed = function (response) {
+                alert(response.status);
+            };
+
+            UserService.activity(page, limit, type).then(success, failed);
+        };
+
+    }
+})();
+
+(function () {
+    'use strict';
+
+    angular
+        .module('user.activity', ['ui.router'])
+        .config(configure);
+
+    configure.$inject = ['$stateProvider', '$urlRouterProvider'];
+    function configure($stateProvider) {
+
+        $stateProvider
+            .state('main.user.activity', {
+                url: 'activity',
+                views: {
+                    '': {
+                        templateUrl: 'app/modules/user/activity/user.activity.view.html',
+                        controller: 'UserActivityCtrl'
+                    }
+                },
+                data: {
+                    is_granted: ["ROLE_USER"]
+                }
+            });
+
     }
 })();
 
@@ -996,7 +893,7 @@
         .module('main')
         .controller('UserFeedCtrl', UserFeedCtrl);
 
-    function UserFeedCtrl($scope, $rootScope, $cookieStore, EventService, UserService) {
+    function UserFeedCtrl($scope, $state, $rootScope, $cookieStore, EventService, UserService) {
         var sc = $scope;
 
         $rootScope.globals = $cookieStore.get('globals') || {};
@@ -1088,6 +985,10 @@
 
             EventService.getComments(id, 1, 1).then(getCommentsSuccess, getCommentsFailed);
         };
+
+        sc.getPageUpdates = function () {
+            $state.go('main.user.activity');
+        }; 
 
 
     }
@@ -1457,12 +1358,7 @@
             sc.usersLimit = limit;
             UserService.searchByUsername(page, limit, username).then(getPageSuccess, getPageFailed);
         };
-
-        sc.linkSearch = function (searchName) {
-            $location.path('/search/' + searchName);
-
-        };
-
+        
         sc.getUserById = function (id) {
  
             var getUserSuccess = function (response) {
@@ -1546,6 +1442,8 @@
 
         sc.createEvent = function (event) {
             event.date.setHours(event.time.getHours() + 3, event.time.getMinutes());
+            var created = new Date();
+            created.setHours(created.getHours() + 3);
 
             if (event.name != ''
                 && event.description != ''
@@ -1560,7 +1458,7 @@
                     'user_id': parseInt(sc.currentUser.id),
                     'image': event.image.base64,
                     'location': event.location,
-                    'created': new Date().toISOString()
+                    'created': created.toISOString()
                 };
                 
                 EventService.create(_event);
@@ -1709,5 +1607,350 @@
             UserService.update(_lang, 'lang').then(success, failed);
         }
 
+    }
+})();
+
+(function () {
+    'use strict';
+
+    angular
+        .module('main')
+        .controller('AuthCtrl', AuthCtrl);
+
+    function AuthCtrl($scope, $state, AuthService, crAcl, $translate, CredentialsService, EventService) {
+        var sc = $scope;
+
+        CredentialsService.ClearCredentials();
+
+        sc.lang = 'uk';
+        sc.langShow = true;
+        sc.user = {
+            'email': '',
+            'name': '',
+            'username': '',
+            'password': ''
+        };
+        sc.usernameCheckShow = false;
+        $translate.use(sc.lang);
+
+        sc.login = function (username, password) {
+            AuthService.login(username, password)
+                .then(function successCallback(response) {
+                    CredentialsService.SetCredentials(response.data.id, sc.username, sc.password, response.data.role);
+                    crAcl.setRole(response.data.role);
+
+                    switch (crAcl.getRole()) {
+                        case 'ROLE_USER':
+                            $state.go('main.user.feed');  
+                            break;
+                        case 'ROLE_ADMIN':
+                            $state.go('main.user.dashboard'); 
+                            break;
+                    }
+
+                    sc.user = response.data;
+                }, function errorCallback(response) {
+                    sc.authFailed = true;
+                });
+        };
+
+        sc.register = function () {
+            sc.user.created = new Date().toISOString();
+            sc.user.language = sc.lang;
+            if (sc.user.email != '' &&
+                sc.user.name != '' &&
+                sc.user.username != '' &&
+                sc.user.password != '' &&
+                sc.registerForm.$valid && sc.usernameCheked) AuthService.register(sc.user)
+                .then(function successCallback(response) {
+                    sc.login(sc.user.username, sc.user.password);
+                }, function errorCallback(response) {
+                    alert('failed');
+                });
+            else sc.emtryField = true;
+        };
+        
+        sc.checkUsername = function (username) {
+            sc.usernameCheckShow = true;
+            AuthService.check(username)
+                .then(function successCallback(response) {
+                    sc.usernameCheked = true;
+                }, function errorCallback(response) {
+                    sc.usernameCheked = false;
+                });
+        };
+
+        sc.getPageEvents = function (page, limit, type, name) {
+
+            var getPageSuccess = function (response) {
+                sc.events = response.data;
+            };
+
+            var getPageFailed = function (response) {
+                alert(response.status);
+            };
+
+            EventService.getPage(page, limit, type, name).then(getPageSuccess, getPageFailed);
+        };
+
+        sc.setLang = function (lang) {
+            $translate.use(lang);
+            sc.lang = lang;
+            sc.langShow = !sc.langShow;
+        }
+    }
+})();
+
+(function () {
+    'use strict';
+
+    angular
+    .module('main')
+    .service('AuthService', function ($http) {
+
+        var urlBase = '/auth';
+
+        this.login = function (username, password, callback) {
+            return $http.post(urlBase + '/login', { username: username, password: password });
+        };
+
+        this.register = function (user) {
+            return $http.post(urlBase + '/register', user);
+        };
+
+        this.check = function (username) {
+            return $http.get(urlBase + '/check', {
+                params: {
+                    username: username
+                }
+            });
+        };
+
+    });
+
+    angular
+    .module('main')
+    .factory('CredentialsService',
+    function (Base64, $http, $cookieStore, $rootScope) {
+        var service = {};
+ 
+        service.SetCredentials = function (id, username, password, role) {
+            var authdata = Base64.encode(username + ':' + password);
+ 
+            $rootScope.globals = {
+                currentUser: {
+                    id: id,
+                    username: username,
+                    role: role,
+                    authdata: authdata
+                }
+            };
+ 
+            $http.defaults.headers.common['Authorization'] = 'Basic ' + authdata; // jshint ignore:line
+            $cookieStore.put('globals', $rootScope.globals);
+        };
+ 
+        service.ClearCredentials = function () {
+            $rootScope.globals = {};
+            $cookieStore.remove('globals');
+            $http.defaults.headers.common.Authorization = 'Basic ';
+        };
+ 
+        return service;
+    });
+
+    angular
+    .module('main')
+    .factory('Base64', function () {
+    /* jshint ignore:start */
+
+    var keyStr = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
+
+    return {
+    encode: function (input) {
+        var output = "";
+        var chr1, chr2, chr3 = "";
+        var enc1, enc2, enc3, enc4 = "";
+        var i = 0;
+
+        do {
+            chr1 = input.charCodeAt(i++);
+            chr2 = input.charCodeAt(i++);
+            chr3 = input.charCodeAt(i++);
+
+            enc1 = chr1 >> 2;
+            enc2 = ((chr1 & 3) << 4) | (chr2 >> 4);
+            enc3 = ((chr2 & 15) << 2) | (chr3 >> 6);
+            enc4 = chr3 & 63;
+
+            if (isNaN(chr2)) {
+                enc3 = enc4 = 64;
+            } else if (isNaN(chr3)) {
+                enc4 = 64;
+            }
+
+            output = output +
+                keyStr.charAt(enc1) +
+                keyStr.charAt(enc2) +
+                keyStr.charAt(enc3) +
+                keyStr.charAt(enc4);
+            chr1 = chr2 = chr3 = "";
+            enc1 = enc2 = enc3 = enc4 = "";
+        } while (i < input.length);
+
+        return output;
+    },
+
+    decode: function (input) {
+        var output = "";
+        var chr1, chr2, chr3 = "";
+        var enc1, enc2, enc3, enc4 = "";
+        var i = 0;
+
+        // remove all characters that are not A-Z, a-z, 0-9, +, /, or =
+        var base64test = /[^A-Za-z0-9\+\/\=]/g;
+        if (base64test.exec(input)) {
+            window.alert("There were invalid base64 characters in the input text.\n" +
+                "Valid base64 characters are A-Z, a-z, 0-9, '+', '/',and '='\n" +
+                "Expect errors in decoding.");
+        }
+        input = input.replace(/[^A-Za-z0-9\+\/\=]/g, "");
+
+        do {
+            enc1 = keyStr.indexOf(input.charAt(i++));
+            enc2 = keyStr.indexOf(input.charAt(i++));
+            enc3 = keyStr.indexOf(input.charAt(i++));
+            enc4 = keyStr.indexOf(input.charAt(i++));
+
+            chr1 = (enc1 << 2) | (enc2 >> 4);
+            chr2 = ((enc2 & 15) << 4) | (enc3 >> 2);
+            chr3 = ((enc3 & 3) << 6) | enc4;
+
+            output = output + String.fromCharCode(chr1);
+
+            if (enc3 != 64) {
+                output = output + String.fromCharCode(chr2);
+            }
+            if (enc4 != 64) {
+                output = output + String.fromCharCode(chr3);
+            }
+
+            chr1 = chr2 = chr3 = "";
+            enc1 = enc2 = enc3 = enc4 = "";
+
+        } while (i < input.length);
+
+        return output;
+    }
+    };
+
+    /* jshint ignore:end */
+    });
+})();
+(function () {
+    'use strict';
+
+    angular
+        .module('main')
+        .controller('AdminDashboardCtrl', AdminDashboardCtrl);
+
+    function AdminDashboardCtrl($scope, UserService, EventService) {
+        var sc = $scope;
+        sc.currentPage = 1;
+        sc.name = '';
+
+        sc.getUsers = function (page, limit) {
+
+            var success = function (response) {
+                sc.users = response.data;
+            };
+
+            var failed = function (response) {
+                alert(response.status);
+            };
+
+            UserService.getPage(page, limit).then(success, failed);
+        };
+
+        sc.getEvents = function (page, limit) {
+
+            var success = function (response) {
+                sc.events = response.data;
+            };
+
+            var failed = function (response) {
+                alert(response.status);
+            };
+
+            EventService.getPage(page, limit).then(success, failed);
+        };
+
+        sc.getComments = function (page, limit) {
+
+            var success = function (response) {
+                sc.comments = response.data;
+            };
+
+            var failed = function (response) {
+                alert(response.status);
+            };
+
+            EventService.getComments('', page, limit).then(success, failed);
+        };
+
+        sc.getLikes = function (id) {
+
+            var success = function (response) {
+                sc.likes = response.data;
+            };
+
+            var failed = function (response) {
+                alert(response.status);
+            };
+
+            EventService.getLikes('').then(success, failed);
+        };
+
+        sc.getUserByUsername = function (page, limit, username) {
+
+            var getPageSuccess = function (response) {
+                sc.users = response.data;
+            };
+
+            var getPageFailed = function (response) {
+                // alert(response.status);
+            };
+            sc.usersLimit = limit;
+            UserService.searchByUsername(page, limit, username).then(getPageSuccess, getPageFailed);
+        }
+    }
+})();
+
+(function () {
+    'use strict';
+
+    angular
+        .module('admin.dashboard',
+            [
+                'ui.router'
+            ])
+        .config(configure);
+
+    configure.$inject = ['$stateProvider'];
+    function configure($stateProvider) {
+
+        $stateProvider
+            .state('main.user.dashboard', {
+                url: 'dashboard',
+                views: {
+                    '': {
+                        templateUrl: 'app/modules/admin/dashboard/admin.dashboard.view.html',
+                        controller: 'AdminDashboardCtrl'
+                    }
+                },
+                data: {
+                    is_granted: ["ROLE_ADMIN"]
+                }
+            });
     }
 })();

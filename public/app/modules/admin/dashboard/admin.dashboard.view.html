@@ -1,11 +1,48 @@
 <div class="row no-margin">
-    <div class="container-fluid tools">
-        <div class="col-lg-3">
-            <div translate>totalUsers <span></span></div>
-            <div class="title-block"></div>
+    <div class="container-fluid tools dashboard-top">
+        <div class="col-lg-3" ng-init="getUsers(currentPage, 9)">
+            <div class="panel panel-default">
+                <div class="panel-heading" translate>
+                    users
+                </div>
+                <div class="panel-body">
+                    <i class="glyphicon glyphicon-user"></i>
+                    <span ng-bind="users.total_items"></span>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3" ng-init="getEvents(currentPage, 9)">
+            <div class="panel panel-default">
+                <div class="panel-heading" translate>
+                    events
+                </div>
+                <div class="panel-body">
+                    <i class="glyphicon glyphicon-star"></i>
+                    <span ng-bind="events.total_items"></span>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3" ng-init="getComments(currentPage, 9)">
+            <div class="panel panel-default">
+                <div class="panel-heading" translate>
+                    comments
+                </div>
+                <div class="panel-body">
+                    <i class="glyphicon glyphicon-comment"></i>
+                    <span ng-bind="comments.total_items"></span>
+                </div>
+            </div>
         </div>
         <div class="col-lg-3">
-            <div translate>totalEvents</div>
+            <div class="panel panel-default" ng-init="getLikes()">
+                <div class="panel-heading" translate>
+                    likes
+                </div>
+                <div class="panel-body">
+                    <i class="glyphicon glyphicon-heart"></i>
+                    <span ng-bind="likes.length"></span>
+                </div>
+            </div>
         </div>
     </div>
 </div>

@@ -33,10 +33,7 @@ class AuthController extends Controller
             )
         );
 
-        $this->session->set('auth', array(
-            'id' => $user->id,
-            'name' => $user->name
-        ));
+        $this->session->set('id', $user->id);
 
         $response = new Response();
 
@@ -72,7 +69,9 @@ class AuthController extends Controller
             'name' => $_user->name,
             'email' => $_user->email,
             'created' => $_user->created,
-            'language' => $_user->language
+            'language' => $_user->language,
+            'role' => 'ROLE_USER',
+            'active' => true
         ));
 
         $response = new Response();

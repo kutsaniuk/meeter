@@ -1,0 +1,107 @@
+<div class="row no-margin">
+    <div class="container-fluid tools">
+        <div class="col-lg-12">
+            <div class="btn-group left btn-radio">
+                <label class="btn btn-default type" ng-model="activityType" uib-btn-radio="'new'"
+                       ng-click="getActivity(currentPage, 9, '')"><span translate>events</span>
+                </label>
+                <label class="btn btn-default type" ng-model="activityType" uib-btn-radio="'members'"
+                       ng-click="getActivity(currentPage, 9, activityType)"><span translate>members</span>
+                </label>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row no-margin" ng-init="getActivity(currentPage, 9, '')" ng-if="activities.items.total_items != 0">
+    <div class="container-fluid events" style="padding-top: 0">
+        <br>
+        <div class="row" ng-repeat="user in activities.items" ng-if="user.events.total_items != 0">
+            <div class="col-lg-12">
+                <table>
+                    <tr>
+                        <td class="user" style="padding: 15px">
+                            <a href="#/user/{{user.id}}">
+                                <div class="crop" style="width: 35px; height: 35px">
+                                    <img ng-src="/user/avatar/{{user.id}}"
+                                         onerror="this.src = '/dist/img/user.profile.avatar.default.svg'">
+                                </div>
+                            </a>
+                        </td>
+                        <td class="user">
+                            <span class="username"><a href="#/user/{{user.id}}">{{user.username}}</a></span>
+                            <span ng-if="activityType === 'new'" class="action"><span translate>added</span> {{user.events.total_items}} <span
+                                    translate>_events</span></span>
+                            <span ng-if="activityType === 'members'" class="action"><span translate>joinedTo</span> {{user.events.total_items}} <span
+                                    translate>__events</span></span>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="col-md-4 col-xs-12 event-item" ng-repeat="event in user.events.items">
+                <center>
+                    <div class="event"
+                         ng-mouseenter="descriptionShow = true; getEventLikesById(event.id); getUserById(event.user_id); getEventCommentsById(event.id)"
+                         ng-mouseleave="descriptionShow = false;">
+                        <div class="crop">
+                            <img src="/event/image/{{event.id}}">
+                        </div>
+                        <div class="event-container event-bg">
+                            <div class="col-lg-6 col-xs-6">
+                                <a href="#/event/{{event.id}}">
+                                    <div class="title">{{event.name}}</div>
+                                </a>
+
+                            </div>
+                            <div class="col-lg-6 col-xs-6">
+                                <div class="time">{{event.date | dateInMillis | date: 'd MMM y'}}</div>
+                                <div class="time">{{event.date | dateInMillis | date: 'H:mm'}}</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                            <span class="location"><i
+                                    class="glyphicon glyphicon-map-marker"></i>{{event.location}}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!--<div class="type">{{event.type}}</div>-->
+                        <div class="description show-hide" ng-show="descriptionShow">
+                            <div class="like-container">
+            <span class="like" ng-click="createLike(event.id)"><i class="glyphicon"
+                                                                  ng-class="{'glyphicon-heart-empty': noLike, 'glyphicon-heart': like}"></i><span>{{likes.length}}</span>
+            </span>
+            <span class="comment">
+                <i id="comment" class="glyphicon glyphicon-comment"></i>
+                <span>{{comments.total_items}}</span>
+            </span>
+                            </div>
+                            <br>
+                            <div class="description_event">
+                                {{event.description}}
+                            </div>
+                            <!--<span ng-if="event.description.length > 54">...</span>-->
+                        <span ng-if="event.description.length > 54"><a class="more" href="#/event/{{event.id}}"
+                                                                       translate>more</a></span>
+                        </div>
+                    </div>
+                </center>
+            </div>
+        </div>
+        <!--<div class="row">-->
+        <!--<div class="col-lg-12">-->
+        <!--<uib-pager previous-text="{{ 'previous' | translate }}" next-text="{{ 'next' | translate}}"-->
+        <!--total-items="events.total_items" ng-model="currentPage"-->
+        <!--ng-change="getPageEvents(currentPage, 9)" items-per-page="9"></uib-pager>-->
+        <!--</div>-->
+        <!--</div>-->
+    </div>
+</div>
+
+<div class="row no-margin" ng-show="activities.items[0].events.total_items == 0" style="background: #fff">
+    <div class="container-fluid">
+        <center>
+            <div class="no_search_results" translate>noActivity</div>
+        </center>
+    </div>
+</div>
+

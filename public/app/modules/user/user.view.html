@@ -21,18 +21,21 @@
                 <div class="form-group search">
                     <div class="input-group">
                         <span class="input-group-addon"><i class="glyphicon glyphicon-search"></i></span>
-                    <input type="text" class="form-control" ng-model="searchName" placeholder="{{ 'search' | translate}}" ng-change="getEventsByName(1, 100, searchName)" typeahead-template-url="app/shared/navbar/search/navbar.search.typeahead.template.html" uib-typeahead="event as event.name for event in events.items" typeahead-show-hint="true" typeahead-min-length="1" ng-enter="linkSearch(searchName.name)" pattern="^[A-zА-яіІ0-9 ]*$">
+                    <input type="text" class="form-control" ng-model="searchName" placeholder="{{ 'search' | translate}}" ng-change="getEventsByName(1, 100, searchName)" typeahead-template-url="app/shared/navbar/search/navbar.search.typeahead.template.html" uib-typeahead="event as event.name for event in events.items" typeahead-show-hint="true" typeahead-min-length="1" ng-enter="linkSearch(searchName)" pattern="^[A-zА-яіІ0-9 ]*$">
                         </div>
                 </div>
             </form>
         </div>
-        <ul class="nav navbar-nav pull-right" cr-granted="ROLE_ADMIN">
-            <li>
+        <ul class="nav navbar-nav pull-right">
+            <li cr-granted="ROLE_ADMIN">
                 <a href="#/dashboard" class="navbar-link"><i class="glyphicon glyphicon-dashboard"></i></a>
             </li>
-            <li>
+            <li cr-granted="ROLE_ADMIN, ROLE_EDITOR">
                 <a href="#/users" class="navbar-link"><i class="glyphicon glyphicon-user"></i></a>
             </li>
+            <!--<li cr-granted="ROLE_ADMIN, ROLE_USER">-->
+                <!--<a href="#/activity" class="navbar-link"><i class="glyphicon glyphicon-star"></i></a>-->
+            <!--</li>-->
         </ul>
     </div>
 </nav>

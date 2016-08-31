@@ -3,9 +3,9 @@
 
     angular
         .module('main')
-        .controller('AdminUsersCtrl', AdminUsersCtrl);
+        .controller('AdminDashboardCtrl', AdminDashboardCtrl);
 
-    function AdminUsersCtrl($scope, $state, UserService, crAcl, $translate, CredentialsService, EventService) {
+    function AdminDashboardCtrl($scope, UserService, EventService) {
         var sc = $scope;
         sc.currentPage = 1;
         sc.name = '';
@@ -23,46 +23,43 @@
             UserService.getPage(page, limit).then(success, failed);
         };
 
-        sc.setActiveUser = function (id, active) {
-
-            var user = {
-                'id': id,
-                'active': !active
-            };
+        sc.getEvents = function (page, limit) {
 
             var success = function (response) {
-                sc.getUsers(sc.currentPage, 9);
-                sc.user.id = id;
-                sc.user.active = !active;
+                sc.events = response.data;
             };
 
             var failed = function (response) {
                 alert(response.status);
             };
 
-            UserService.active(user).then(success, failed);
-
-
+            EventService.getPage(page, limit).then(success, failed);
         };
 
-        sc.setRoleUser = function (id, role) {
-
-            var user = {
-                'id': id,
-                'role': role
-            };
+        sc.getComments = function (page, limit) {
 
             var success = function (response) {
-                // sc.getUsers(1, 9);
+                sc.comments = response.data;
             };
 
             var failed = function (response) {
                 alert(response.status);
             };
 
-            UserService.role(user).then(success, failed);
+            EventService.getComments('', page, limit).then(success, failed);
+        };
 
+        sc.getLikes = function (id) {
 
+            var success = function (response) {
+                sc.likes = response.data;
+            };
+
+            var failed = function (response) {
+                alert(response.status);
+            };
+
+            EventService.getLikes('').then(success, failed);
         };
 
         sc.getUserByUsername = function (page, limit, username) {

@@ -11,6 +11,7 @@ use Phalcon\Mvc\Model\Query;
 use Phalcon\Http\Response as response;
 use Phalcon\Mvc\Controller;
 use Phalcon\Paginator\Adapter\Model as PaginatorModel;
+use Phalcon\Paginator\Adapter\NativeArray as PaginatorArray;
 
 /**
  * @RoutePrefix("/user")

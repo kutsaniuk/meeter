@@ -41,7 +41,8 @@
         };  
 
         sc.linkSearch = function (searchName) {
-            $location.path('/search/' + searchName);
+            if (searchName.name !== undefined) $location.path('/search/' + searchName.name);
+            else $location.path('/search/' + searchName);
         };
 
     }

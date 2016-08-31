@@ -84,5 +84,17 @@
   "authFailed": "Password or username is incorrect",
 
   "ROLE_ADMIN": "Admin",
-  "ROLE_USER": "User"
+  "ROLE_USER": "User",
+
+  "likes": "Likes",
+
+  "updates": "Updates",
+  "added": "added",
+  "joinedTo": "joined to",
+  "__events": "events",
+
+  "noActivity": "No activity",
+
+  "emtryField": "Enter all fields"
+
 }

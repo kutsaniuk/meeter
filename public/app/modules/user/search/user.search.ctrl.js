@@ -38,12 +38,7 @@
             sc.usersLimit = limit;
             UserService.searchByUsername(page, limit, username).then(getPageSuccess, getPageFailed);
         };
-
-        sc.linkSearch = function (searchName) {
-            $location.path('/search/' + searchName);
-
-        };
-
+        
         sc.getUserById = function (id) {
  
             var getUserSuccess = function (response) {

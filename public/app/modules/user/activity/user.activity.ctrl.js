@@ -3,26 +3,14 @@
 
     angular
         .module('main')
-        .controller('UserFeedCtrl', UserFeedCtrl);
+        .controller('UserActivityCtrl', UserActivityCtrl);
 
-    function UserFeedCtrl($scope, $state, $rootScope, $cookieStore, EventService, UserService) {
+    function UserActivityCtrl($scope, $state, $rootScope, $cookieStore, EventService, UserService) {
         var sc = $scope;
 
-        $rootScope.globals = $cookieStore.get('globals') || {};
         sc.currentUser = $rootScope.globals.currentUser;
-
-        sc.getPageEvents = function (page, limit, type, name) {
-            
-            var getPageSuccess = function (response) {
-                sc.events = response.data;  
-            };
-
-            var getPageFailed = function (response) {
-                alert(response.status);
-            };
-
-            EventService.getPage(page, limit, type, name).then(getPageSuccess, getPageFailed);
-        };
+        sc.currentPage = 1;
+        sc.activityType = 'new';
 
         sc.getEventLikesById = function (id) {
             var success = function (response) {
@@ -30,7 +18,7 @@
 
                 sc.findUser = function (user) {
                     return user.user_id === sc.currentUser.id;
-                }
+                };
 
                 if (sc.likes.find(sc.findUser) != null) {
                     sc.like = true;
@@ -99,9 +87,20 @@
         };
 
         sc.getPageUpdates = function () {
-            $state.go('main.user.activity');
-        }; 
+            $state.go('main.user.feed.updates');
+        };
+        
+        sc.getActivity = function (page, limit, type) {
+            var success = function (response) {
+                sc.activities = response.data;
+            };
 
+            var failed = function (response) {
+                alert(response.status);
+            };
+
+            UserService.activity(page, limit, type).then(success, failed);
+        };
 
     }
 })();

@@ -27,6 +27,8 @@
 
         sc.createEvent = function (event) {
             event.date.setHours(event.time.getHours() + 3, event.time.getMinutes());
+            var created = new Date();
+            created.setHours(created.getHours() + 3);
 
             if (event.name != ''
                 && event.description != ''
@@ -41,7 +43,7 @@
                     'user_id': parseInt(sc.currentUser.id),
                     'image': event.image.base64,
                     'location': event.location,
-                    'created': new Date().toISOString()
+                    'created': created.toISOString()
                 };
                 
                 EventService.create(_event);

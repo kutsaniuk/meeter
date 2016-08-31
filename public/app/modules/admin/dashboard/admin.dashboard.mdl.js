@@ -17,7 +17,7 @@
                 views: {
                     '': {
                         templateUrl: 'app/modules/admin/dashboard/admin.dashboard.view.html',
-                        controller: 'UserProfileCtrl'
+                        controller: 'AdminDashboardCtrl'
                     }
                 },
                 data: {

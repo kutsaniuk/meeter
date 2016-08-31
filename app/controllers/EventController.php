@@ -32,38 +32,38 @@ class EventController extends Controller
         modelsManager->
         createQuery("SELECT Event.id, 
 Event.name, Event.location, Event.date, 
-Event.description, Event.time, Event.user_id FROM Event
+Event.description, Event.user_id FROM Event
 WHERE type = '$type' AND name LIKE '%$name%'");
 
         if (empty($type)) $_events = $this->
         modelsManager->
         createQuery("SELECT Event.id, 
 Event.name, Event.location, Event.date, 
-Event.description, Event.time, Event.user_id FROM Event ORDER BY Event.created DESC");
+Event.description, Event.user_id FROM Event ORDER BY Event.created DESC");
 
         if (!empty($id)) $_events = $this->
         modelsManager->
         createQuery("SELECT Event.id, 
 Event.name, Event.location, Event.date, 
-Event.description, Event.time, Event.user_id FROM Event WHERE Event.user_id = $id");
+Event.description, Event.user_id FROM Event WHERE Event.user_id = $id");
 
         if (!empty($type) && !empty($id)) $_events = $this->
         modelsManager->
         createQuery("SELECT Event.id, 
 Event.name, Event.location, Event.date, 
-Event.description, Event.time, Event.user_id FROM Event WHERE Event.user_id = $id AND type = '$type'");
+Event.description, Event.user_id FROM Event WHERE Event.user_id = $id AND type = '$type'");
 
         if ($type == 'actual' && empty($id)) $_events = $this->
         modelsManager->
         createQuery("SELECT Event.id, 
 Event.name, Event.location, Event.date, 
-Event.description, Event.time, Event.user_id FROM Event ORDER BY Event.date ASC");
+Event.description, Event.user_id FROM Event ORDER BY Event.date ASC");
 
         if ($type == 'actual' && !empty($id)) $_events = $this->
         modelsManager->
         createQuery("SELECT Event.id, 
 Event.name, Event.location, Event.date, 
-Event.description, Event.time, Event.user_id FROM Event WHERE Event.user_id = $id ORDER BY Event.date ASC");
+Event.description, Event.user_id FROM Event WHERE Event.user_id = $id ORDER BY Event.date ASC");
 
         $dateTimeZone = new DateTimeZone('Europe/Kiev');
         $now = new DateTime();
@@ -73,7 +73,7 @@ Event.description, Event.time, Event.user_id FROM Event WHERE Event.user_id = $i
         modelsManager->
         createQuery("SELECT Event.id, 
 Event.name, Event.location, Event.date, 
-Event.description, Event.time, Event.user_id FROM Event WHERE Event.date < $now ORDER BY Event.date ASC");
+Event.description, Event.user_id FROM Event WHERE Event.date < $now ORDER BY Event.date ASC");
 
         $paginator = new PaginatorModel(
             array(
@@ -285,14 +285,16 @@ Event.description, Event.time, Event.user_id FROM Event WHERE Event.date < $now 
         $currentPage = (int)$_GET["page"];
         $limit = (int)$_GET["limit"];
 
-        $comments = $this->
+        if (!empty($id)) $comments = $this->
         modelsManager->
         createQuery("SELECT User.id, Comment.comment, User.username 
-FROM Comment JOIN User on User.id = Comment.user_id WHERE Comment.event_id = $id ORDER BY Comment.date ASC");
+FROM Comment JOIN User on User.id = Comment.user_id WHERE Comment.event_id = $id ORDER BY Comment.date ASC")->execute();
+
+        if (empty($id)) $comments = Comment::find();
 
         $paginator = new PaginatorModel(
             array(
-                "data" => $comments->execute(),
+                "data" => $comments,
                 "limit" => $limit,
                 "page" => $currentPage
             )
@@ -347,13 +349,15 @@ FROM Comment JOIN User on User.id = Comment.user_id WHERE Comment.event_id = $id
 //            'conditions' => "event_id = '$id'"
 //        ))->toArray();
 
-        $_likes = $this->
+        if (!empty($id)) $_likes = $this->
         modelsManager->
         createQuery("SELECT Likes.id, Likes.user_id, Likes.event_id, User.username 
 FROM Likes JOIN User ON Likes.user_id = User.id WHERE Likes.event_id = $id ORDER BY Likes.created DESC")->execute();
 
         foreach ($_likes as $like)
             $likes[] = $like;
+
+        if (empty($id)) $likes = Likes::find()->toArray();
 
         $response = new Response();
         $response->setContentType("application/json");

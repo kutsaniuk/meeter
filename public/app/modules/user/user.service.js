@@ -3,7 +3,7 @@
 
     angular
         .module('main')
-        .service('UserService', function ($http) {
+        .service('UserService', function ($http, $filter) {
 
             var urlBase = '/user';
 
@@ -81,6 +81,18 @@
 
             this.updateBackground = function (background) {
                 return $http.post(urlBase + '/setbackground', background);
+            };
+
+            this.activity = function (page, limit, type) {
+                var currentDate = new Date();
+                currentDate.setHours(0);
+                return $http.get('/activity/' + type, {
+                    params: {
+                        page: page,
+                        limit: limit,
+                        date: $filter("date")(currentDate.toISOString(),'yyyy-MM-dd HH:MM:ss')
+                    }
+                });
             };
 
         });

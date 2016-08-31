@@ -8,6 +8,7 @@
                 'user.profile',
                 'user.event',
                 'user.search',
+                'user.activity',
                 'ui.router',
                 'admin.dashboard',
                 'admin.users'
