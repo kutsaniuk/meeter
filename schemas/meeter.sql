@@ -167,7 +167,7 @@ CREATE TABLE `user` (
   `password` char(40) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
   `name` varchar(70) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
   `email` varchar(70) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
-  `created` datetime DEFAULT CURRENT_TIMESTAMP,
+  `created` datetime DEFAULT NULL,
   `active` tinyint(4) DEFAULT NULL,
   `language` varchar(2) DEFAULT NULL,
   `role` varchar(45) DEFAULT NULL,
